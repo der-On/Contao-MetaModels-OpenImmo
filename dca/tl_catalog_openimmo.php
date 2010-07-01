@@ -32,7 +32,6 @@
  */
 $GLOBALS['TL_DCA']['tl_catalog_openimmo'] = array
 (
-
 	// Config
 	'config' => array
 	(
@@ -99,12 +98,11 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo'] = array
 				'icon'                => 'tablewizard.gif',
 				//'button_callback'     => array('tl_catalog_openimmo', 'fieldsButton')
 			),
-			'sync' => array
+			'syncCatalog' => array
 			(
 				'label'				  => &$GLOBALS['TL_LANG']['tl_catalog_openimmo']['sync'],
-				'href'				  => 'act=sync_cat_oi',
-				'icon'				  => 'reload.gif',
-				'attributes'		  => 'onclick="if (!confirm(\''.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncConfirm']. '\')) return false; Backend.getScrollOffset();"'
+				'href'				  => 'key=syncCatalog',
+				'icon'				  => 'reload.gif'
 			),
 		)
 	),

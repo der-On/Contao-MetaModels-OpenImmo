@@ -38,7 +38,7 @@ $GLOBALS['TL_LANG']['tl_catalog_openimmo_fields']['oiField'] = array('OpenImmo-D
 /**
  * Reference
  */
-$GLOBALS['TL_LANG']['tl_catalog_openimmo_fields']['fields'] = 'Katalog: <strong>%s</strong> - OpenImmo: <strong>%s</strong>';
+$GLOBALS['TL_LANG']['tl_catalog_openimmo_fields']['fields'] = '%s: %s/%s';
 
 
 /**

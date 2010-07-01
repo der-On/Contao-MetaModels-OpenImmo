@@ -57,6 +57,7 @@
 
 $GLOBALS['BE_MOD']['content']['catalog_openimmo'] = array(
 	'tables' => array('tl_catalog_openimmo','tl_catalog_openimmo_fields'),
+	'syncCatalog' => array('CatalogOpenImmo','sync'),
 	'icon' => 'system/modules/catalog_openimmo/html/icon.gif'
 );
 

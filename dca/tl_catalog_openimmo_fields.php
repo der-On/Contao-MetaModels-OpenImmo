@@ -46,13 +46,16 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo_fields'] = array
 	(
 		'sorting' => array
 		(
-			'mode'                    => 1,
+			'mode'                    => 4,
 			'fields'                  => array('catField','oiField'),
-			'flag'                    => 1
+			'flag'                    => 1,
+			'panelLayout'			  => 'filter,limit',
+			'headerFields'			  => array('name','catalog','exportPath'),
+			'child_record_callback'   => array('tl_catalog_openimmo_fields', 'renderField')
 		),
 		'label' => array
 		(
-			'fields'                  => array('catField','oiField'),
+			'fields'                  => array('catField','oiFieldGroup','oiField'),
 			'format'                  => &$GLOBALS['TL_LANG']['tl_catalog_openimmo_fields']['fields']
 		),
 		'global_operations' => array
@@ -99,7 +102,7 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo_fields'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array(''),
-		'default'                     => 'catField,oiFieldGroup,oiField'
+		'default'                     => 'catField;oiFieldGroup,oiField'
 	),
 
 	// Subpalettes
@@ -124,7 +127,7 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo_fields'] = array
 			'label'                   => &$GLOBALS['TL_LANG']['tl_catalog_openimmo_fields']['oiFieldGroup'],
 			'exclude'                 => true,
 			'inputType'               => 'select',
-			'eval'                    => array('mandatory'=>true, 'maxlength'=>64,'submitOnChange'=>true),
+			'eval'                    => array('mandatory'=>true, 'maxlength'=>64,'submitOnChange'=>true,'includeBlankOption'=>true),
 			'options_callback'		  => array('tl_catalog_openimmo_fields','getOIFieldGroupOptions')
 		),
 		'oiField' => array
@@ -150,22 +153,43 @@ class tl_catalog_openimmo_fields extends Backend
 		return $catalogID[0];
 	}
 
-	public function getCatFieldOptions(&$table)
+	public function getCatFieldOptions(&$dc)
 	{
-		$options = $this->Database->prepare("SELECT colName FROM tl_catalog_fields WHERE pid='".$this->getCatalogTypeID($table->id)."'")->execute()->fetchEach('colName');
+		$options = $this->Database->prepare("SELECT colName FROM tl_catalog_fields WHERE pid='".$this->getCatalogTypeID($dc->id)."'")->execute()->fetchEach('colName');
 
 		return $options;
 	}
 
-	public function getOIFieldGroupOptions(&$table)
+	public function getOIFieldGroupOptions(&$dc)
 	{
-		return array("1","2");
+		return CatalogOpenImmo::getFieldGroups();
 	}
 
-	public function getOIFieldOptions(&$table)
+	public function getOIFieldOptions(&$dc)
 	{
-		//var_dump($table);
-		return array("1");
+		$group = $this->Database->prepare("SELECT oiFieldGroup FROM tl_catalog_openimmo_fields WHERE id='".$dc->id."'")->execute()->fetchEach('oiFieldGroup');
+		$group = $group[0];
+
+		$fields = CatalogOpenImmo::getFieldsByGroup($group);
+
+		$_fields = array();
+		foreach($fields as &$field) {
+			$_fields[] = $field["name"];
+		}
+		return $_fields;
+	}
+
+	/**
+	 * Add the type of input field
+	 * @param array
+	 * @return string
+	 */
+	public function renderField($arrRow)
+	{
+		$titleField = $arrRow['catField'] ? ' published' : '';
+		
+		return '<div class="field_heading cte_type"><strong>' . $arrRow['catField'] . '</strong> <em>['.$arrRow['oiFieldGroup'].'/'.$arrRow['oiField'].']</em></div>';
+
 	}
 }
 ?>
