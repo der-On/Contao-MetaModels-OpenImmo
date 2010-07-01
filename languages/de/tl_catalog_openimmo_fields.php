@@ -31,13 +31,14 @@
  * Fields
  */
 $GLOBALS['TL_LANG']['tl_catalog_openimmo_fields']['catField'] = array('Katalogfeld', 'Feld des Katalogs welches mit dem OpenImmo-Datenfeld verknüpft werden soll.');
+$GLOBALS['TL_LANG']['tl_catalog_openimmo_fields']['oiFieldGroup'] = array('OpenImmo-Datenfeldgruppe', 'OpenImmo Datenfeldgruppe, aus welcher ein OpenImmo-Datenfeld ausgewählt werden soll.');
 $GLOBALS['TL_LANG']['tl_catalog_openimmo_fields']['oiField'] = array('OpenImmo-Datenfeld', 'OpenImmo Datenfeld, welches mit dem Katalogfeld verknüpft werden soll.');
 
 
 /**
  * Reference
  */
-$GLOBALS['TL_LANG']['tl_catalog_openimmo_fields'][''] = '';
+$GLOBALS['TL_LANG']['tl_catalog_openimmo_fields']['fields'] = 'Katalog: <strong>%s</strong> - OpenImmo: <strong>%s</strong>';
 
 
 /**
