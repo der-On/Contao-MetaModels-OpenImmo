@@ -43,6 +43,13 @@ class CatalogOpenImmo extends BackendModule
 	 */
 	protected $strTemplate = '';
 
+	/*
+	 * Compatible with OpenImmo 1.1
+	 */
+	public static $fields = array
+	(
+		
+	);
 
 	/**
 	 * Generate module
@@ -50,6 +57,11 @@ class CatalogOpenImmo extends BackendModule
 	protected function compile()
 	{
 		
+	}
+	
+	public function sync($arg)
+	{
+		var_dump($arg);
 	}
 }
 
