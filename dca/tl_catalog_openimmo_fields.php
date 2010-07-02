@@ -146,16 +146,16 @@ class tl_catalog_openimmo_fields extends Backend
 {
 	private function getCatalogTypeID($id)
 	{
-		$catalogID = $this->Database->prepare("SELECT ct.id AS id FROM tl_catalog_types ct ".
+		$catalogID = $this->Database->execute("SELECT ct.id AS id FROM tl_catalog_types ct ".
 											"LEFT JOIN tl_catalog_openimmo_fields cof ON cof.id='".$id."' ".
 											"LEFT JOIN tl_catalog_openimmo co ON co.id=cof.pid ".
-											"WHERE ct.tableName=co.catalog")->execute()->fetchEach('id');
+											"WHERE ct.tableName=co.catalog")->fetchEach('id');
 		return $catalogID[0];
 	}
 
 	public function getCatFieldOptions(&$dc)
 	{
-		$options = $this->Database->prepare("SELECT colName FROM tl_catalog_fields WHERE pid='".$this->getCatalogTypeID($dc->id)."'")->execute()->fetchEach('colName');
+		$options = $this->Database->execute("SELECT colName FROM tl_catalog_fields WHERE pid='".$this->getCatalogTypeID($dc->id)."'")->fetchEach('colName');
 
 		return $options;
 	}
@@ -167,7 +167,7 @@ class tl_catalog_openimmo_fields extends Backend
 
 	public function getOIFieldOptions(&$dc)
 	{
-		$group = $this->Database->prepare("SELECT oiFieldGroup FROM tl_catalog_openimmo_fields WHERE id='".$dc->id."'")->execute()->fetchEach('oiFieldGroup');
+		$group = $this->Database->execute("SELECT oiFieldGroup FROM tl_catalog_openimmo_fields WHERE id='".$dc->id."'")->fetchEach('oiFieldGroup');
 		$group = $group[0];
 
 		$fields = CatalogOpenImmo::getFieldsByGroup($group);

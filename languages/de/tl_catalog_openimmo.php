@@ -39,7 +39,14 @@ $GLOBALS['TL_LANG']['tl_catalog_openimmo']['exportPath'] = array('OpenImmo Expor
  */
 $GLOBALS['TL_LANG']['tl_catalog_openimmo']['fields'] = array('Feldverknüpfungen bearbeiten','Feldverknüpfungen für Eintrag mit ID %s bearbeiten');
 $GLOBALS['TL_LANG']['tl_catalog_openimmo']['sync'] = array('Daten Synchronisieren','Katalog des Eintrags mit der ID %s mit OpenImmo-Daten synchronisieren');
-$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncConfirm'] = 'Katalog des Eintrags mit der ID %s wirklich mit den aktuellen OpenImmo-Daten synchronisieren? Diese Aktion kann nicht rückgangig gemacht werden.';
+$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncConfirm'] = 'Wollen Sie den Katalog mit den aktuellen OpenImmo-Daten synchronisieren? Diese Aktion kann nicht rückgangig gemacht werden.';
+$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncSuccess'] = 'Die Synchronisierung wurde erfolgreich durchgeführt.';
+$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncErrors'] = array(
+	'Fehler: Die OpenImmo-Datei konnte nicht gefunden oder gelesen werden.',
+	'Fehler: Die OpenImmo-Daten konnte nicht geladen werden.',
+	'Fehler: Die Feldverknüpfungen konnten nicht geladen werden.',
+	'Fehler: Die Daten konnten nicht synchronisiert werden.'
+);
 
 /**
  * Buttons

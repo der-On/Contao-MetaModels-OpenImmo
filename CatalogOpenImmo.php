@@ -434,11 +434,55 @@ class CatalogOpenImmo extends BackendModule
 		
 	}
 	
-	public static function sync($arg)
+	public function sync($dc)
 	{
-		ob_start();
-		var_dump($arg);
-		return ob_get_clean();
+		$success = false;
+		if ($this->Input->post('FORM_SUBMIT') == 'tl_catalog_openimmo_sync')
+		{
+			$obj = $this->Database->execute("SELECT exportPath,catalog FROM tl_catalog_openimmo WHERE id='".$dc->id."'")->fetchRow();
+			$exportPath = $obj['exportPath'];
+			$catalog = $obj['catalog'];
+
+			$file = $this->getSyncFile($exportPath);
+			if($file) {
+				$data = $this->loadData($file);
+				if($data) {
+					$syncFields = $this->getSyncFields($catalog);
+					if($syncFields) {
+						if($this->syncDataWithCatalog($data, $catalog, $syncFields)) {
+							$success = true;
+						} else $error = 3;
+					} else $error = 2;
+				} else $error = 1;
+			} else $error = 0;
+		}
+		
+		// Return form
+		return '
+	<div id="tl_buttons">
+		<a href="'.$this->getReferer(ENCODE_AMPERSANDS).'" class="header_back" title="'.specialchars($GLOBALS['TL_LANG']['MSC']['backBT']).'">'.$GLOBALS['TL_LANG']['MSC']['backBT'].'</a>
+		</div>
+	<h2 class="sub_headline">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['sync'][0].'</h2>
+		
+	<form action="'.ampersand($this->Environment->request, ENCODE_AMPERSANDS).'" id="tl_catalog_openimmo_sync" class="tl_form" method="post">
+	<div class="tl_formbody_edit">
+	<input type="hidden" name="FORM_SUBMIT" value="tl_catalog_openimmo_sync" />
+
+	<div class="tl_tbox">
+	<p style="line-height:16px; padding-top:6px;">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncConfirm'].'</p>
+	'.($success ? '<p class="tl_confirm">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncSuccess'].'</p>' : '<p class="tl_error">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncErrors'][$error].'</p>').'
+	</div>
+
+	</div>
+
+	<div class="tl_formbody_submit">
+
+	<div class="tl_submit_container">
+	<input type="submit" name="save" id="save" class="tl_submit" alt="regenerate dca" accesskey="s" value="'.specialchars($GLOBALS['TL_LANG']['tl_catalog_openimmo']['sync'][0]).'" />
+	</div>
+
+	</div>
+	</form>';
 	}
 
 	public static function parseFields(&$group)
@@ -477,6 +521,31 @@ class CatalogOpenImmo extends BackendModule
 		}
 
 		return $groups;
+	}
+
+	private function getSyncFile($exportPath)
+	{
+		return $this->unpackSyncFile($file);
+	}
+
+	private function unpackSyncFile($file)
+	{
+		return "someFile";
+	}
+
+	private function loadData($file)
+	{
+		return "some data";
+	}
+
+	private function getSyncFields($catalog)
+	{
+		return "some sync fields";
+	}
+
+	private function syncDataWithCatalog(&$data,$catalog,&$syncFields)
+	{
+		return true;
 	}
 }
 

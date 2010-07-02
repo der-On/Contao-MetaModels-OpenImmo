@@ -101,8 +101,10 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo'] = array
 			'syncCatalog' => array
 			(
 				'label'				  => &$GLOBALS['TL_LANG']['tl_catalog_openimmo']['sync'],
+				//'href'				  => 'table=tl_catalog_openimmo_sync',
 				'href'				  => 'key=syncCatalog',
-				'icon'				  => 'reload.gif'
+				'icon'				  => 'reload.gif',
+				//'attributes'		  => "onclick='if (!confirm(\'". $GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncConfirm']."\')) return false; Backend.getScrollOffset();'"
 			),
 		)
 	),
@@ -152,7 +154,7 @@ class tl_catalog_openimmo extends Backend
 {
 	public function getCatalogOptions()
 	{
-		$options = $this->Database->prepare("SELECT tableName FROM tl_catalog_types")->execute()->fetchEach('tableName');
+		$options = $this->Database->execute("SELECT tableName FROM tl_catalog_types")->fetchEach('tableName');
 		return $options;
 	}
 
