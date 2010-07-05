@@ -31,6 +31,7 @@
  * Fields
  */
 $GLOBALS['TL_LANG']['tl_catalog_openimmo']['name'] = array('Name', 'Bezeichnung');
+$GLOBALS['TL_LANG']['tl_catalog_openimmo']['oiVersion'] = array('OpenImmo-Version', 'Mit welcher Version des OpenImmo-Standards werden die Daten exportiert?');
 $GLOBALS['TL_LANG']['tl_catalog_openimmo']['catalog'] = array('Katalog', 'Katalog, welcher mit OpenImmo-Daten verknüpft werden soll.');
 $GLOBALS['TL_LANG']['tl_catalog_openimmo']['exportPath'] = array('OpenImmo Export-Verzeichnis', 'Verzeichnis in welchem sich die exportierten OpenImmo-Daten befinden.');
 

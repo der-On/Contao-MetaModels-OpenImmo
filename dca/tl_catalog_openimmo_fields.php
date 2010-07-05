@@ -50,7 +50,7 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo_fields'] = array
 			'fields'                  => array('sorting'),
 			'flag'                    => 1,
 			'panelLayout'			  => 'filter,limit',
-			'headerFields'			  => array('name','catalog','exportPath'),
+			'headerFields'			  => array('name','oiVersion','catalog','exportPath'),
 			'child_record_callback'   => array('tl_catalog_openimmo_fields', 'renderField')
 		),
 		'label' => array

@@ -20,7 +20,8 @@ CREATE TABLE `tl_catalog_openimmo` (
   `tstamp` int(10) unsigned NOT NULL default '0',
   `name` varchar(64) NOT NULL default '',
   `catalog` int(10) unsigned NOT NULL default '0',
-  `exportPath` varchar(1024) NOT NULL default ''
+  `exportPath` varchar(1024) NOT NULL default '',
+  `oiVersion` varchar(32) NOT NULL default '1.2.1'
 
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

@@ -113,7 +113,7 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array(''),
-		'default'                     => 'name,catalog,exportPath'
+		'default'                     => 'name,oiVersion;catalog,exportPath'
 	),
 
 	// Subpalettes
@@ -131,6 +131,14 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo'] = array
 			'exclude'                 => true,
 			'inputType'               => 'text',
 			'eval'                    => array('mandatory'=>true, 'maxlength'=>64)
+		),
+		'oiVersion' => array
+		(
+			'label'					  => &$GLOBALS['TL_LANG']['tl_catalog_openimmo']['oiVersion'],
+			'exclude'				  => true,
+			'inputType'				  => 'select',
+			'options'				  => array('1.0','1.2.1','1.2.2'),
+			''
 		),
 		'catalog' => array
 		(
