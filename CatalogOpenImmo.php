@@ -452,7 +452,7 @@ class CatalogOpenImmo extends BackendModule
 				if($data) {
 					$syncFields = $this->getSyncFields($obj['id']);
 					if($syncFields) {
-						if($this->syncDataWithCatalog($data, $catalog, $syncFields)) {
+						if($this->syncDataWithCatalog($data, $obj, $syncFields)) {
 							$success = true;
 						} else $error = 3;
 					} else $error = 2;
@@ -531,7 +531,10 @@ class CatalogOpenImmo extends BackendModule
 
 	private function getCatalogObject($id)
 	{
-		return $this->Database->execute("SELECT * FROM tl_catalog_openimmo WHERE id='$id'")->fetchAssoc();
+		return $this->Database->execute("SELECT co.id AS id,co.catalog AS catalog, co.exportPath AS exportPath, ct.id AS catalogID ".
+										"FROM tl_catalog_openimmo co ".
+										"LEFT JOIN tl_catalog_types ct ON ct.tableName=co.catalog ".
+										"WHERE co.id='$id'")->fetchAssoc();
 	}
 
 	private function getSyncFile($exportPath,$canBeZip = true)
@@ -583,12 +586,12 @@ class CatalogOpenImmo extends BackendModule
 		$_fields = $this->Database->execute("SELECT catField,oiField,oiFieldGroup FROM tl_catalog_openimmo_fields WHERE pid='".$id."'")->fetchAllAssoc();
 
 		foreach($_fields as $field) {
-			$fields[$field['catField']] = array($field['oiFieldGroup'].'/'.$field['oiField']);
+			$fields[$field['catField']] = $field['oiFieldGroup'].'/'.$field['oiField'];
 		}
 		return $fields;
 	}
 
-	private function syncDataWithCatalog(&$data,$catalog,&$syncFields)
+	private function syncDataWithCatalog(&$data,&$catalogObj,&$syncFields)
 	{
 		if($this->dataIsValid($data)) {
 			$anbieter = $this->getAnbieter($data);
@@ -596,27 +599,32 @@ class CatalogOpenImmo extends BackendModule
 				$xpath = 'anbieter';
 				$immo_id = 0;
 
+				$immos = array();
+
 				foreach($anbieter as $_anbieter) {
 					$immo_anbieter = array();
-
+					
 					$this->setImmoFields($_anbieter,$immo_anbieter,$syncFields,$xpath);
 
-					$immobilien = $this->getImmobilien($anbieter);
+					$immobilien = $this->getImmobilien($_anbieter);
 
 					$xpath = 'anbieter/immobilie';
-
+					
 					foreach($immobilien as $immobilie)
 					{
 						$immo_id++; //generate immo id
 
 						//add anbieter info to immo
-						$immo = array_merge($immo_anbieter,array());
+						$immo = array_merge($immo_anbieter,array("id"=>$immo_id,"pid"=>$catalogObj['catalogID'],"tstamp"=>time()));
 
 						//immo info
 						$this->setImmoFields($immobilie,$immo,$syncFields,$xpath);
+
+						$immos[] = $immo;
 					}
-					
 				}
+				
+				return $this->updateCatalog($immos,$catalogObj['catalog']);
 			} else return false;
 		} else return false;
 	}
@@ -638,9 +646,14 @@ class CatalogOpenImmo extends BackendModule
 		}
 	}
 
-	private function getFieldData(&$xml,&$field,$xpath)
+	private function getFieldData(&$xml,$fieldPath,$xpath)
 	{
+		$xpath_part = str_replace($xpath.'/','',$fieldPath);
+		$result = $xml->xpath($xpath_part);
 		
+		if(count($result)) {
+			return $result[0].'';
+		}
 	}
 
 	private function getAnbieter(&$xml)
@@ -651,6 +664,23 @@ class CatalogOpenImmo extends BackendModule
 	private function getImmobilien(&$xml)
 	{
 		return $xml->xpath('immobilie');
+	}
+
+	private function updateCatalog(&$items,$catalog)
+	{
+		foreach($items as &$item) {
+			//check if entry already exists
+			$exists = $this->Database->execute("SELECT COUNT(id) FROM $catalog WHERE id='".$item['id']."'")->fetchAssoc();
+			
+			if(intval($exists['COUNT(id)'])>0) {
+				//remove old entry if one exists
+				$this->Database->execute("DELETE FROM $catalog WHERE id='".$item['id']."'");
+			}
+
+			//add entry again
+			$this->Database->prepare("INSERT INTO $catalog %s")->set($item)->execute();
+		}
+		return true;
 	}
 }
 
