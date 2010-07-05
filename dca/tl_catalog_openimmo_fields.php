@@ -154,9 +154,17 @@ class tl_catalog_openimmo_fields extends Backend
 	private function getCatalogTypeID($id)
 	{
 		$catalogID = $this->Database->execute("SELECT co.catalog AS catalog FROM tl_catalog_openimmo co ".
-											"LEFT JOIN tl_catalog_openimmo_fields cof ON cof.id='".$id."' ".
+											"LEFT JOIN tl_catalog_openimmo_fields cof ON cof.id='$id' ".
 											"WHERE co.id=cof.pid")->fetchEach('catalog');
 		return $catalogID[0];
+	}
+
+	private function getOIVersion($id)
+	{
+		$version = $this->Database->execute("SELECT co.oiVersion AS oiVersion FROM tl_catalog_openimmo co ".
+											"LEFT JOIN tl_catalog_openimmo_fields cof ON cof.id='$id' ".
+											"WHERE co.id=cof.pid")->fetchEach('oiVersion');
+		return $version[0];
 	}
 
 	public function getCatFieldOptions(&$dc)
@@ -171,7 +179,7 @@ class tl_catalog_openimmo_fields extends Backend
 
 	public function getOIFieldGroupOptions(&$dc)
 	{
-		return CatalogOpenImmo::getFieldGroups();
+		return CatalogOpenImmo::getFieldGroups($this->getOIVersion($dc->id));
 	}
 
 	public function getOIFieldOptions(&$dc)
@@ -179,7 +187,7 @@ class tl_catalog_openimmo_fields extends Backend
 		$group = $this->Database->execute("SELECT oiFieldGroup FROM tl_catalog_openimmo_fields WHERE id='".$dc->id."'")->fetchEach('oiFieldGroup');
 		$group = $group[0];
 
-		$fields = CatalogOpenImmo::getFieldsByGroup($group);
+		$fields = CatalogOpenImmo::getFieldsByGroup($this->getOIVersion($dc->id),$group);
 
 		$_fields = array();
 		foreach($fields as &$field) {
