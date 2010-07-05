@@ -47,7 +47,7 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo_fields'] = array
 		'sorting' => array
 		(
 			'mode'                    => 4,
-			'fields'                  => array('name'),
+			'fields'                  => array('sorting'),
 			'flag'                    => 1,
 			'panelLayout'			  => 'filter,limit',
 			'headerFields'			  => array('name','catalog','exportPath'),
