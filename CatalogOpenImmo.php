@@ -593,7 +593,10 @@ class CatalogOpenImmo extends BackendModule
 	private function getSyncFields($id)
 	{
 		$fields = array();
-		$_fields = $this->Database->execute("SELECT catField,oiField,oiFieldGroup FROM tl_catalog_openimmo_fields WHERE pid='".$id."'")->fetchAllAssoc();
+		$_fields = $this->Database->execute("SELECT cf.colName as catField, cof.catField AS catFieldID , cof.oiField AS oiField, cof.oiFieldGroup as oiFieldGroup ".
+											"FROM tl_catalog_openimmo_fields cof ".
+											"LEFT JOIN tl_catalog_fields cf ON cf.id=cof.catField ".
+											"WHERE cof.pid='".$id."'")->fetchAllAssoc();
 
 		foreach($_fields as $field) {
 			$fields[$field['catField']] = $field['oiFieldGroup'].'/'.$field['oiField'];

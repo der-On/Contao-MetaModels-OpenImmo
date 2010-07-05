@@ -47,7 +47,7 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo_fields'] = array
 		'sorting' => array
 		(
 			'mode'                    => 4,
-			'fields'                  => array('catField','oiField'),
+			'fields'                  => array('name'),
 			'flag'                    => 1,
 			'panelLayout'			  => 'filter,limit',
 			'headerFields'			  => array('name','catalog','exportPath'),
@@ -55,7 +55,7 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo_fields'] = array
 		),
 		'label' => array
 		(
-			'fields'                  => array('catField','oiFieldGroup','oiField'),
+			'fields'                  => array('name','oiFieldGroup','oiField'),
 			'format'                  => &$GLOBALS['TL_LANG']['tl_catalog_openimmo_fields']['fields']
 		),
 		'global_operations' => array
@@ -102,7 +102,7 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo_fields'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array(''),
-		'default'                     => 'catField;oiFieldGroup,oiField'
+		'default'                     => 'name,catField;oiFieldGroup,oiField'
 	),
 
 	// Subpalettes
@@ -114,6 +114,13 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo_fields'] = array
 	// Fields
 	'fields' => array
 	(
+		'name' => array
+		(
+			'label'					  => &$GLOBALS['TL_LANG']['tl_catalog_openimmo_fields']['name'],
+			'exclude'				  => true,
+			'inputType'				  => 'text',
+			'eval'					  => array('mandatory'=>true,'maxlength'=>64,'unique'=>true)
+		),
 		'catField' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_catalog_openimmo_fields']['catField'],
@@ -154,8 +161,11 @@ class tl_catalog_openimmo_fields extends Backend
 
 	public function getCatFieldOptions(&$dc)
 	{
-		$options = $this->Database->execute("SELECT colName FROM tl_catalog_fields WHERE pid='".$this->getCatalogTypeID($dc->id)."'")->fetchEach('colName');
-
+		$_options = $this->Database->execute("SELECT id,colName FROM tl_catalog_fields WHERE pid='".$this->getCatalogTypeID($dc->id)."'")->fetchAllAssoc();
+		$options = array();
+		foreach($_options as $option) {
+			$options[$option['id']] = $option['colName'];
+		}
 		return $options;
 	}
 
@@ -185,9 +195,9 @@ class tl_catalog_openimmo_fields extends Backend
 	 */
 	public function renderField($arrRow)
 	{
-		$titleField = $arrRow['catField'] ? ' published' : '';
+		$titleField = $arrRow['name'] ? ' published' : '';
 		
-		return '<div class="field_heading cte_type"><strong>' . $arrRow['catField'] . '</strong> <em>['.$arrRow['oiFieldGroup'].'/'.$arrRow['oiField'].']</em></div>';
+		return '<div class="field_heading cte_type"><strong>' . $arrRow['name'] . '</strong> <em>['.$arrRow['oiFieldGroup'].'/'.$arrRow['oiField'].']</em></div>';
 
 	}
 }

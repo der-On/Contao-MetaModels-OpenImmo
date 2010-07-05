@@ -37,8 +37,8 @@ CREATE TABLE `tl_catalog_openimmo_fields` (
   `pid` int(10) unsigned NOT NULL default '0',
   `sorting` int(10) unsigned NOT NULL default '0',
   `tstamp` int(10) unsigned NOT NULL default '0',
-
-  `catField` varchar(64) NOT NULL default '',
+  `name` varchar(64) NOT NULL default '',
+  `catField` int(10) unsigned NOT NULL default '0',
   `oiFieldGroup` varchar(1024) NOT NULL default '',
   `oiField` varchar(1024) NOT NULL default ''
 
