@@ -437,17 +437,20 @@ class CatalogOpenImmo extends BackendModule
 	public function sync($dc)
 	{
 		$success = false;
+		$send = false;
 		if ($this->Input->post('FORM_SUBMIT') == 'tl_catalog_openimmo_sync')
 		{
-			$obj = $this->Database->execute("SELECT exportPath,catalog FROM tl_catalog_openimmo WHERE id='".$dc->id."'")->fetchRow();
+			$obj = $this->getCatalogObject($dc->id);
 			$exportPath = $obj['exportPath'];
 			$catalog = $obj['catalog'];
-
+			
 			$file = $this->getSyncFile($exportPath);
+			
 			if($file) {
 				$data = $this->loadData($file);
+				
 				if($data) {
-					$syncFields = $this->getSyncFields($catalog);
+					$syncFields = $this->getSyncFields($obj['id']);
 					if($syncFields) {
 						if($this->syncDataWithCatalog($data, $catalog, $syncFields)) {
 							$success = true;
@@ -455,10 +458,12 @@ class CatalogOpenImmo extends BackendModule
 					} else $error = 2;
 				} else $error = 1;
 			} else $error = 0;
+
+			$send = true;
 		}
 		
 		// Return form
-		return '
+		$output = '
 	<div id="tl_buttons">
 		<a href="'.$this->getReferer(ENCODE_AMPERSANDS).'" class="header_back" title="'.specialchars($GLOBALS['TL_LANG']['MSC']['backBT']).'">'.$GLOBALS['TL_LANG']['MSC']['backBT'].'</a>
 		</div>
@@ -467,12 +472,12 @@ class CatalogOpenImmo extends BackendModule
 	<form action="'.ampersand($this->Environment->request, ENCODE_AMPERSANDS).'" id="tl_catalog_openimmo_sync" class="tl_form" method="post">
 	<div class="tl_formbody_edit">
 	<input type="hidden" name="FORM_SUBMIT" value="tl_catalog_openimmo_sync" />
-
 	<div class="tl_tbox">
-	<p style="line-height:16px; padding-top:6px;">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncConfirm'].'</p>
-	'.($success ? '<p class="tl_confirm">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncSuccess'].'</p>' : '<p class="tl_error">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncErrors'][$error].'</p>').'
-	</div>
-
+	<p style="line-height:16px; padding-top:6px;">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncConfirm'].'</p>';
+		if($send) {
+			$output.=($success ? '<p class="tl_confirm">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncSuccess'].'</p>' : '<p class="tl_error">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncErrors'][$error].'</p>');
+		}
+		$output.='</div>
 	</div>
 
 	<div class="tl_formbody_submit">
@@ -483,6 +488,7 @@ class CatalogOpenImmo extends BackendModule
 
 	</div>
 	</form>';
+		return $output;
 	}
 
 	public static function parseFields(&$group)
@@ -523,29 +529,128 @@ class CatalogOpenImmo extends BackendModule
 		return $groups;
 	}
 
-	private function getSyncFile($exportPath)
+	private function getCatalogObject($id)
 	{
-		return $this->unpackSyncFile($file);
+		return $this->Database->execute("SELECT * FROM tl_catalog_openimmo WHERE id='$id'")->fetchAssoc();
 	}
 
-	private function unpackSyncFile($file)
+	private function getSyncFile($exportPath,$canBeZip = true)
 	{
-		return "someFile";
+		$folder = new Folder($exportPath);
+		$currentFile = null;
+		$currentTime = 0;
+		
+		if(!$folder->isEmpty()) {
+			//get latest file
+			foreach(FilesHelper::scandirByExt($exportPath,($canBeZip)?array('zip','xml'):array('xml')) as $file) {
+				if(FilesHelper::fileModTime($exportPath.'/'.$file)>$currentTime) {
+					$currentFile = $exportPath.'/'.$file;
+				}
+			}
+			
+			//check if it is a zip, and if so unpack it
+			if($canBeZip && FilesHelper::fileExt($currentFile,true,true)=='ZIP') $currentFile = $this->unpackSyncFile($currentFile);
+			return $currentFile;
+		} else return false;
+	}
+
+	private function unpackSyncFile($path)
+	{
+		$tmpFolder = new Folder(FilesHelper::fileDirPath($path).'tmp');
+		//clear tmp folder if not empty
+		if(!$tmpFolder->isEmpty()) $tmpFolder->clear();
+		
+		$tmpPath = $tmpFolder->__get('value');
+		
+		//extract zip to tmp folder
+		$zip = new ZipArchive();
+		$zip->open(TL_ROOT.'/'.$path);
+		$zip->extractTo(TL_ROOT.'/'.$tmpPath);
+		$zip->close();
+
+		//return path to unpacked xml
+		return $this->getSyncFile($tmpPath);
 	}
 
 	private function loadData($file)
 	{
-		return "some data";
+		return simplexml_load_file(TL_ROOT.'/'.$file);
 	}
 
-	private function getSyncFields($catalog)
+	private function getSyncFields($id)
 	{
-		return "some sync fields";
+		$fields = array();
+		$_fields = $this->Database->execute("SELECT catField,oiField,oiFieldGroup FROM tl_catalog_openimmo_fields WHERE pid='".$id."'")->fetchAllAssoc();
+
+		foreach($_fields as $field) {
+			$fields[$field['catField']] = array($field['oiFieldGroup'].'/'.$field['oiField']);
+		}
+		return $fields;
 	}
 
 	private function syncDataWithCatalog(&$data,$catalog,&$syncFields)
 	{
-		return true;
+		if($this->dataIsValid($data)) {
+			$anbieter = $this->getAnbieter($data);
+			if(count($anbieter)) {
+				$xpath = 'anbieter';
+				$immo_id = 0;
+
+				foreach($anbieter as $_anbieter) {
+					$immo_anbieter = array();
+
+					$this->setImmoFields($_anbieter,$immo_anbieter,$syncFields,$xpath);
+
+					$immobilien = $this->getImmobilien($anbieter);
+
+					$xpath = 'anbieter/immobilie';
+
+					foreach($immobilien as $immobilie)
+					{
+						$immo_id++; //generate immo id
+
+						//add anbieter info to immo
+						$immo = array_merge($immo_anbieter,array());
+
+						//immo info
+						$this->setImmoFields($immobilie,$immo,$syncFields,$xpath);
+					}
+					
+				}
+			} else return false;
+		} else return false;
+	}
+
+	private function dataIsValid(&$data)
+	{
+		if($data->getName()=='openimmo') {
+			$uebertragung = $data->xpath('uebertragung');
+			if(count($uebertragung)) {
+				return true;
+			} else return false;
+		} else return false;
+	}
+
+	private function setImmoFields(&$xml,&$immo,&$fields,$xpath)
+	{
+		foreach(array_keys($fields) as $catField) {
+			$immo[$catField] = $this->getFieldData($xml,$fields[$catField],$xpath);
+		}
+	}
+
+	private function getFieldData(&$xml,&$field,$xpath)
+	{
+		
+	}
+
+	private function getAnbieter(&$xml)
+	{
+		return $xml->xpath('anbieter');
+	}
+
+	private function getImmobilien(&$xml)
+	{
+		return $xml->xpath('immobilie');
 	}
 }
 
