@@ -146,10 +146,9 @@ class tl_catalog_openimmo_fields extends Backend
 {
 	private function getCatalogTypeID($id)
 	{
-		$catalogID = $this->Database->execute("SELECT ct.id AS id FROM tl_catalog_types ct ".
+		$catalogID = $this->Database->execute("SELECT co.catalog AS catalog FROM tl_catalog_openimmo co ".
 											"LEFT JOIN tl_catalog_openimmo_fields cof ON cof.id='".$id."' ".
-											"LEFT JOIN tl_catalog_openimmo co ON co.id=cof.pid ".
-											"WHERE ct.tableName=co.catalog")->fetchEach('id');
+											"WHERE co.id=cof.pid")->fetchEach('catalog');
 		return $catalogID[0];
 	}
 

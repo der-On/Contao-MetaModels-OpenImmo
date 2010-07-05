@@ -19,7 +19,7 @@ CREATE TABLE `tl_catalog_openimmo` (
   `sorting` int(10) unsigned NOT NULL default '0',
   `tstamp` int(10) unsigned NOT NULL default '0',
   `name` varchar(64) NOT NULL default '',
-  `catalog` varchar(64) NOT NULL default '',
+  `catalog` int(10) unsigned NOT NULL default '0',
   `exportPath` varchar(1024) NOT NULL default ''
 
   PRIMARY KEY  (`id`)

@@ -137,7 +137,7 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo'] = array
 			'label'                   => &$GLOBALS['TL_LANG']['tl_catalog_openimmo']['catalog'],
 			'exclude'                 => true,
 			'inputType'               => 'select',
-			'options_callback'		  => array('tl_catalog_openimmo','getCatalogOptions'),
+			'foreignKey'			  => 'tl_catalog_types.name',
 			'eval'                    => array('mandatory'=>true, 'maxlength'=>64)
 		),
 		'exportPath' => array
@@ -149,18 +149,4 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo'] = array
 		)
 	)
 );
-
-class tl_catalog_openimmo extends Backend
-{
-	public function getCatalogOptions()
-	{
-		$options = $this->Database->execute("SELECT tableName FROM tl_catalog_types")->fetchEach('tableName');
-		return $options;
-	}
-
-	public function fieldsButton()
-	{
-		
-	}
-}
 ?>

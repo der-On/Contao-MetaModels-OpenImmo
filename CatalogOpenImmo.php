@@ -32,6 +32,8 @@
  *	- allow partly updates recognizing also deleted entries (if possible)
  *	- allow mapping of multiple tags with same name to different catalog fields or array fields
  *	- add type check when mapping catalog field to openImmo field
+ *	- anbieter/ should not be parsed for each immo again
+ *	- anbieter/immobilie/ should not be parsed when getting anbieter/
  *	- add support for other openImmo versions
  */
 
@@ -539,9 +541,9 @@ class CatalogOpenImmo extends BackendModule
 
 	private function getCatalogObject($id)
 	{
-		return $this->Database->execute("SELECT co.id AS id,co.catalog AS catalog, co.exportPath AS exportPath, ct.id AS catalogID ".
+		return $this->Database->execute("SELECT co.id AS id,co.catalog AS catalogID, co.exportPath AS exportPath, ct.tableName AS catalog ".
 										"FROM tl_catalog_openimmo co ".
-										"LEFT JOIN tl_catalog_types ct ON ct.tableName=co.catalog ".
+										"LEFT JOIN tl_catalog_types ct ON ct.id=co.catalog ".
 										"WHERE co.id='$id'")->fetchAssoc();
 	}
 
@@ -688,7 +690,7 @@ class CatalogOpenImmo extends BackendModule
 	{
 		return $xml->xpath('immobilie');
 	}
-
+	
 	private function convertDataValues(&$data)
 	{
 		foreach(array_keys($data) as $key) {
