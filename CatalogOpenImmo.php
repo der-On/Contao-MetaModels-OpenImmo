@@ -27,6 +27,14 @@
  */
 
 
+/*
+ * TODO:
+ *	- allow partly updates recognizing also deleted entries (if possible)
+ *	- allow mapping of multiple tags with same name to different catalog fields or array fields
+ *	- add type check when mapping catalog field to openImmo field
+ *	- add support for other openImmo versions
+ */
+
 /**
  * Class CatalogOpenImmo 
  *
@@ -598,6 +606,7 @@ class CatalogOpenImmo extends BackendModule
 			if(count($anbieter)) {
 				$xpath = 'anbieter';
 				$immo_id = 0;
+				$sorting = 0;
 
 				$immos = array();
 
@@ -613,9 +622,10 @@ class CatalogOpenImmo extends BackendModule
 					foreach($immobilien as $immobilie)
 					{
 						$immo_id++; //generate immo id
-
+						$sorting++;
+						
 						//add anbieter info to immo
-						$immo = array_merge($immo_anbieter,array("id"=>$immo_id,"pid"=>$catalogObj['catalogID'],"tstamp"=>time()));
+						$immo = array_merge($immo_anbieter,array("id"=>$immo_id,"pid"=>$catalogObj['catalogID'],"tstamp"=>time(),"sorting"=>$sorting));
 
 						//immo info
 						$this->setImmoFields($immobilie,$immo,$syncFields,$xpath);
@@ -642,18 +652,31 @@ class CatalogOpenImmo extends BackendModule
 	private function setImmoFields(&$xml,&$immo,&$fields,$xpath)
 	{
 		foreach(array_keys($fields) as $catField) {
-			$immo[$catField] = $this->getFieldData($xml,$fields[$catField],$xpath);
+			$value = $this->getFieldData($xml,$fields[$catField],$xpath);
+			if($value) $immo[$catField] = $value;
 		}
 	}
 
 	private function getFieldData(&$xml,$fieldPath,$xpath)
 	{
+		$attr_pos = strpos($fieldPath,'@');
+		if($attr_pos!=FALSE) {
+			$attr = substr($fieldPath,$attr_pos+1);
+			$fieldPath = substr($fieldPath,0,$attr_pos);
+		}
 		$xpath_part = str_replace($xpath.'/','',$fieldPath);
+
 		$result = $xml->xpath($xpath_part);
 		
 		if(count($result)) {
-			return $result[0].'';
-		}
+			$result = $result[0];
+			if($attr) {
+				$attributes = $result->attributes();
+				$result = $attributes[$attr];
+			}
+			
+			return $result.'';
+		} else return false;
 	}
 
 	private function getAnbieter(&$xml)
@@ -664,6 +687,24 @@ class CatalogOpenImmo extends BackendModule
 	private function getImmobilien(&$xml)
 	{
 		return $xml->xpath('immobilie');
+	}
+
+	private function convertDataValues(&$data)
+	{
+		foreach(array_keys($data) as $key) {
+			switch($data[$key]) {
+				case 'true':
+					$data[$key] = 1;
+					break;
+
+				case 'false':
+					$data[$key] = 0;
+					break;
+
+				default:
+
+			}
+		}
 	}
 
 	private function updateCatalog(&$items,$catalog)
@@ -677,6 +718,8 @@ class CatalogOpenImmo extends BackendModule
 				$this->Database->execute("DELETE FROM $catalog WHERE id='".$item['id']."'");
 			}
 
+			$this->convertDataValues($item);
+			
 			//add entry again
 			$this->Database->prepare("INSERT INTO $catalog %s")->set($item)->execute();
 		}
