@@ -53,6 +53,9 @@ class CatalogOpenImmo extends BackendModule
 	 */
 	protected $strTemplate = '';
 
+
+	public static $allowedAttachments = 'png,jpg,gif,pdf';
+
 	/*
 	 * Compatible with OpenImmo 1.2.1
 	 */
@@ -67,9 +70,9 @@ class CatalogOpenImmo extends BackendModule
 				'impressum_strukt:string'
 			),
 			'anbieter/anhang' => array(
-				'anhangtitel:{string}',
-				'format:{string}',
-				'daten/pfad:{string}'
+				'anhangtitel:string',
+				'format:string',
+				'daten/pfad:path'
 			),
 			'anbieter/immobilie/objektkategorie'	=> array(
 				'nutzungsart@WOHNEN:bool',
@@ -398,7 +401,7 @@ class CatalogOpenImmo extends BackendModule
 				'anhang@gruppe:string',
 				'anhang/anhangtitel:string',
 				'anhang/format:string',
-				'anhang/daten/pfad:string'
+				'anhang/daten/pfad:path'
 			),
 			'anbieter/immobilie/verwaltung_objekt' => array(
 				'objektadresse_freigeben:bool',
@@ -440,6 +443,8 @@ class CatalogOpenImmo extends BackendModule
 		'1.2.2' => array()
 	);
 
+	public $fieldsFlat;
+
 	/**
 	 * Generate module
 	 */
@@ -467,7 +472,9 @@ class CatalogOpenImmo extends BackendModule
 					$syncFields = $this->getSyncFields($obj['id']);
 					if($syncFields) {
 						if($this->syncDataWithCatalog($data, $obj, $syncFields)) {
-							$success = true;
+							if($this->syncDataFiles($obj,$file)) {
+								$success = true;
+							} else $error = 4;
 						} else $error = 3;
 					} else $error = 2;
 				} else $error = 1;
@@ -524,6 +531,15 @@ class CatalogOpenImmo extends BackendModule
 		return $field;
 	}
 
+	private function parseFieldType($xpath,$value,$catalogObj)
+	{
+		//if($this->fieldsFlat!=null) {
+			if(isset($this->fieldsFlat[$xpath]) && $this->fieldsFlat[$xpath]=='path') {
+				return $catalogObj['filesPath'].'/'.$value;
+			} else return $value;
+		//} else return $value;
+	}
+
 	public static function getFieldsByGroup($oiVersion,$group)
 	{
 		$groups = CatalogOpenImmo::$fields;
@@ -545,7 +561,7 @@ class CatalogOpenImmo extends BackendModule
 
 	private function getCatalogObject($id)
 	{
-		return $this->Database->execute("SELECT co.id AS id,co.catalog AS catalogID, co.exportPath AS exportPath, ct.tableName AS catalog ".
+		return $this->Database->execute("SELECT co.id AS id,co.catalog AS catalogID, co.exportPath AS exportPath, co.filesPath AS filesPath, ct.tableName AS catalog, co.oiVersion AS oiVersion ".
 										"FROM tl_catalog_openimmo co ".
 										"LEFT JOIN tl_catalog_types ct ON ct.id=co.catalog ".
 										"WHERE co.id='$id'")->fetchAssoc();
@@ -608,10 +624,27 @@ class CatalogOpenImmo extends BackendModule
 		return $fields;
 	}
 
+	private function flattenFields($oiVersion)
+	{
+		$this->fieldsFlat = array();
+		$groups = CatalogOpenImmo::$fields;
+		foreach(array_keys($groups[$oiVersion]) as $group) {
+			foreach($groups[$oiVersion][$group] as $field) {
+				$_field = CatalogOpenImmo::parseField($field);
+				$this->fieldsFlat[$group.'/'.$_field['name']] = $_field['type'];
+			}
+		}
+	}
+
 	private function syncDataWithCatalog(&$data,&$catalogObj,&$syncFields)
 	{
 		if($this->dataIsValid($data)) {
+
+			//flatten fields array temporally
+			$this->flattenFields($catalogObj['oiVersion']);
+			
 			$anbieter = $this->getAnbieter($data);
+			
 			if(count($anbieter)) {
 				$xpath = 'anbieter';
 				$immo_id = 0;
@@ -622,7 +655,7 @@ class CatalogOpenImmo extends BackendModule
 				foreach($anbieter as $_anbieter) {
 					$immo_anbieter = array();
 					
-					$this->setImmoFields($_anbieter,$immo_anbieter,$syncFields,$xpath);
+					$this->setImmoFields($_anbieter,$immo_anbieter,$syncFields,$xpath,$catalogObj);
 
 					$immobilien = $this->getImmobilien($_anbieter);
 
@@ -637,7 +670,7 @@ class CatalogOpenImmo extends BackendModule
 						$immo = array_merge($immo_anbieter,array("id"=>$immo_id,"pid"=>$catalogObj['catalogID'],"tstamp"=>time(),"sorting"=>$sorting));
 
 						//immo info
-						$this->setImmoFields($immobilie,$immo,$syncFields,$xpath);
+						$this->setImmoFields($immobilie,$immo,$syncFields,$xpath,$catalogObj);
 
 						$immos[] = $immo;
 					}
@@ -658,15 +691,15 @@ class CatalogOpenImmo extends BackendModule
 		} else return false;
 	}
 
-	private function setImmoFields(&$xml,&$immo,&$fields,$xpath)
+	private function setImmoFields(&$xml,&$immo,&$fields,$xpath,&$catalogObj)
 	{
 		foreach(array_keys($fields) as $catField) {
-			$value = $this->getFieldData($xml,$fields[$catField],$xpath);
+			$value = $this->getFieldData($xml,$fields[$catField],$xpath,$catalogObj);
 			if($value) $immo[$catField] = $value;
 		}
 	}
 
-	private function getFieldData(&$xml,$fieldPath,$xpath)
+	private function getFieldData(&$xml,$fieldPath,$xpath,&$catalogObj)
 	{
 		$attr_pos = strpos($fieldPath,'@');
 		if($attr_pos!=FALSE) {
@@ -683,8 +716,8 @@ class CatalogOpenImmo extends BackendModule
 				$attributes = $result->attributes();
 				$result = $attributes[$attr];
 			}
-			
-			return $result.'';
+
+			return $this->parseFieldType($fieldPath,$result.'',$catalogObj);
 		} else return false;
 	}
 
@@ -732,6 +765,31 @@ class CatalogOpenImmo extends BackendModule
 			//add entry again
 			$this->Database->prepare("INSERT INTO $catalog %s")->set($item)->execute();
 		}
+		return true;
+	}
+
+	private function syncDataFiles(&$catalogObj,$dataFile)
+	{
+		$dataPath = FilesHelper::fileDirPath($dataFile);
+		
+		//get attachments in the data folder
+		$files = FilesHelper::scandirByExt($dataPath, explode(',',CatalogOpenImmo::$allowedAttachments));
+
+		$filesFolder = new Folder($catalogObj['filesPath']);
+
+		//remove old files
+		$filesFolder->clear();
+
+		$filesObj = Files::getInstance();
+
+		foreach($files as $file) {
+			$filesObj->copy($dataPath.$file,$catalogObj['filesPath'].'/'.$file);
+		}
+
+		//empty the data directory so we do not have files doubled
+		//$dataFolder = new Folder($dataPath);
+		//$dataFolder->clear();
+
 		return true;
 	}
 }

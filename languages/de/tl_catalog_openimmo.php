@@ -34,6 +34,7 @@ $GLOBALS['TL_LANG']['tl_catalog_openimmo']['name'] = array('Name', 'Bezeichnung'
 $GLOBALS['TL_LANG']['tl_catalog_openimmo']['oiVersion'] = array('OpenImmo-Version', 'Mit welcher Version des OpenImmo-Standards werden die Daten exportiert?');
 $GLOBALS['TL_LANG']['tl_catalog_openimmo']['catalog'] = array('Katalog', 'Katalog, welcher mit OpenImmo-Daten verknüpft werden soll.');
 $GLOBALS['TL_LANG']['tl_catalog_openimmo']['exportPath'] = array('OpenImmo Export-Verzeichnis', 'Verzeichnis in welchem sich die exportierten OpenImmo-Daten befinden.');
+$GLOBALS['TL_LANG']['tl_catalog_openimmo']['filesPath'] = array('OpenImmo Anhangs-Verzeichnis', 'Verzeichnis in welches Anhänge(Bilder,PDFs etc.) der OpenImmo-Objekte beim Synchronisieren verschoben werden sollen.');
 
 /**
  * Reference
@@ -46,7 +47,8 @@ $GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncErrors'] = array(
 	'Fehler: Die OpenImmo-Datei konnte nicht gefunden oder gelesen werden.',
 	'Fehler: Die OpenImmo-Daten konnte nicht geladen werden.',
 	'Fehler: Die Feldverknüpfungen konnten nicht geladen werden.',
-	'Fehler: Die Daten konnten nicht synchronisiert werden.'
+	'Fehler: Die Daten konnten nicht synchronisiert werden.',
+	'Fehler: Die Anhänge konnten nicht verschoben werden.'
 );
 
 /**
