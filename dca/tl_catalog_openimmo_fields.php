@@ -197,7 +197,7 @@ class tl_catalog_openimmo_fields extends Backend
 	{
 		$titleField = $arrRow['name'] ? ' published' : '';
 		
-		return '<div class="field_heading cte_type"><strong>' . $arrRow['name'] . '</strong> <em>['.$arrRow['oiFieldGroup'].'/'.$arrRow['oiField'].']</em></div>';
+		return '<div class="field_type block"><strong>' . $arrRow['name'] . '</strong> <em>['.$arrRow['oiFieldGroup'].'/'.$arrRow['oiField'].']</em></div>';
 
 	}
 }
