@@ -476,7 +476,7 @@ class CatalogOpenImmo extends BackendModule
 					$this->addMessage('OpenImmo data loaded');
 					$syncFields = $this->getSyncFields($obj['id'],$obj['uniqueIDField']);
 					if($syncFields) {
-						$this->addMessage('retrieved synchronization data');
+						$this->addMessage('loaded synchronization data');
 						if($this->syncDataWithCatalog($data, $obj, $syncFields)) {
 							$this->addMessage('data synced');
 							if($this->syncDataFiles($obj,$file)) {
@@ -668,7 +668,10 @@ class CatalogOpenImmo extends BackendModule
 											"WHERE cof.pid='".$id."'")->fetchAllAssoc();
 
 		foreach($_fields as $field) {
-			$fields[$field['catField']] = $field['oiFieldGroup'].'/'.$field['oiField'];
+			//prevent loading missing catalog fields
+			if($field['catField']!='') {
+				$fields[$field['catField']] = $field['oiFieldGroup'].'/'.$field['oiField'];
+			}
 		}
 
 		//add uniqueIDField
@@ -712,9 +715,9 @@ class CatalogOpenImmo extends BackendModule
 				$immos = array();
 
 				foreach($anbieter as $_anbieter) {
-					$immo_anbieter = array();
+					//$immo_anbieter = array();
 					
-					$this->setImmoFields($_anbieter,$immo_anbieter,$syncFields,$xpath,$catalogObj);
+					//$this->setImmoFields($_anbieter,$immo_anbieter,$syncFields,$xpath,$catalogObj);
 
 					$immobilien = $this->getImmobilien($_anbieter);
 
@@ -726,7 +729,8 @@ class CatalogOpenImmo extends BackendModule
 						$sorting++;
 						
 						//add anbieter info to immo
-						$immo = array_merge($immo_anbieter,array("id"=>$immo_id,"pid"=>$catalogObj['catalogID'],"tstamp"=>time(),"sorting"=>$sorting));
+						//$immo = array_merge($immo_anbieter,array("id"=>$immo_id,"pid"=>$catalogObj['catalogID'],"tstamp"=>time(),"sorting"=>$sorting));
+						$immo = array("id"=>$immo_id,"pid"=>$catalogObj['catalogID'],"tstamp"=>time(),"sorting"=>$sorting);
 
 						//immo info
 						$this->setImmoFields($immobilie,$immo,$syncFields,$xpath,$catalogObj);
@@ -822,11 +826,13 @@ class CatalogOpenImmo extends BackendModule
 			$exists = $this->Database->execute("SELECT COUNT(id) FROM $catalog WHERE id='".$item['id']."'")->fetchAssoc();
 
 			$this->convertDataValues($item);
-			
+
 			if(intval($exists['COUNT(id)'])>0) {
 				//remove old entry if one exists
 				//$this->Database->execute("DELETE FROM $catalog WHERE id='".$item['id']."'");
-				$this->Database->prepare("UPDATE $catalog SET %s")->set($item)->execute();
+				$id = $item['id'];
+				unset($item['id']);
+				$this->Database->prepare("UPDATE $catalog %s WHERE id='$id'")->set($item)->execute();
 			} else $this->Database->prepare("INSERT INTO $catalog %s")->set($item)->execute();
 		}
 		return true;
