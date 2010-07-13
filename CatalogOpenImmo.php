@@ -84,6 +84,7 @@ class CatalogOpenImmo extends BackendModule
 				'vermarktungsart@ERBPACHT:bool',
 				'vermarktungsart@LEASING:bool',
 				'objektart/zimmer@zimmertyp:string',
+				'objektart/wohnung@wohnungtyp:string',
 				'objektart/objektart_zusatz:string',
 				'objektart/objektart_zusatz:string',
 			),
@@ -509,8 +510,8 @@ class CatalogOpenImmo extends BackendModule
 			$output.=($success ? '<p class="tl_confirm">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncSuccess'].'</p>' : '<p class="tl_error">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncErrors'][$error].'</p>');
 		}
 		$output.='</div>
-	</div>
-
+	</div>';
+	if(!$send) $output.='
 	<div class="tl_formbody_submit">
 
 	<div class="tl_submit_container">
@@ -656,7 +657,13 @@ class CatalogOpenImmo extends BackendModule
 
 	private function loadData($file)
 	{
-		return simplexml_load_file(TL_ROOT.'/'.$file);
+		$data = file_get_contents(TL_ROOT.'/'.$file);
+		
+		//remove all namespace stuff as simplexml cannot handle it reliably
+		$oi_open_pos = strpos($data,'<openimmo');
+		$oi_close_pos = strpos(substr($data,$oi_open_pos),'>');
+		$data = substr($data,0,$oi_open_pos).'<openimmo>'.substr($data,$oi_close_pos+$oi_open_pos+1);
+		return simplexml_load_string($data);
 	}
 
 	private function getSyncFields($id,$uniqueIDField)
@@ -750,12 +757,10 @@ class CatalogOpenImmo extends BackendModule
 	private function dataIsValid(&$data)
 	{
 		if($data->getName()=='openimmo') {
-			$uebertragung = $data->xpath('uebertragung');
-			if(count($uebertragung)) {
+			$anbieter = $data->xpath('anbieter');
+			if(count($anbieter)) {
 				return true;
 			} else return false;
-		} elseif($data->getName()=='uebertragung') {
-			return true;
 		} else return false;
 	}
 
@@ -848,7 +853,7 @@ class CatalogOpenImmo extends BackendModule
 		$filesFolder = new Folder($catalogObj['filesPath']);
 
 		//remove old files
-		$filesFolder->clear();
+		//$filesFolder->clear();
 
 		$filesObj = Files::getInstance();
 
