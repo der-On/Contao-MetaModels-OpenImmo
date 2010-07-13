@@ -113,7 +113,7 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array(''),
-		'default'                     => 'name,oiVersion;catalog,exportPath,filesPath'
+		'default'                     => 'name,oiVersion,uniqueIDField;catalog,exportPath,filesPath'
 	),
 
 	// Subpalettes
@@ -140,6 +140,14 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo'] = array
 			'options'				  => array('1.0','1.2.1','1.2.2'),
 			''
 		),
+		'uniqueIDField' => array
+		(
+			'label'					  => &$GLOBALS['TL_LANG']['tl_catalog_openimmo']['uniqueIDField'],
+			'exclude'				  => true,
+			'inputType'				  => 'select',
+			'eval'					  => array('mandatory'=>true),
+			'options_callback'		  => array('tl_catalog_openimmo','getUniqueIDFieldOptions')
+		),
 		'catalog' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_catalog_openimmo']['catalog'],
@@ -164,4 +172,19 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo'] = array
 		)
 	)
 );
+
+class tl_catalog_openimmo extends Backend
+{
+	private function getOIVersion($id)
+	{
+		$version = $this->Database->execute("SELECT oiVersion FROM tl_catalog_openimmo WHERE id='$id'")->fetchEach('oiVersion');
+		return $version[0];
+	}
+
+	function getUniqueIDFieldOptions(&$dc)
+	{
+		$flattenFields = CatalogOpenImmo::getFlattenedFields($this->getOIVersion($dc->id));
+		return array_keys($flattenFields);
+	}
+}
 ?>

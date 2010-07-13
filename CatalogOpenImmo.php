@@ -443,6 +443,8 @@ class CatalogOpenImmo extends BackendModule
 		'1.2.2' => array()
 	);
 
+	protected $messages = array();
+
 	public $fieldsFlat;
 
 	/**
@@ -457,22 +459,28 @@ class CatalogOpenImmo extends BackendModule
 	{
 		$success = false;
 		$send = false;
+		$obj = $this->getCatalogObject($dc->id);
+		$exportPath = $obj['exportPath'];
+		$catalog = $obj['catalog'];
+			
 		if ($this->Input->post('FORM_SUBMIT') == 'tl_catalog_openimmo_sync')
 		{
-			$obj = $this->getCatalogObject($dc->id);
-			$exportPath = $obj['exportPath'];
-			$catalog = $obj['catalog'];
-			
 			$file = $this->getSyncFile($exportPath);
-			
+
+			$this->addMessage('OpenImmo file: '.$file);
+
 			if($file) {
 				$data = $this->loadData($file);
 				
 				if($data) {
-					$syncFields = $this->getSyncFields($obj['id']);
+					$this->addMessage('OpenImmo data loaded');
+					$syncFields = $this->getSyncFields($obj['id'],$obj['uniqueIDField']);
 					if($syncFields) {
+						$this->addMessage('retrieved synchronization data');
 						if($this->syncDataWithCatalog($data, $obj, $syncFields)) {
+							$this->addMessage('data synced');
 							if($this->syncDataFiles($obj,$file)) {
+								$this->addMessage('files synced');
 								$success = true;
 							} else $error = 4;
 						} else $error = 3;
@@ -495,6 +503,8 @@ class CatalogOpenImmo extends BackendModule
 	<input type="hidden" name="FORM_SUBMIT" value="tl_catalog_openimmo_sync" />
 	<div class="tl_tbox">
 	<p style="line-height:16px; padding-top:6px;">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncConfirm'].'</p>';
+	$output.='<p>'.$this->getMessages().'</p>';
+	if(!$send) $output.=$this->getSyncFileSelect($exportPath);
 		if($send) {
 			$output.=($success ? '<p class="tl_confirm">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncSuccess'].'</p>' : '<p class="tl_error">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncErrors'][$error].'</p>');
 		}
@@ -510,6 +520,21 @@ class CatalogOpenImmo extends BackendModule
 	</div>
 	</form>';
 		return $output;
+	}
+
+	private function getSyncFileSelect($exportPath)
+	{
+		$files = $this->getSyncFiles($exportPath);
+		if($files) {
+			$output = "<label for='tl_catalog_openimmo_sync_files'>".$GLOBALS['TL_LANG']['tl_catalog_openimmo']['sync_file_select']."</label><br/>";
+			$output.="<select id='tl_catalog_openimmo_sync_files' name='tl_catalog_openimmo_sync_file'>";
+			$output.="<option value=''>".$GLOBALS['TL_LANG']['tl_catalog_openimmo']['sync_file_auto']."</option>";
+			foreach($files as &$file) {
+				$output.="<option value='$file[file]'>$file[file] - ".date('H:i:s d.m.Y',$file['modtime'])."</option>";
+			}
+			$output.="</select>";
+			return $output;
+		} else return "<p class='tl_error'>".$GLOBALS['TL_LANG']['tl_catalog_openimmo']['no_sync_files_found']."</p>";
 	}
 
 	public static function parseFields(&$group)
@@ -561,29 +586,53 @@ class CatalogOpenImmo extends BackendModule
 
 	private function getCatalogObject($id)
 	{
-		return $this->Database->execute("SELECT co.id AS id,co.catalog AS catalogID, co.exportPath AS exportPath, co.filesPath AS filesPath, ct.tableName AS catalog, co.oiVersion AS oiVersion ".
+		return $this->Database->execute("SELECT co.id AS id,co.catalog AS catalogID, co.exportPath AS exportPath, co.filesPath AS filesPath, ct.tableName AS catalog, co.oiVersion AS oiVersion, co.uniqueIDField AS uniqueIDField ".
 										"FROM tl_catalog_openimmo co ".
 										"LEFT JOIN tl_catalog_types ct ON ct.id=co.catalog ".
 										"WHERE co.id='$id'")->fetchAssoc();
 	}
 
-	private function getSyncFile($exportPath,$canBeZip = true)
+	private function getSyncFiles($exportPath,$canBeZip = true)
+	{
+		$folder = new Folder($exportPath);
+
+		if(!$folder->isEmpty()) {
+			$files = array();
+			//get latest file
+			foreach(FilesHelper::scandirByExt($exportPath,($canBeZip)?array('zip','xml'):array('xml')) as $file) {
+				$mtime = FilesHelper::fileModTime($exportPath.'/'.$file);
+				$files[] = array("file"=>$file,"modtime"=>$mtime);
+			}
+			
+			return $files;
+		} else return false;
+	}
+
+	private function getSyncFile($exportPath,$canBeZip = true,$use_post = true)
 	{
 		$folder = new Folder($exportPath);
 		$currentFile = null;
 		$currentTime = 0;
 		
 		if(!$folder->isEmpty()) {
-			//get latest file
-			foreach(FilesHelper::scandirByExt($exportPath,($canBeZip)?array('zip','xml'):array('xml')) as $file) {
-				if(FilesHelper::fileModTime($exportPath.'/'.$file)>$currentTime) {
-					$currentFile = $exportPath.'/'.$file;
-				}
-			}
+			$sync_file = $this->Input->post('tl_catalog_openimmo_sync_file');
 			
-			//check if it is a zip, and if so unpack it
-			if($canBeZip && FilesHelper::fileExt($currentFile,true,true)=='ZIP') $currentFile = $this->unpackSyncFile($currentFile);
-			return $currentFile;
+			if(!$use_post || ($use_post && ($sync_file==null || $sync_file==''))) {
+				//get latest file
+				foreach(FilesHelper::scandirByExt($exportPath,($canBeZip)?array('zip','xml'):array('xml')) as $file) {
+					$mtime = FilesHelper::fileModTime($exportPath.'/'.$file);
+					if($mtime>$currentTime) {
+						$currentTime = $mtime;
+						$currentFile = $exportPath.'/'.$file;
+					}
+				}
+			} else $currentFile = $exportPath.'/'.$sync_file;
+			
+			if(file_exists(TL_ROOT.'/'.$currentFile)) {
+				//check if it is a zip, and if so unpack it
+				if($canBeZip && FilesHelper::fileExt($currentFile,true,true)=='ZIP') $currentFile = $this->unpackSyncFile($currentFile);
+				return $currentFile;
+			} else return false;
 		} else return false;
 	}
 
@@ -602,7 +651,7 @@ class CatalogOpenImmo extends BackendModule
 		$zip->close();
 
 		//return path to unpacked xml
-		return $this->getSyncFile($tmpPath);
+		return $this->getSyncFile($tmpPath,false,false);
 	}
 
 	private function loadData($file)
@@ -610,7 +659,7 @@ class CatalogOpenImmo extends BackendModule
 		return simplexml_load_file(TL_ROOT.'/'.$file);
 	}
 
-	private function getSyncFields($id)
+	private function getSyncFields($id,$uniqueIDField)
 	{
 		$fields = array();
 		$_fields = $this->Database->execute("SELECT cf.colName as catField, cof.catField AS catFieldID , cof.oiField AS oiField, cof.oiFieldGroup as oiFieldGroup ".
@@ -621,21 +670,31 @@ class CatalogOpenImmo extends BackendModule
 		foreach($_fields as $field) {
 			$fields[$field['catField']] = $field['oiFieldGroup'].'/'.$field['oiField'];
 		}
+
+		//add uniqueIDField
+		if($uniqueIDField!='') $fields['id'] = $uniqueIDField;
+
 		return $fields;
 	}
-
-	private function flattenFields($oiVersion)
+	
+	public static function getFlattenedFields($oiVersion)
 	{
-		$this->fieldsFlat = array();
+		$fieldsFlat = array();
 		$groups = CatalogOpenImmo::$fields;
 		foreach(array_keys($groups[$oiVersion]) as $group) {
 			foreach($groups[$oiVersion][$group] as $field) {
 				$_field = CatalogOpenImmo::parseField($field);
-				$this->fieldsFlat[$group.'/'.$_field['name']] = $_field['type'];
+				$fieldsFlat[$group.'/'.$_field['name']] = $_field['type'];
 			}
 		}
+		return $fieldsFlat;
 	}
-
+	
+	private function flattenFields($oiVersion)
+	{
+		$this->fieldsFlat = CatalogOpenImmo::getFlattenedFields($oiVersion);
+	}
+	
 	private function syncDataWithCatalog(&$data,&$catalogObj,&$syncFields)
 	{
 		if($this->dataIsValid($data)) {
@@ -678,7 +737,10 @@ class CatalogOpenImmo extends BackendModule
 				
 				return $this->updateCatalog($immos,$catalogObj['catalog']);
 			} else return false;
-		} else return false;
+		} else {
+			$this->addMessage('invalid OpenImmo data');
+			return false;
+		}
 	}
 
 	private function dataIsValid(&$data)
@@ -688,6 +750,8 @@ class CatalogOpenImmo extends BackendModule
 			if(count($uebertragung)) {
 				return true;
 			} else return false;
+		} elseif($data->getName()=='uebertragung') {
+			return true;
 		} else return false;
 	}
 
@@ -725,7 +789,7 @@ class CatalogOpenImmo extends BackendModule
 	{
 		return $xml->xpath('anbieter');
 	}
-
+	
 	private function getImmobilien(&$xml)
 	{
 		return $xml->xpath('immobilie');
@@ -751,19 +815,19 @@ class CatalogOpenImmo extends BackendModule
 
 	private function updateCatalog(&$items,$catalog)
 	{
+		//TODO: generate ID from uniqueIDField
+
 		foreach($items as &$item) {
 			//check if entry already exists
 			$exists = $this->Database->execute("SELECT COUNT(id) FROM $catalog WHERE id='".$item['id']."'")->fetchAssoc();
-			
-			if(intval($exists['COUNT(id)'])>0) {
-				//remove old entry if one exists
-				$this->Database->execute("DELETE FROM $catalog WHERE id='".$item['id']."'");
-			}
 
 			$this->convertDataValues($item);
 			
-			//add entry again
-			$this->Database->prepare("INSERT INTO $catalog %s")->set($item)->execute();
+			if(intval($exists['COUNT(id)'])>0) {
+				//remove old entry if one exists
+				//$this->Database->execute("DELETE FROM $catalog WHERE id='".$item['id']."'");
+				$this->Database->prepare("UPDATE $catalog SET %s")->set($item)->execute();
+			} else $this->Database->prepare("INSERT INTO $catalog %s")->set($item)->execute();
 		}
 		return true;
 	}
@@ -791,6 +855,22 @@ class CatalogOpenImmo extends BackendModule
 		//$dataFolder->clear();
 
 		return true;
+	}
+
+	private function addMessage($msg)
+	{
+		$this->messages[] = $msg;
+	}
+
+	protected function getMessages()
+	{
+		$strMsg = '';
+		
+		foreach($this->messages as $msg)
+		{
+			$strMsg.=$msg."<br/>\n";
+		}
+		return $strMsg;
 	}
 }
 

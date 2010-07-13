@@ -35,6 +35,7 @@ $GLOBALS['TL_LANG']['tl_catalog_openimmo']['oiVersion'] = array('OpenImmo-Versio
 $GLOBALS['TL_LANG']['tl_catalog_openimmo']['catalog'] = array('Katalog', 'Katalog, welcher mit OpenImmo-Daten verknüpft werden soll.');
 $GLOBALS['TL_LANG']['tl_catalog_openimmo']['exportPath'] = array('OpenImmo Export-Verzeichnis', 'Verzeichnis in welchem sich die exportierten OpenImmo-Daten befinden.');
 $GLOBALS['TL_LANG']['tl_catalog_openimmo']['filesPath'] = array('OpenImmo Anhangs-Verzeichnis', 'Verzeichnis in welches Anhänge(Bilder,PDFs etc.) der OpenImmo-Objekte beim Synchronisieren verschoben werden sollen.');
+$GLOBALS['TL_LANG']['tl_catalog_openimmo']['uniqueIDField'] = array('OpenImmo-Feld für eindeutige ID.','Wählen Sie hier ein nummerisches OpenImmo-Feld, dessen Wert für jede Immobilie eindeutig ist.');
 
 /**
  * Reference
@@ -50,6 +51,9 @@ $GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncErrors'] = array(
 	'Fehler: Die Daten konnten nicht synchronisiert werden.',
 	'Fehler: Die Anhänge konnten nicht verschoben werden.'
 );
+$GLOBALS['TL_LANG']['tl_catalog_openimmo']['no_sync_files_found'] = "Keine Dateien für Synchronisation gefunden.";
+$GLOBALS['TL_LANG']['tl_catalog_openimmo']['sync_file_select'] = "Wählen Sie die OpenImmo-Datei aus, mit welcher Sie den Katalog synchronisieren möchten";
+$GLOBALS['TL_LANG']['tl_catalog_openimmo']['sync_file_auto'] = "Automatisch - aktuellste Datei";
 
 /**
  * Buttons
