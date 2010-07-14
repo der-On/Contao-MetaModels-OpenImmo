@@ -60,5 +60,10 @@ class FilesHelper
 			return filemtime(TL_ROOT . '/'. $path);
 		} else return false;
 	}
+
+	public static function isWritable($path)
+	{
+		return is_writable(TL_ROOT.'/'.$path);
+	}
 }
 ?>

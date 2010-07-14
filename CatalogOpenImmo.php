@@ -646,12 +646,14 @@ class CatalogOpenImmo extends BackendModule
 		$tmpPath = $tmpFolder->__get('value');
 		
 		//extract zip to tmp folder
-		$zip = new ZipArchive();
-		$zip->open(TL_ROOT.'/'.$path);
-		$zip->extractTo(TL_ROOT.'/'.$tmpPath);
-		$zip->close();
-
-		//return path to unpacked xml
+		$zip = new ZipReader($path);
+		$files = $zip->getFileList();
+		$zip->first();
+		foreach($files as $file) {
+			$content = $zip->unzip();
+			file_put_contents(TL_ROOT.'/'.$tmpPath.'/'.$file,$content);
+			$zip->next();
+		}
 		return $this->getSyncFile($tmpPath,false,false);
 	}
 
@@ -745,6 +747,7 @@ class CatalogOpenImmo extends BackendModule
 						$immos[] = $immo;
 					}
 				}
+				$this->addMessage("found ".count($immos)." objects");
 				
 				return $this->updateCatalog($immos,$catalogObj['catalog']);
 			} else return false;
@@ -781,16 +784,25 @@ class CatalogOpenImmo extends BackendModule
 		}
 		$xpath_part = str_replace($xpath.'/','',$fieldPath);
 
-		$result = $xml->xpath($xpath_part);
-		
-		if(count($result)) {
-			$result = $result[0];
-			if($attr) {
-				$attributes = $result->attributes();
-				$result = $attributes[$attr];
-			}
+		$results = $xml->xpath($xpath_part);
 
-			return $this->parseFieldType($fieldPath,$result.'',$catalogObj);
+		$count = count($results);
+
+		if($count) {
+			for($i = 0; $i<$count; $i++) {
+				if($attr) {
+					$attributes = $results[$i]->attributes();
+					$results[$i] = $attributes[$attr];
+				}
+				$results[$i] = $this->parseFieldType($fieldPath,$results[$i].'',$catalogObj);
+			}
+			
+			if($count==1) {
+				return $results[0];
+			} elseif($count>1) {
+				return serialize($results);
+			}
+			
 		} else return false;
 	}
 
@@ -852,19 +864,24 @@ class CatalogOpenImmo extends BackendModule
 
 		$filesFolder = new Folder($catalogObj['filesPath']);
 
-		//remove old files
-		//$filesFolder->clear();
+		if(FilesHelper::isWritable($catalogObj['filesPath'])) {
 
-		$filesObj = Files::getInstance();
+			//remove old files
+			//$filesFolder->clear();
 
-		foreach($files as $file) {
-			$filesObj->copy($dataPath.$file,$catalogObj['filesPath'].'/'.$file);
-		}
+			$filesObj = Files::getInstance();
 
+			foreach($files as $file) {
+				$filesObj->copy($dataPath.$file,$catalogObj['filesPath'].'/'.$file);
+			}
+			$this->addMessage('copied '.count($files).' files from temporary directory to: '.$catalogObj['filesPath']);
+		} else $this->addMessage('cannot copy temporary files: '.$catalogObj['filesPath'].' not writable');
+		
 		//empty the data directory so we do not have files doubled
-		//$dataFolder = new Folder($dataPath);
-		//$dataFolder->clear();
-
+		$dataFolder = new Folder($dataPath);
+		$dataFolder->clear();
+		$this->addMessage('emptied temporary directory: '.$dataPath);
+		
 		return true;
 	}
 
