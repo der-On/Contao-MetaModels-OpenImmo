@@ -52,9 +52,15 @@ class CatalogOpenImmo extends BackendModule
 	 * @var string
 	 */
 	protected $strTemplate = '';
-
+	
 
 	public static $allowedAttachments = 'png,jpg,gif,pdf';
+
+	public static $deleteActionField = array(
+		'1.0' => array('path'=>'anbieter/immobilie/verwaltung_techn/aktion@aktionart','value'=>'DELETE'),
+		'1.2.1' => array('path'=>'anbieter/immobilie/verwaltung_techn/aktion@aktionart','value'=>'DELETE'),
+		'1.2.2' => array('path'=>'anbieter/immobilie/verwaltung_techn/aktion@aktionart','value'=>'DELETE'),
+	);
 
 	/*
 	 * Compatible with OpenImmo 1.2.1
@@ -531,7 +537,14 @@ class CatalogOpenImmo extends BackendModule
 			$output.="<select id='tl_catalog_openimmo_sync_files' name='tl_catalog_openimmo_sync_file'>";
 			$output.="<option value=''>".$GLOBALS['TL_LANG']['tl_catalog_openimmo']['sync_file_auto']."</option>";
 			foreach($files as &$file) {
-				$output.="<option value='$file[file]'>$file[file] - ".date('H:i:s d.m.Y',$file['modtime'])."</option>";
+				if($file['size']<1024) {
+					$size = $file['size'].' Bytes';
+				} elseif($file['size']>1024 && $file['size']<(1048576)) {
+					$size = (round(($file['size']/1024)*10)/10)." KB";
+				} elseif($file['size']>(1048576)) {
+					$size = (round(($file['size']/1048576)*10)/10)." MB";
+				}
+				$output.="<option value='$file[file]'>$file[file] - ".date('H:i:s d.m.Y',$file['modtime'])." (".$size.")</option>";
 			}
 			$output.="</select>";
 			return $output;
@@ -602,7 +615,8 @@ class CatalogOpenImmo extends BackendModule
 			//get latest file
 			foreach(FilesHelper::scandirByExt($exportPath,($canBeZip)?array('zip','xml'):array('xml')) as $file) {
 				$mtime = FilesHelper::fileModTime($exportPath.'/'.$file);
-				$files[] = array("file"=>$file,"modtime"=>$mtime);
+				$size = FilesHelper::fileSize($exportPath.'/'.$file);
+				$files[] = array("file"=>$file,"modtime"=>$mtime,"size"=>$size);
 			}
 			
 			return $files;
@@ -631,7 +645,9 @@ class CatalogOpenImmo extends BackendModule
 			
 			if(file_exists(TL_ROOT.'/'.$currentFile)) {
 				//check if it is a zip, and if so unpack it
-				if($canBeZip && FilesHelper::fileExt($currentFile,true,true)=='ZIP') $currentFile = $this->unpackSyncFile($currentFile);
+				if($canBeZip && FilesHelper::fileExt($currentFile,true,true)=='ZIP') {
+					$currentFile = $this->unpackSyncFile($currentFile);
+				}
 				return $currentFile;
 			} else return false;
 		} else return false;
@@ -744,12 +760,15 @@ class CatalogOpenImmo extends BackendModule
 						//immo info
 						$this->setImmoFields($immobilie,$immo,$syncFields,$xpath,$catalogObj);
 
+						//store reference to xml-node
+						$immo['_xml_'] = &$immobilie;
+
 						$immos[] = $immo;
 					}
 				}
 				$this->addMessage("found ".count($immos)." objects");
 				
-				return $this->updateCatalog($immos,$catalogObj['catalog']);
+				return $this->updateCatalog($immos,$catalogObj);
 			} else return false;
 		} else {
 			$this->addMessage('invalid OpenImmo data');
@@ -782,6 +801,7 @@ class CatalogOpenImmo extends BackendModule
 			$attr = substr($fieldPath,$attr_pos+1);
 			$fieldPath = substr($fieldPath,0,$attr_pos);
 		}
+		
 		$xpath_part = str_replace($xpath.'/','',$fieldPath);
 
 		$results = $xml->xpath($xpath_part);
@@ -834,9 +854,11 @@ class CatalogOpenImmo extends BackendModule
 		}
 	}
 
-	private function updateCatalog(&$items,$catalog)
+	private function updateCatalog(&$items,$catalogObj)
 	{
 		//TODO: generate ID from uniqueIDField
+
+		$catalog = $catalogObj['catalog'];
 
 		foreach($items as &$item) {
 			//check if entry already exists
@@ -845,12 +867,24 @@ class CatalogOpenImmo extends BackendModule
 			$this->convertDataValues($item);
 
 			if(intval($exists['COUNT(id)'])>0) {
-				//remove old entry if one exists
-				//$this->Database->execute("DELETE FROM $catalog WHERE id='".$item['id']."'");
-				$id = $item['id'];
-				unset($item['id']);
-				$this->Database->prepare("UPDATE $catalog %s WHERE id='$id'")->set($item)->execute();
-			} else $this->Database->prepare("INSERT INTO $catalog %s")->set($item)->execute();
+				//remove if deleteAction is in use
+				$deleted = $this->getFieldData($item['_xml_'],CatalogOpenImmo::$deleteActionField[$catalogObj['oiVersion']]['path'],'anbieter/immobilie',$catalogObj);
+				$deleted = ($deleted == CatalogOpenImmo::$deleteActionField[$catalogObj['oiVersion']]['value'])?true:false;
+
+				//remove old entry if one exists and this should be deleted
+				if($deleted) {
+					$this->Database->execute("DELETE FROM $catalog WHERE id='".$item['id']."'");
+					$this->addMessage("deleted object: ".$item['id']);
+				} else {
+					$id = $item['id'];
+					unset($item['id']);
+					unset($item['_xml_']);
+					$this->Database->prepare("UPDATE $catalog %s WHERE id='$id'")->set($item)->execute();
+				}
+			} else {
+				unset($item['_xml_']);
+				$this->Database->prepare("INSERT INTO $catalog %s")->set($item)->execute();
+			}
 		}
 		return true;
 	}
@@ -877,10 +911,12 @@ class CatalogOpenImmo extends BackendModule
 			$this->addMessage('copied '.count($files).' files from temporary directory to: '.$catalogObj['filesPath']);
 		} else $this->addMessage('cannot copy temporary files: '.$catalogObj['filesPath'].' not writable');
 		
-		//empty the data directory so we do not have files doubled
-		$dataFolder = new Folder($dataPath);
-		$dataFolder->clear();
-		$this->addMessage('emptied temporary directory: '.$dataPath);
+		//empty the data directory if it is the temp directory so we do not have files doubled
+		if(substr($dataPath,-4)=='tmp/') {
+			$dataFolder = new Folder($dataPath);
+			$dataFolder->clear();
+			$this->addMessage('emptied temporary directory: '.$dataPath);
+		}
 		
 		return true;
 	}
