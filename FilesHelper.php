@@ -61,6 +61,13 @@ class FilesHelper
 		} else return false;
 	}
 
+	public static function fileSize($path)
+	{
+		if(file_exists(TL_ROOT . '/'. $path)) {
+			return filesize(TL_ROOT.'/'.$path);
+		} else return false;
+	}
+
 	public static function isWritable($path)
 	{
 		return is_writable(TL_ROOT.'/'.$path);
