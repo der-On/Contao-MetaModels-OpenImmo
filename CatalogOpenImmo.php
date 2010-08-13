@@ -451,7 +451,7 @@ class CatalogOpenImmo extends BackendModule
 	);
 
 	protected $messages = array();
-	protected $zip_unpacked = false;
+	protected $zip_unpacked = 0;
 
 	public $fieldsFlat;
 
@@ -473,34 +473,29 @@ class CatalogOpenImmo extends BackendModule
 			
 		if ($this->Input->post('FORM_SUBMIT') == 'tl_catalog_openimmo_sync')
 		{
-			$unpacked_file = $this->Input->post('tl_catalog_openimmo_unpacked_file');
-			if($unpacked_file!="") {
-				$this->zip_unpacked = true;
-				$file = $unpacked_file;
-			} else $file = $this->getSyncFile($exportPath);
-			
-			$this->addMessage('OpenImmo file: '.$file);
+			$unpacked = $this->Input->post('tl_catalog_openimmo_zip_unpacked');
+			if($unpacked=="2") $this->zip_unpacked = 2;
+			$file = $this->getSyncFile($exportPath);
 
-			if(!$this->zip_unpacked || ($this->zip_unpacked && $unpacked_file!="")) {
-				if($file) {
-					$data = $this->loadData($file);
+			if($file) {
+				$this->addMessage('OpenImmo file: '.$file);
+				$data = $this->loadData($file);
 
-					if($data) {
-						$this->addMessage('OpenImmo data loaded');
-						$syncFields = $this->getSyncFields($obj['id'],$obj['uniqueIDField']);
-						if($syncFields) {
-							$this->addMessage('loaded synchronization data');
-							if($this->syncDataWithCatalog($data, $obj, $syncFields)) {
-								$this->addMessage('data synced');
-								if($this->syncDataFiles($obj,$file)) {
-									$this->addMessage('files synced');
-									$success = true;
-								} else $error = 4;
-							} else $error = 3;
-						} else $error = 2;
-					} else $error = 1;
-				} else $error = 0;
-			}
+				if($data) {
+					$this->addMessage('OpenImmo data loaded');
+					$syncFields = $this->getSyncFields($obj['id'],$obj['uniqueIDField']);
+					if($syncFields) {
+						$this->addMessage('loaded synchronization data');
+						if($this->syncDataWithCatalog($data, $obj, $syncFields)) {
+							$this->addMessage('data synced');
+							if($this->syncDataFiles($obj,$file)) {
+								$this->addMessage('files synced');
+								$success = true;
+							} else $error = 4;
+						} else $error = 3;
+					} else $error = 2;
+				} else $error = 1;
+			} else $error = 0;
 
 			$send = true;
 		}
@@ -520,14 +515,14 @@ class CatalogOpenImmo extends BackendModule
 		$output.='<p>'.$this->getMessages().'</p>';
 		if(!$send) $output.=$this->getSyncFileSelect($exportPath);
 		if($send) {
-			if($this->zip_unpacked && $unpacked_file=="") {
+			if($this->zip_unpacked==1) {
 				$output.='<p class="tl_confirm">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncFileUnpacked'].'</p>'.
-				'<input type="hidden" name="tl_catalog_openimmo_unpacked_file" value="'.$file.'">';
+				'<input type="hidden" name="tl_catalog_openimmo_zip_unpacked" value="2">';
 			} else $output.=($success ? '<p class="tl_confirm">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncSuccess'].'</p>' : '<p class="tl_error">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncErrors'][$error].'</p>');
 		}
 		$output.='</div>
 		</div>';
-		if(!$send || ($this->zip_unpacked && $unpacked_file=="")) {
+		if(!$send || $this->zip_unpacked==1) {
 			$output.='
 			<div class="tl_formbody_submit">
 
@@ -657,10 +652,14 @@ class CatalogOpenImmo extends BackendModule
 			
 			if(file_exists(TL_ROOT.'/'.$currentFile)) {
 				//check if it is a zip, and if so unpack it
-				if($canBeZip && !$this->zip_unpacked && FilesHelper::fileExt($currentFile,true,true)=='ZIP') {
-					$currentFile = $this->unpackSyncFile($currentFile);
-					$this->zip_unpacked = true;
-				} elseif($this->zip_unpacked) $currentFile = $this->getSyncFile($exportPath.'/tmp');
+				if($canBeZip && $this->zip_unpacked==0 && FilesHelper::fileExt($currentFile,true,true)=='ZIP') {
+					$this->unpackSyncFile($currentFile);
+					$currentFile = false;
+					$this->zip_unpacked = 1;
+				} elseif($this->zip_unpacked==2) {
+					$this->zip_unpacked = 3;
+					$currentFile = $this->getSyncFile($exportPath.'/tmp',false,false);
+				}
 				return $currentFile;
 			} else return false;
 		} else return false;
@@ -683,7 +682,7 @@ class CatalogOpenImmo extends BackendModule
 			file_put_contents(TL_ROOT.'/'.$tmpPath.'/'.$file,$content);
 			$zip->next();
 		}
-		return $this->getSyncFile($tmpPath,false,false);
+		//return $this->getSyncFile($tmpPath,false,false);
 	}
 
 	private function loadData($file)
