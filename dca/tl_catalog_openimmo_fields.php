@@ -169,7 +169,7 @@ class tl_catalog_openimmo_fields extends Backend
 
 	public function getCatFieldOptions(&$dc)
 	{
-		$_options = $this->Database->execute("SELECT id,colName FROM tl_catalog_fields WHERE pid='".$this->getCatalogTypeID($dc->id)."'")->fetchAllAssoc();
+		$_options = $this->Database->execute("SELECT id,colName FROM tl_catalog_fields WHERE pid='".$this->getCatalogTypeID($dc->id)."' ORDER BY colName")->fetchAllAssoc();
 		$options = array();
 		foreach($_options as $option) {
 			$options[$option['id']] = $option['colName'];

@@ -51,6 +51,7 @@ $GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncErrors'] = array(
 	'Fehler: Die Daten konnten nicht synchronisiert werden.',
 	'Fehler: Die Anhänge konnten nicht verschoben werden.'
 );
+$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncFileUnpacked'] = "Das Archiv wurde erfolgreich entpackt. Bitte klicken Sie zum Abschließen erneut auf 'Daten Synchronisieren'";
 $GLOBALS['TL_LANG']['tl_catalog_openimmo']['no_sync_files_found'] = "Keine Dateien für Synchronisation gefunden.";
 $GLOBALS['TL_LANG']['tl_catalog_openimmo']['sync_file_select'] = "Wählen Sie die OpenImmo-Datei aus, mit welcher Sie den Katalog synchronisieren möchten";
 $GLOBALS['TL_LANG']['tl_catalog_openimmo']['sync_file_auto'] = "Automatisch - aktuellste Datei";

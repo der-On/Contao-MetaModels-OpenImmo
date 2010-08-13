@@ -257,7 +257,7 @@ class CatalogOpenImmo extends BackendModule
 			'anbieter/immobilie/flaechen' => array(
 				'wohnflaeche:string',
 				'nutzflaeche:string',
-				'gesamtflaech:string',
+				'gesamtflaeche:string',
 				'ladenflaeche:string',
 				'lagerflaeche:string',
 				'verkaufsflaeche:string',
@@ -317,7 +317,7 @@ class CatalogOpenImmo extends BackendModule
 				'heizungsart@ETAGE:bool',
 				'heizungsart@ZENTRAL:bool',
 				'heizungsart@FERN:bool',
-				'heizungsart qFUSSBODEN:bool',
+				'heizungsart@FUSSBODEN:bool',
 				'befeuerung@OEL:bool',
 				'befeuerung@GAS:bool',
 				'befeuerung@ELEKTRO:bool',
@@ -451,6 +451,7 @@ class CatalogOpenImmo extends BackendModule
 	);
 
 	protected $messages = array();
+	protected $zip_unpacked = false;
 
 	public $fieldsFlat;
 
@@ -472,60 +473,71 @@ class CatalogOpenImmo extends BackendModule
 			
 		if ($this->Input->post('FORM_SUBMIT') == 'tl_catalog_openimmo_sync')
 		{
-			$file = $this->getSyncFile($exportPath);
-
+			$unpacked_file = $this->Input->post('tl_catalog_openimmo_unpacked_file');
+			if($unpacked_file!="") {
+				$this->zip_unpacked = true;
+				$file = $unpacked_file;
+			} else $file = $this->getSyncFile($exportPath);
+			
 			$this->addMessage('OpenImmo file: '.$file);
 
-			if($file) {
-				$data = $this->loadData($file);
-				
-				if($data) {
-					$this->addMessage('OpenImmo data loaded');
-					$syncFields = $this->getSyncFields($obj['id'],$obj['uniqueIDField']);
-					if($syncFields) {
-						$this->addMessage('loaded synchronization data');
-						if($this->syncDataWithCatalog($data, $obj, $syncFields)) {
-							$this->addMessage('data synced');
-							if($this->syncDataFiles($obj,$file)) {
-								$this->addMessage('files synced');
-								$success = true;
-							} else $error = 4;
-						} else $error = 3;
-					} else $error = 2;
-				} else $error = 1;
-			} else $error = 0;
+			if(!$this->zip_unpacked || ($this->zip_unpacked && $unpacked_file!="")) {
+				if($file) {
+					$data = $this->loadData($file);
+
+					if($data) {
+						$this->addMessage('OpenImmo data loaded');
+						$syncFields = $this->getSyncFields($obj['id'],$obj['uniqueIDField']);
+						if($syncFields) {
+							$this->addMessage('loaded synchronization data');
+							if($this->syncDataWithCatalog($data, $obj, $syncFields)) {
+								$this->addMessage('data synced');
+								if($this->syncDataFiles($obj,$file)) {
+									$this->addMessage('files synced');
+									$success = true;
+								} else $error = 4;
+							} else $error = 3;
+						} else $error = 2;
+					} else $error = 1;
+				} else $error = 0;
+			}
 
 			$send = true;
 		}
 		
 		// Return form
 		$output = '
-	<div id="tl_buttons">
-		<a href="'.$this->getReferer(ENCODE_AMPERSANDS).'" class="header_back" title="'.specialchars($GLOBALS['TL_LANG']['MSC']['backBT']).'">'.$GLOBALS['TL_LANG']['MSC']['backBT'].'</a>
-		</div>
-	<h2 class="sub_headline">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['sync'][0].'</h2>
-		
-	<form action="'.ampersand($this->Environment->request, ENCODE_AMPERSANDS).'" id="tl_catalog_openimmo_sync" class="tl_form" method="post">
-	<div class="tl_formbody_edit">
-	<input type="hidden" name="FORM_SUBMIT" value="tl_catalog_openimmo_sync" />
-	<div class="tl_tbox">
-	<p style="line-height:16px; padding-top:6px;">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncConfirm'].'</p>';
-	$output.='<p>'.$this->getMessages().'</p>';
-	if(!$send) $output.=$this->getSyncFileSelect($exportPath);
+		<div id="tl_buttons">
+			<a href="'.$this->getReferer(ENCODE_AMPERSANDS).'" class="header_back" title="'.specialchars($GLOBALS['TL_LANG']['MSC']['backBT']).'">'.$GLOBALS['TL_LANG']['MSC']['backBT'].'</a>
+			</div>
+		<h2 class="sub_headline">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['sync'][0].'</h2>
+
+		<form action="'.ampersand($this->Environment->request, ENCODE_AMPERSANDS).'" id="tl_catalog_openimmo_sync" class="tl_form" method="post">
+		<div class="tl_formbody_edit">
+		<input type="hidden" name="FORM_SUBMIT" value="tl_catalog_openimmo_sync" />
+		<div class="tl_tbox">
+		<p style="line-height:16px; padding-top:6px;">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncConfirm'].'</p>';
+		$output.='<p>'.$this->getMessages().'</p>';
+		if(!$send) $output.=$this->getSyncFileSelect($exportPath);
 		if($send) {
-			$output.=($success ? '<p class="tl_confirm">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncSuccess'].'</p>' : '<p class="tl_error">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncErrors'][$error].'</p>');
+			if($this->zip_unpacked && $unpacked_file=="") {
+				$output.='<p class="tl_confirm">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncFileUnpacked'].'</p>'.
+				'<input type="hidden" name="tl_catalog_openimmo_unpacked_file" value="'.$file.'">';
+			} else $output.=($success ? '<p class="tl_confirm">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncSuccess'].'</p>' : '<p class="tl_error">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncErrors'][$error].'</p>');
 		}
 		$output.='</div>
-	</div>';
-	if(!$send) $output.='
-	<div class="tl_formbody_submit">
+		</div>';
+		if(!$send || ($this->zip_unpacked && $unpacked_file=="")) {
+			$output.='
+			<div class="tl_formbody_submit">
 
-	<div class="tl_submit_container">
-	<input type="submit" name="save" id="save" class="tl_submit" alt="regenerate dca" accesskey="s" value="'.specialchars($GLOBALS['TL_LANG']['tl_catalog_openimmo']['sync'][0]).'" />
-	</div>
+			<div class="tl_submit_container">
+			<input type="submit" name="save" id="save" class="tl_submit" alt="regenerate dca" accesskey="s" value="'.specialchars($GLOBALS['TL_LANG']['tl_catalog_openimmo']['sync'][0]).'" />
+			</div>
 
-	</div>
-	</form>';
+			</div>';
+		}
+		$output.='</form>';
 		return $output;
 	}
 
@@ -645,9 +657,10 @@ class CatalogOpenImmo extends BackendModule
 			
 			if(file_exists(TL_ROOT.'/'.$currentFile)) {
 				//check if it is a zip, and if so unpack it
-				if($canBeZip && FilesHelper::fileExt($currentFile,true,true)=='ZIP') {
+				if($canBeZip && !$this->zip_unpacked && FilesHelper::fileExt($currentFile,true,true)=='ZIP') {
 					$currentFile = $this->unpackSyncFile($currentFile);
-				}
+					$this->zip_unpacked = true;
+				} elseif($this->zip_unpacked) $currentFile = $this->getSyncFile($exportPath.'/tmp');
 				return $currentFile;
 			} else return false;
 		} else return false;
