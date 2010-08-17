@@ -1,0 +1,3 @@
+This module makes it possible to import OpenImmo-Data into an existing catalog.
+
+The files need to be placed within the folder system/modules/catalog_openimmo/
