@@ -61,6 +61,15 @@ $GLOBALS['BE_MOD']['content']['catalog_openimmo'] = array(
 	'icon' => 'system/modules/catalog_openimmo/html/icon.gif'
 );
 
+$GLOBALS['BE_MOD']['content']['catalog']['fieldTypes']['hidden'] = array
+(
+	'typeimage'    => 'system/modules/catalog_openimmo/html/invisible.gif',
+	'fieldDef'     => array('inputType' => 'hidden'),
+	'sqlDefColumn' => "text NULL",
+);
+
+$GLOBALS['BE_MOD']['content']['catalog']['typesCatalogFields'][] = 'hidden';
+
 /**
  * -------------------------------------------------------------------------
  * FRONT END MODULES
