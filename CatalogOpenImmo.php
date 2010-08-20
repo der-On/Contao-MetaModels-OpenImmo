@@ -418,7 +418,7 @@ class CatalogOpenImmo extends BackendModule
 				'min_mietdauer@min_dauer:string',
 				'max_mietdauer@max_dauer:string',
 				'versteigerungstermin:string',
-				'wbs_sozialwohnung:string',
+				'wbs_sozialwohnung:bool',
 				'vermietet:bool',
 				'gruppennummer:string',
 				'zugang:string',
