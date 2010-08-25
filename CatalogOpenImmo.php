@@ -116,7 +116,7 @@ class CatalogOpenImmo extends BackendModule
 				'flur:string',
 				'flurstueck:string',
 				'gemarkung:string',
-				'etage:int',
+				'etage:string',
 				'anzahl_etagen:int',
 				'lage_im_bau@LINKS:bool',
 				'lage_im_bau@RECHTS:bool',
