@@ -34,6 +34,7 @@ $GLOBALS['TL_LANG']['tl_catalog_openimmo_fields']['name'] = array('Bezeichnung',
 $GLOBALS['TL_LANG']['tl_catalog_openimmo_fields']['catField'] = array('Katalogfeld', 'Feld des Katalogs welches mit dem OpenImmo-Datenfeld verknüpft werden soll.');
 $GLOBALS['TL_LANG']['tl_catalog_openimmo_fields']['oiFieldGroup'] = array('OpenImmo-Datenfeldgruppe', 'OpenImmo Datenfeldgruppe, aus welcher ein OpenImmo-Datenfeld ausgewählt werden soll.');
 $GLOBALS['TL_LANG']['tl_catalog_openimmo_fields']['oiField'] = array('OpenImmo-Datenfeld', 'OpenImmo Datenfeld, welches mit dem Katalogfeld verknüpft werden soll.');
+$GLOBALS['TL_LANG']['tl_catalog_openimmo_fields']['oiCustomField'] = array('Eigenes OpenImmo-Datenfeld', 'Geben Sie den XML-Pfad zu einem eigenen OpenImmo Datenfeld an, welches mit dem Katalogfeld verknüpft werden soll. Setzen Sie ein "@" vor XML-Attribute. Bsp.: "anbieter/immobilie/user_defined_anyfield/mein_feld@mein_attribut"');
 
 
 /**

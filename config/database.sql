@@ -43,7 +43,8 @@ CREATE TABLE `tl_catalog_openimmo_fields` (
   `name` varchar(64) NOT NULL default '',
   `catField` int(10) unsigned NOT NULL default '0',
   `oiFieldGroup` varchar(1024) NOT NULL default '',
-  `oiField` varchar(1024) NOT NULL default ''
+  `oiField` varchar(1024) NOT NULL default '',
+  `oiCustomField` varchar(1024) NOT NULL default ''
 
   PRIMARY KEY  (`id`),
   KEY `pid` (`pid`)

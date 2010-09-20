@@ -216,7 +216,9 @@ class CatalogOpenImmo extends BackendModule
 				'preis_zeiteinheit@zeiteinheit:string',
 				'mietpreis_pro_qm:string',
 				'kaufpreis_pro_qm:string',
+				'innen_courtage:string',
 				'innen_courtage@mit_mwst:bool',
+				'aussen_courtage:string',
 				'aussen_courtage@mit_mwst:bool',
 				'waehrung@iso_waehrung:string',
 				'mwst_satz:string',
@@ -708,7 +710,7 @@ class CatalogOpenImmo extends BackendModule
 	private function getSyncFields($id,$uniqueIDField)
 	{
 		$fields = array();
-		$_fields = $this->Database->execute("SELECT cf.colName as catField, cof.catField AS catFieldID , cof.oiField AS oiField, cof.oiFieldGroup as oiFieldGroup ".
+		$_fields = $this->Database->execute("SELECT cf.colName as catField, cof.catField AS catFieldID , cof.oiField AS oiField, cof.oiFieldGroup as oiFieldGroup, cof.oiCustomField as oiCustomField ".
 											"FROM tl_catalog_openimmo_fields cof ".
 											"LEFT JOIN tl_catalog_fields cf ON cf.id=cof.catField ".
 											"WHERE cof.pid='".$id."'")->fetchAllAssoc();
@@ -716,7 +718,9 @@ class CatalogOpenImmo extends BackendModule
 		foreach($_fields as $field) {
 			//prevent loading missing catalog fields
 			if($field['catField']!='') {
-				$fields[$field['catField']] = $field['oiFieldGroup'].'/'.$field['oiField'];
+				if($field['oiCustomField']!='') {
+					$fields[$field['catField']] = $field['oiCustomField'];
+				} else $fields[$field['catField']] = $field['oiFieldGroup'].'/'.$field['oiField'];
 			}
 		}
 

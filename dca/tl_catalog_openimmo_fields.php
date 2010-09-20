@@ -102,7 +102,7 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo_fields'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array(''),
-		'default'                     => 'name,catField;oiFieldGroup,oiField'
+		'default'                     => 'name,catField;oiFieldGroup,oiField,oiCustomField'
 	),
 
 	// Subpalettes
@@ -134,7 +134,7 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo_fields'] = array
 			'label'                   => &$GLOBALS['TL_LANG']['tl_catalog_openimmo_fields']['oiFieldGroup'],
 			'exclude'                 => true,
 			'inputType'               => 'select',
-			'eval'                    => array('mandatory'=>true, 'maxlength'=>64,'submitOnChange'=>true,'includeBlankOption'=>true),
+			'eval'                    => array('mandatory'=>false, 'maxlength'=>64,'submitOnChange'=>true,'includeBlankOption'=>true),
 			'options_callback'		  => array('tl_catalog_openimmo_fields','getOIFieldGroupOptions')
 		),
 		'oiField' => array
@@ -142,8 +142,15 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo_fields'] = array
 			'label'                   => &$GLOBALS['TL_LANG']['tl_catalog_openimmo_fields']['oiField'],
 			'exclude'                 => true,
 			'inputType'               => 'select',
-			'eval'                    => array('mandatory'=>true, 'maxlength'=>64),
+			'eval'                    => array('mandatory'=>false, 'maxlength'=>64),
 			'options_callback'		  => array('tl_catalog_openimmo_fields','getOIFieldOptions')
+		),
+		'oiCustomField' => array
+		(
+			'label'					  => &$GLOBALS['TL_LANG']['tl_catalog_openimmo_fields']['oiCustomField'],
+			'exclude'				  => true,
+			'inputType'				  => 'text',
+			'eval'					  => array('mandatory'=>false, 'maxlength'=>1024)
 		)
 	)
 );
@@ -204,8 +211,8 @@ class tl_catalog_openimmo_fields extends Backend
 	public function renderField($arrRow)
 	{
 		$titleField = $arrRow['name'] ? ' published' : '';
-		
-		return '<div class="field_type block"><strong>' . $arrRow['name'] . '</strong> <em>['.$arrRow['oiFieldGroup'].'/'.$arrRow['oiField'].']</em></div>';
+		if($arrRow['oiCustomField']!='') $field = $arrRow['oiCustomField']; else $field = $arrRow['oiFieldGroup'].'/'.$arrRow['oiField'];
+		return '<div class="field_type block"><strong>' . $arrRow['name'] . '</strong> <em>['.$field.']</em></div>';
 
 	}
 }
