@@ -126,7 +126,7 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo_fields'] = array
 			'label'                   => &$GLOBALS['TL_LANG']['tl_catalog_openimmo_fields']['catField'],
 			'exclude'                 => true,
 			'inputType'               => 'select',
-			'eval'                    => array('mandatory'=>true, 'maxlength'=>64,'unique'=>true),
+			'eval'                    => array('mandatory'=>true, 'maxlength'=>64),
 			'options_callback'		  => array('tl_catalog_openimmo_fields','getCatFieldOptions')
 		),
 		'oiFieldGroup' => array

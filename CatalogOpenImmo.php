@@ -718,14 +718,15 @@ class CatalogOpenImmo extends BackendModule
 		foreach($_fields as $field) {
 			//prevent loading missing catalog fields
 			if($field['catField']!='') {
+				if(!isset($fields[$field['catField']])) $fields[$field['catField']] = array();
 				if($field['oiCustomField']!='') {
-					$fields[$field['catField']] = $field['oiCustomField'];
-				} else $fields[$field['catField']] = $field['oiFieldGroup'].'/'.$field['oiField'];
+					$fields[$field['catField']][] = $field['oiCustomField'];
+				} else $fields[$field['catField']][] = $field['oiFieldGroup'].'/'.$field['oiField'];
 			}
 		}
 
 		//add uniqueIDField
-		if($uniqueIDField!='') $fields['id'] = $uniqueIDField;
+		if($uniqueIDField!='') $fields['id'] = array($uniqueIDField);
 
 		return $fields;
 	}
@@ -814,8 +815,10 @@ class CatalogOpenImmo extends BackendModule
 	private function setImmoFields(&$xml,&$immo,&$fields,$xpath,&$catalogObj)
 	{
 		foreach(array_keys($fields) as $catField) {
-			$value = $this->getFieldData($xml,$fields[$catField],$xpath,$catalogObj);
-			if($value) $immo[$catField] = $value;
+			foreach($fields[$catField] as $fieldPath) {
+				$value = $this->getFieldData($xml,$fieldPath,$xpath,$catalogObj);
+				if($value!=null) $immo[$catField] = $value;
+			}
 		}
 	}
 
@@ -848,7 +851,7 @@ class CatalogOpenImmo extends BackendModule
 				return serialize($results);
 			}
 			
-		} else return false;
+		} else return null;
 	}
 
 	private function getAnbieter(&$xml)
