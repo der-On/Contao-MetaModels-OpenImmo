@@ -787,7 +787,7 @@ class CatalogOpenImmo extends BackendModule
 						$this->setImmoFields($immobilie,$immo,$syncFields,$xpath,$catalogObj);
 
 						//store reference to xml-node
-						$immo['_xml_'] = &$immobilie;
+						$immo['_xml_'] = $immobilie;
 
 						$immos[] = $immo;
 					}
@@ -887,11 +887,11 @@ class CatalogOpenImmo extends BackendModule
 		//TODO: generate ID from uniqueIDField
 
 		$catalog = $catalogObj['catalog'];
-
+		
 		foreach($items as &$item) {
 			//check if entry already exists
 			$exists = $this->Database->execute("SELECT COUNT(id) FROM $catalog WHERE id='".$item['id']."'")->fetchAssoc();
-
+			
 			$this->convertDataValues($item);
 
 			if(intval($exists['COUNT(id)'])>0) {
