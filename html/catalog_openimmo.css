@@ -11,13 +11,14 @@
 #tl_catalog_openimmo_sync .status-icon {
 	width:20px;
 	height:20px;
+	border:1px solid #666666;
 }
 #tl_catalog_openimmo_sync .status-icon.status-0 {
-	background-color:#FFCCCC;
+	background-color:#DD6666;
 }
 #tl_catalog_openimmo_sync .status-icon.status-1 {
-	background-color:#CCFFCC;
+	background-color:#66DD66;
 }
 #tl_catalog_openimmo_sync .status-icon.status-2 {
-	background-color:#FFFFCC;
+	background-color:#FFDD66;
 }
