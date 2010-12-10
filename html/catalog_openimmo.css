@@ -8,10 +8,16 @@
 #tl_catalog_openimmo_sync tr.odd td {
 	background-color:#EFEFEF;
 }
+#tl_catalog_openimmo_sync .legend {
+	border:1px solid #EEEEEE;
+	padding:10px;
+}
 #tl_catalog_openimmo_sync .status-icon {
-	width:20px;
-	height:20px;
+	width:15px;
+	height:15px;
+	display:inline-block;
 	border:1px solid #666666;
+	vertical-align:middle;
 }
 #tl_catalog_openimmo_sync .status-icon.status-0 {
 	background-color:#DD6666;

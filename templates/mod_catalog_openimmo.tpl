@@ -15,6 +15,11 @@
 			<p><?php print $this->messages; ?></p>
 			<?php if(!$this->send): ?>
 				<?php if($this->files): ?>
+				<p class="legend">
+					<span class="status-icon status-0"></span> <?php print $GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncStates'][0]; ?>&nbsp;&nbsp;&nbsp;
+					<span class="status-icon status-1"></span> <?php print $GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncStates'][1]; ?>&nbsp;&nbsp;&nbsp;
+					<span class="status-icon status-2"></span> <?php print $GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncStates'][2]; ?>
+				</p>
 				<table>
 					<thead>
 						<th></th>

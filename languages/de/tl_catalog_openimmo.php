@@ -76,4 +76,9 @@ $GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncUser']    = 'synchronisiert von'
 $GLOBALS['TL_LANG']['tl_catalog_openimmo']['fileTime']    = 'Dateidatum';
 $GLOBALS['TL_LANG']['tl_catalog_openimmo']['fileSize']    = 'Dateigröße';
 $GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncStatus']  = 'Status';
+$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncStates'] = array(
+	0 => "nicht synchronisiert",
+	1 => "synchronisiert",
+	2 => "fehlerhaft synchronisiert"
+);
 ?>
