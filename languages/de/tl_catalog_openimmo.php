@@ -65,4 +65,14 @@ $GLOBALS['TL_LANG']['tl_catalog_openimmo']['copy']   = array('Eintrag kopieren',
 $GLOBALS['TL_LANG']['tl_catalog_openimmo']['delete'] = array('Eintrag löschen', 'Eintrag mit ID %s löschen');
 $GLOBALS['TL_LANG']['tl_catalog_openimmo']['show']   = array('Eintrag anzeigen', 'Eintrag mit ID %s anzeigen');
 
+/**
+ * Table
+ */
+$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncSelect']  = 'Auswahl';
+$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncFile']    = 'Exportdatei';
+$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncTime']    = 'synchronisiert am';
+$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncUser']    = 'synchronisiert von';
+$GLOBALS['TL_LANG']['tl_catalog_openimmo']['fileTime']    = 'Dateidatum';
+$GLOBALS['TL_LANG']['tl_catalog_openimmo']['fileSize']    = 'Dateigröße';
+$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncStatus']  = 'Status';
 ?>

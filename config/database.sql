@@ -49,3 +49,22 @@ CREATE TABLE `tl_catalog_openimmo_fields` (
   PRIMARY KEY  (`id`),
   KEY `pid` (`pid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+-- --------------------------------------------------------
+
+--
+-- Table `tl_catalog_openimmo_history`
+--
+
+CREATE TABLE `tl_catalog_openimmo_history` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `file` varchar(1024) NOT NULL default '',
+  `synctime` int(10) unsigned NOT NULL default '0',
+  `filetime` int(10) unsigned NOT NULL default '0',
+  `user` varchar(64) NOT NULL default '',
+  `status` int(1) unsigned NOT NULL default '0',
+
+  PRIMARY KEY  (`id`),
+  KEY `file` (`file`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;

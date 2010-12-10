@@ -51,7 +51,7 @@ class CatalogOpenImmo extends BackendModule
 	 * Template
 	 * @var string
 	 */
-	protected $strTemplate = '';
+	protected $strTemplate = 'mod_catalog_openimmo';
 	
 
 	public static $allowedAttachments = 'png,jpg,gif,pdf';
@@ -465,7 +465,7 @@ class CatalogOpenImmo extends BackendModule
 	protected $zip_unpacked = 0;
 
 	public $fieldsFlat;
-
+	
 	/**
 	 * Generate module
 	 */
@@ -473,8 +473,8 @@ class CatalogOpenImmo extends BackendModule
 	{
 		
 	}
-	
-	public function sync($dc)
+
+	protected function sync($dc)
 	{
 		$success = false;
 		$send = false;
@@ -485,13 +485,19 @@ class CatalogOpenImmo extends BackendModule
 		if ($this->Input->post('FORM_SUBMIT') == 'tl_catalog_openimmo_sync')
 		{
 			$unpacked = $this->Input->post('tl_catalog_openimmo_zip_unpacked');
-			if($unpacked=="2") $this->zip_unpacked = 2;
+			if($unpacked=="2") {
+				$this->zip_unpacked = 2;
+			} else $sync_file = $this->Input->post('tl_catalog_openimmo_sync_file');
+			
 			$file = $this->getSyncFile($exportPath);
 
 			if($file) {
+				if ($this->Input->post("tl_catalog_openimmo_sync_file")) {
+					$sync_file = $this->Input->post('tl_catalog_openimmo_sync_file');
+				}
 				$this->addMessage('OpenImmo file: '.$file);
 				$data = $this->loadData($file);
-
+				
 				if($data) {
 					$this->addMessage('OpenImmo data loaded');
 					$syncFields = $this->getSyncFields($obj['id'],$obj['uniqueIDField']);
@@ -506,13 +512,27 @@ class CatalogOpenImmo extends BackendModule
 						} else $error = 3;
 					} else $error = 2;
 				} else $error = 1;
+				if($error) {
+					$this->addFileToHistory($exportPath,$sync_file,2);
+				} else $this->addFileToHistory($exportPath,$sync_file,1);
 			} else $error = 0;
 
 			$send = true;
 		}
 		
+		$this->Template = new BackendTemplate($this->strTemplate);
+
+		$this->Template->setData(array(
+			'send' => $send,
+			'messages' => $this->getMessages(),
+			'files' => (!$send)?$this->getSyncFiles($exportPath):null,
+			'zip_unpacked' => $this->zip_unpacked,
+			'success' => $success,
+			'error' => $error,
+			"sync_file" => $sync_file
+		));
 		// Return form
-		$output = '
+		/*$output = '
 		<div id="tl_buttons">
 			<a href="'.$this->getReferer(ENCODE_AMPERSANDS).'" class="header_back" title="'.specialchars($GLOBALS['TL_LANG']['MSC']['backBT']).'">'.$GLOBALS['TL_LANG']['MSC']['backBT'].'</a>
 			</div>
@@ -544,7 +564,8 @@ class CatalogOpenImmo extends BackendModule
 			</div>';
 		}
 		$output.='</form>';
-		return $output;
+		return $output;*/
+		return $this->Template->parse();
 	}
 
 	private function getSyncFileSelect($exportPath)
@@ -628,15 +649,62 @@ class CatalogOpenImmo extends BackendModule
 	{
 		$folder = new Folder($exportPath);
 
+		$synced = array();
+
+		$history = $this->Database->execute("SELECT * FROM tl_catalog_openimmo_history")->fetchAllAssoc();
+		
+		foreach($history as $entry) {
+			$synced[$entry['file']] = array(
+				"filetime" => $entry['filetime'],
+				"synctime" => $entry['synctime'],
+				"user" => $entry['user'],
+				"status" => $entry['status']
+			);
+		}
+
 		if(!$folder->isEmpty()) {
 			$files = array();
+			$lasttime = time();
+			$checked = 0;
+
 			//get latest file
-			foreach(FilesHelper::scandirByExt($exportPath,($canBeZip)?array('zip','xml'):array('xml')) as $file) {
+			foreach(FilesHelper::scandirByExt($exportPath,($canBeZip)?array('zip','xml'):array('xml')) as $i => $file) {
 				$mtime = FilesHelper::fileModTime($exportPath.'/'.$file);
 				$size = FilesHelper::fileSize($exportPath.'/'.$file);
-				$files[] = array("file"=>$file,"modtime"=>$mtime,"size"=>$size);
+
+				if(array_key_exists($file,$synced)) {
+					$mtime = intval($synced[$file]['filetime']);
+					$user = $synced[$file]['user'];
+					$status = intval($synced[$file]['status']);
+					$synctime = intval($synced[$file]['synctime']);
+				} else {
+					$user = '';
+					$status = 0;
+					$synctime = 0;
+					if($lasttime>$mtime) {
+						$lasttime = $mtime;
+						$checked = $i;
+					}
+				}
+
+				$files[] = array(
+					"file"=>$file,
+					"time"=>$mtime,
+					"size"=>$size,
+					"user"=>$user,
+					"status"=>$status,
+					"synctime"=>$synctime,
+					"checked"=>false
+				);
 			}
-			
+
+			$files[$checked]['checked'] = true;
+
+			usort($files,create_function('$a,$b','
+				if ($a == $b) return 0;
+				return ($a["time"]>$b["time"])?-1:1;')
+			);
+
 			return $files;
 		} else return false;
 	}
@@ -694,6 +762,18 @@ class CatalogOpenImmo extends BackendModule
 			$zip->next();
 		}
 		//return $this->getSyncFile($tmpPath,false,false);
+	}
+
+	private function addFileToHistory($exportPath,$file,$status) {
+		$filetime = FilesHelper::fileModTime($exportPath.'/'.$file);
+		$item = array(
+			"file" => $file,
+			"filetime" => $filetime,
+			"synctime" => time(),
+			"status" => $status,
+			"user" => $GLOBALS['TL_USERNAME']
+		);
+		$this->Database->prepare("INSERT INTO tl_catalog_openimmo_history %s")->set($item)->execute();
 	}
 
 	private function loadData($file)

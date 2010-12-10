@@ -1,0 +1,23 @@
+#tl_catalog_openimmo_sync th {
+	border-bottom:1px solid #CCCCCC;
+	vertical-align:top;
+}
+#tl_catalog_openimmo_sync td {
+	padding:5px 10px;
+}
+#tl_catalog_openimmo_sync tr.odd td {
+	background-color:#EFEFEF;
+}
+#tl_catalog_openimmo_sync .status-icon {
+	width:20px;
+	height:20px;
+}
+#tl_catalog_openimmo_sync .status-icon.status-0 {
+	background-color:#FFCCCC;
+}
+#tl_catalog_openimmo_sync .status-icon.status-1 {
+	background-color:#CCFFCC;
+}
+#tl_catalog_openimmo_sync .status-icon.status-2 {
+	background-color:#FFFFCC;
+}

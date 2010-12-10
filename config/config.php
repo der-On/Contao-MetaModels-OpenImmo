@@ -70,6 +70,8 @@ $GLOBALS['BE_MOD']['content']['catalog']['fieldTypes']['hidden'] = array
 
 $GLOBALS['BE_MOD']['content']['catalog']['typesCatalogFields'][] = 'hidden';
 
+$GLOBALS['TL_CSS'][] = 'system/modules/catalog_openimmo/html/catalog_openimmo.css';
+
 /**
  * -------------------------------------------------------------------------
  * FRONT END MODULES
