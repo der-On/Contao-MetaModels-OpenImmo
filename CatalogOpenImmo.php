@@ -485,39 +485,41 @@ class CatalogOpenImmo extends BackendModule
 		if ($this->Input->post('FORM_SUBMIT') == 'tl_catalog_openimmo_sync')
 		{
 			$unpacked = $this->Input->post('tl_catalog_openimmo_zip_unpacked');
-			if($unpacked=="2") {
-				$this->zip_unpacked = 2;
-			} else $sync_file = $this->Input->post('tl_catalog_openimmo_sync_file');
-			
-			$file = $this->getSyncFile($exportPath);
+			if($this->Input->post('tl_catalog_openimmo_sync_file')!="") {
+				if($unpacked=="2") {
+					$this->zip_unpacked = 2;
+				} else $sync_file = $this->Input->post('tl_catalog_openimmo_sync_file');
 
-			if($file) {
-				if ($this->Input->post("tl_catalog_openimmo_sync_file")) {
-					$sync_file = $this->Input->post('tl_catalog_openimmo_sync_file');
-				}
-				$this->addMessage('OpenImmo file: '.$file);
-				$data = $this->loadData($file);
-				
-				if($data) {
-					$this->addMessage('OpenImmo data loaded');
-					$syncFields = $this->getSyncFields($obj['id'],$obj['uniqueIDField']);
-					if($syncFields) {
-						$this->addMessage('loaded synchronization data');
-						if($this->syncDataWithCatalog($data, $obj, $syncFields)) {
-							$this->addMessage('data synced');
-							if($this->syncDataFiles($obj,$file)) {
-								$this->addMessage('files synced');
-								$success = true;
-							} else $error = 4;
-						} else $error = 3;
-					} else $error = 2;
-				} else $error = 1;
-				if($error) {
-					$this->addFileToHistory($exportPath,$sync_file,2);
-				} else $this->addFileToHistory($exportPath,$sync_file,1);
-			} else $error = 0;
+				$file = $this->getSyncFile($exportPath);
 
-			$send = true;
+				if($file) {
+					if ($this->Input->post("tl_catalog_openimmo_sync_file")) {
+						$sync_file = $this->Input->post('tl_catalog_openimmo_sync_file');
+					}
+					$this->addMessage('OpenImmo file: '.$file);
+					$data = $this->loadData($file);
+
+					if($data) {
+						$this->addMessage('OpenImmo data loaded');
+						$syncFields = $this->getSyncFields($obj['id'],$obj['uniqueIDField']);
+						if($syncFields) {
+							$this->addMessage('loaded synchronization data');
+							if($this->syncDataWithCatalog($data, $obj, $syncFields)) {
+								$this->addMessage('data synced');
+								if($this->syncDataFiles($obj,$file)) {
+									$this->addMessage('files synced');
+									$success = true;
+								} else $error = 4;
+							} else $error = 3;
+						} else $error = 2;
+					} else $error = 1;
+					if($error) {
+						$this->addFileToHistory($exportPath,$sync_file,2);
+					} else $this->addFileToHistory($exportPath,$sync_file,1);
+				} else $error = 0;
+
+				$send = true;
+			} else $this->addMessage($GLOBALS['TL_LANG']['tl_catalog_openimmo']['noSyncFile']);
 		}
 		
 		$this->Template = new BackendTemplate($this->strTemplate);
@@ -665,7 +667,7 @@ class CatalogOpenImmo extends BackendModule
 		if(!$folder->isEmpty()) {
 			$files = array();
 			$lasttime = time();
-			$checked = 0;
+			$checked = -1;
 
 			//get latest file
 			foreach(FilesHelper::scandirByExt($exportPath,($canBeZip)?array('zip','xml'):array('xml')) as $i => $file) {
@@ -698,7 +700,7 @@ class CatalogOpenImmo extends BackendModule
 				);
 			}
 
-			$files[$checked]['checked'] = true;
+			if ($checked!=-1) $files[$checked]['checked'] = true;
 
 			usort($files,create_function('$a,$b','
 				if ($a == $b) return 0;

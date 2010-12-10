@@ -12,7 +12,7 @@
 			<p style="line-height:16px; padding-top:6px;">
 				<?php print $GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncConfirm']; ?>
 			</p>
-			<p><?php print $messages; ?></p>
+			<p><?php print $this->messages; ?></p>
 			<?php if(!$this->send): ?>
 				<?php if($this->files): ?>
 				<table>
