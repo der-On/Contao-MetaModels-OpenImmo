@@ -980,7 +980,7 @@ class CatalogOpenImmo extends BackendModule
 			$exists = $this->Database->execute("SELECT COUNT(id) FROM $catalog WHERE id='".$item['id']."'")->fetchAssoc();
 			
 			$this->convertDataValues($item);
-
+			
 			if(intval($exists['COUNT(id)'])>0) {
 				//remove if deleteAction is in use
 				$deleted = $this->getFieldData($item['_xml_'],CatalogOpenImmo::$deleteActionField[$catalogObj['oiVersion']]['path'],'anbieter/immobilie',$catalogObj);
