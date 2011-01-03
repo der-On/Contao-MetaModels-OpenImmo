@@ -776,7 +776,7 @@ class CatalogOpenImmo extends BackendModule
 			"user" => $GLOBALS['TL_USERNAME']
 		);
 		$exists = $this->Database->execute("SELECT id,filetime FROM tl_catalog_openimmo_history WHERE file = '$item[file]'")->fetchAssoc();
-		if(count($exists)>0) {
+		if($exists!=false && count($exists)>0) {
 			$item["filetime"] = $exists["filetime"];
 			$this->Database->prepare("UPDATE tl_catalog_openimmo_history %s WHERE id='$exists[id]'")->set($item)->execute();
 		} else $this->Database->prepare("INSERT INTO tl_catalog_openimmo_history %s")->set($item)->execute();
