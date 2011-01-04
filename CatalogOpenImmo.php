@@ -978,16 +978,17 @@ class CatalogOpenImmo extends BackendModule
 		foreach($items as &$item) {
 			//check if entry already exists
 			$exists = $this->Database->execute("SELECT COUNT(id) FROM $catalog WHERE id='".$item['id']."'")->fetchAssoc();
-			
+
+			//remove if deleteAction is in use
+			$deleted = $this->getFieldData($item['_xml_'],CatalogOpenImmo::$deleteActionField[$catalogObj['oiVersion']]['path'],'anbieter/immobilie',$catalogObj);
+			$deleted = ($deleted == CatalogOpenImmo::$deleteActionField[$catalogObj['oiVersion']]['value'])?true:false;
+
 			$this->convertDataValues($item);
 			
 			if(intval($exists['COUNT(id)'])>0) {
-				//remove if deleteAction is in use
-				$deleted = $this->getFieldData($item['_xml_'],CatalogOpenImmo::$deleteActionField[$catalogObj['oiVersion']]['path'],'anbieter/immobilie',$catalogObj);
-				$deleted = ($deleted == CatalogOpenImmo::$deleteActionField[$catalogObj['oiVersion']]['value'])?true:false;
-
 				//remove old entry if one exists and this should be deleted
 				if($deleted) {
+					echo($item['id']." deleted</br>");
 					$this->Database->execute("DELETE FROM $catalog WHERE id='".$item['id']."'");
 					$this->addMessage("deleted object: ".$item['id']);
 				} else {
@@ -996,7 +997,8 @@ class CatalogOpenImmo extends BackendModule
 					unset($item['_xml_']);
 					$this->Database->prepare("UPDATE $catalog %s WHERE id='$id'")->set($item)->execute();
 				}
-			} else {
+			} elseif(!$deleted) {
+				echo($item['id'].' adding</br>');
 				unset($item['_xml_']);
 				$this->Database->prepare("INSERT INTO $catalog %s")->set($item)->execute();
 			}
