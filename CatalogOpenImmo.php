@@ -997,7 +997,6 @@ class CatalogOpenImmo extends BackendModule
 					$this->Database->prepare("UPDATE $catalog %s WHERE id='$id'")->set($item)->execute();
 				}
 			} elseif(!$deleted) {
-				echo($item['id'].' adding</br>');
 				unset($item['_xml_']);
 				$this->Database->prepare("INSERT INTO $catalog %s")->set($item)->execute();
 			}
