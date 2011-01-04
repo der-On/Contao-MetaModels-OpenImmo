@@ -988,7 +988,6 @@ class CatalogOpenImmo extends BackendModule
 			if(intval($exists['COUNT(id)'])>0) {
 				//remove old entry if one exists and this should be deleted
 				if($deleted) {
-					echo($item['id']." deleted</br>");
 					$this->Database->execute("DELETE FROM $catalog WHERE id='".$item['id']."'");
 					$this->addMessage("deleted object: ".$item['id']);
 				} else {
