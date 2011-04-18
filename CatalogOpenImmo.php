@@ -80,7 +80,7 @@ class CatalogOpenImmo extends BackendModule
 				'format:string',
 				'daten/pfad:path'
 			),
-			'anbieter/immobilie/objektkategorie'	=> array(
+			'anbieter/immobilie/objektkategorie' => array(
 				'nutzungsart@WOHNEN:bool',
 				'nutzungsart@GEWERBE:bool',
 				'nutzungsart@ANLAGE:bool',
@@ -853,9 +853,9 @@ class CatalogOpenImmo extends BackendModule
 				$immos = array();
 
 				foreach($anbieter as $_anbieter) {
-					//$immo_anbieter = array();
-					
-					//$this->setImmoFields($_anbieter,$immo_anbieter,$syncFields,$xpath,$catalogObj);
+					$immo_anbieter = array();
+					$xpath = 'anbieter';
+					$this->setImmoFields($_anbieter,$immo_anbieter,$syncFields,$xpath,$catalogObj);
 
 					$immobilien = $this->getImmobilien($_anbieter);
 
@@ -867,9 +867,9 @@ class CatalogOpenImmo extends BackendModule
 						$sorting++;
 						
 						//add anbieter info to immo
-						//$immo = array_merge($immo_anbieter,array("id"=>$immo_id,"pid"=>$catalogObj['catalogID'],"tstamp"=>time(),"sorting"=>$sorting));
 						$immo = array("id"=>$immo_id,"pid"=>$catalogObj['catalogID'],"tstamp"=>time(),"sorting"=>$sorting);
-
+						$immo = array_merge($immo_anbieter,$immo);
+						
 						//immo info
 						$this->setImmoFields($immobilie,$immo,$syncFields,$xpath,$catalogObj);
 
