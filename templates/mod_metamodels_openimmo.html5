@@ -8,6 +8,7 @@
 <form action="<?php print ampersand($this->Environment->request, ENCODE_AMPERSANDS); ?>" id="tl_metamodels_openimmo_sync" class="tl_form" method="post">
 	<div class="tl_formbody_edit">
 		<input type="hidden" name="FORM_SUBMIT" value="tl_metamodels_openimmo_sync" />
+        <input type="hidden" name="REQUEST_TOKEN" value="<?php echo REQUEST_TOKEN; ?>">
 		<div class="tl_tbox">
 			<p style="line-height:16px; padding-top:6px;">
 				<?php print $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['syncConfirm']; ?>
