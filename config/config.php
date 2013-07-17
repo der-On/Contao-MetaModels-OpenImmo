@@ -21,7 +21,7 @@
  * PHP version 5
  * @copyright  Ondrej Brinkel 2010 
  * @author     Ondrej Brinkel 
- * @package    CatalogOpenImmo 
+ * @package    MetaModelsOpenImmo
  * @license    GNU 
  * @filesource
  */
@@ -57,7 +57,7 @@
 
 $GLOBALS['BE_MOD']['content']['metamodels_openimmo'] = array(
 	'tables' => array('tl_metamodels_openimmo','tl_metamodels_openimmo_fields'),
-	'syncCatalog' => array('CatalogOpenImmo','sync'),
+	'syncMetaModel' => array('MetaModelsOpenImmo','sync'),
 	'icon' => 'system/modules/metamodels_openimmo/html/icon.gif'
 );
 

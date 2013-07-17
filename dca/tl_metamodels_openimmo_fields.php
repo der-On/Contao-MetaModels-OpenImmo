@@ -21,7 +21,7 @@
  * PHP version 5
  * @copyright  Ondrej Brinkel 2010 
  * @author     Ondrej Brinkel 
- * @package    CatalogOpenImmo 
+ * @package    MetaModelsOpenImmo
  * @license    GNU 
  * @filesource
  */
@@ -102,7 +102,7 @@ $GLOBALS['TL_DCA']['tl_metamodels_openimmo_fields'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array(''),
-		'default'                     => 'name,catField;oiFieldGroup,oiField,oiCustomField'
+		'default'                     => 'name,metamodelAttribute;oiFieldGroup,oiField,oiCustomField'
 	),
 
 	// Subpalettes
@@ -121,13 +121,13 @@ $GLOBALS['TL_DCA']['tl_metamodels_openimmo_fields'] = array
 			'inputType'				  => 'text',
 			'eval'					  => array('mandatory'=>true,'maxlength'=>64,'unique'=>true)
 		),
-		'catField' => array
+		'metamodelAttribute' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo_fields']['catField'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo_fields']['metamodelAttribute'],
 			'exclude'                 => true,
 			'inputType'               => 'select',
 			'eval'                    => array('mandatory'=>true, 'maxlength'=>64),
-			'options_callback'		  => array('tl_metamodels_openimmo_fields','getCatFieldOptions')
+			'options_callback'		  => array('tl_metamodels_openimmo_fields','getMetamodelAttributeOptions')
 		),
 		'oiFieldGroup' => array
 		(
@@ -158,35 +158,35 @@ $GLOBALS['TL_DCA']['tl_metamodels_openimmo_fields'] = array
 
 class tl_metamodels_openimmo_fields extends Backend
 {
-	private function getCatalogTypeID($id)
+	private function getMetaModelTypeID($id)
 	{
-		$catalogID = $this->Database->execute("SELECT co.catalog AS catalog FROM tl_metamodels_openimmo co ".
-											"LEFT JOIN tl_metamodels_openimmo_fields cof ON cof.id='$id' ".
-											"WHERE co.id=cof.pid")->fetchEach('catalog');
-		return $catalogID[0];
+		$metamodelID = $this->Database->execute("SELECT mmo.metamodel AS metamodel FROM tl_metamodels_openimmo mmo ".
+											"LEFT JOIN tl_metamodels_openimmo_fields mmof ON mmof.id='$id' ".
+											"WHERE mmo.id=mmof.pid")->fetchEach('metamodel');
+		return $metamodelID[0];
 	}
 
 	private function getOIVersion($id)
 	{
-		$version = $this->Database->execute("SELECT co.oiVersion AS oiVersion FROM tl_metamodels_openimmo co ".
-											"LEFT JOIN tl_metamodels_openimmo_fields cof ON cof.id='$id' ".
-											"WHERE co.id=cof.pid")->fetchEach('oiVersion');
+		$version = $this->Database->execute("SELECT mmo.oiVersion AS oiVersion FROM tl_metamodels_openimmo mmo ".
+											"LEFT JOIN tl_metamodels_openimmo_fields mmof ON mmof.id='$id' ".
+											"WHERE mmo.id=mmof.pid")->fetchEach('oiVersion');
 		return $version[0];
 	}
 
-	public function getCatFieldOptions(&$dc)
+	public function getMetaModelAttributeOptions(&$dc)
 	{
-		$_options = $this->Database->execute("SELECT id,colName FROM tl_catalog_fields WHERE pid='".$this->getCatalogTypeID($dc->id)."' ORDER BY colName")->fetchAllAssoc();
+		$_options = $this->Database->execute("SELECT id, name FROM tl_metamodel_attribute WHERE pid='".$this->getMetaModelTypeID($dc->id)."' ORDER BY name")->fetchAllAssoc();
 		$options = array();
 		foreach($_options as $option) {
-			$options[$option['id']] = $option['colName'];
+			$options[$option['id']] = $option['name'];
 		}
 		return $options;
 	}
 
 	public function getOIFieldGroupOptions(&$dc)
 	{
-		return CatalogOpenImmo::getFieldGroups($this->getOIVersion($dc->id));
+		return MetaModelsOpenImmo::getFieldGroups($this->getOIVersion($dc->id));
 	}
 
 	public function getOIFieldOptions(&$dc)
@@ -194,7 +194,7 @@ class tl_metamodels_openimmo_fields extends Backend
 		$group = $this->Database->execute("SELECT oiFieldGroup FROM tl_metamodels_openimmo_fields WHERE id='".$dc->id."'")->fetchEach('oiFieldGroup');
 		$group = $group[0];
 
-		$fields = CatalogOpenImmo::getFieldsByGroup($this->getOIVersion($dc->id),$group);
+		$fields = MetaModelsOpenImmo::getFieldsByGroup($this->getOIVersion($dc->id),$group);
 
 		$_fields = array();
 		foreach($fields as &$field) {

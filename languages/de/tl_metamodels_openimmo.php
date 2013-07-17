@@ -21,7 +21,7 @@
  * PHP version 5
  * @copyright  Ondrej Brinkel 2010 
  * @author     Ondrej Brinkel 
- * @package    CatalogOpenImmo 
+ * @package    MetaModelsOpenImmo
  * @license    GNU 
  * @filesource
  */
@@ -32,7 +32,7 @@
  */
 $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['name'] = array('Name', 'Bezeichnung');
 $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['oiVersion'] = array('OpenImmo-Version', 'Mit welcher Version des OpenImmo-Standards werden die Daten exportiert?');
-$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['catalog'] = array('Katalog', 'Katalog, welcher mit OpenImmo-Daten verknüpft werden soll.');
+$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['metamodel'] = array('MetaModel', 'MetaModel, welches mit OpenImmo-Daten verknüpft werden soll.');
 $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['exportPath'] = array('OpenImmo Export-Verzeichnis', 'Verzeichnis in welchem sich die exportierten OpenImmo-Daten befinden.');
 $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['filesPath'] = array('OpenImmo Anhangs-Verzeichnis', 'Verzeichnis in welches Anhänge(Bilder,PDFs etc.) der OpenImmo-Objekte beim Synchronisieren verschoben werden sollen.');
 $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['uniqueIDField'] = array('OpenImmo-Feld für eindeutige ID.','Wählen Sie hier ein nummerisches OpenImmo-Feld, dessen Wert für jede Immobilie eindeutig ist.');
@@ -41,8 +41,8 @@ $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['uniqueIDField'] = array('OpenImmo
  * Reference
  */
 $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['fields'] = array('Feldverknüpfungen bearbeiten','Feldverknüpfungen für Eintrag mit ID %s bearbeiten');
-$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['sync'] = array('Daten Synchronisieren','Katalog des Eintrags mit der ID %s mit OpenImmo-Daten synchronisieren');
-$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['syncConfirm'] = 'Wollen Sie den Katalog mit den aktuellen OpenImmo-Daten synchronisieren? Diese Aktion kann nicht rückgangig gemacht werden.';
+$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['sync'] = array('Daten Synchronisieren','MetaModel des Eintrags mit der ID %s mit OpenImmo-Daten synchronisieren');
+$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['syncConfirm'] = 'Wollen Sie das MetaModel mit den aktuellen OpenImmo-Daten synchronisieren? Diese Aktion kann nicht rückgangig gemacht werden.';
 $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['syncSuccess'] = 'Die Synchronisierung wurde erfolgreich durchgeführt.';
 $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['syncErrors'] = array(
 	'Fehler: Die OpenImmo-Datei konnte nicht gefunden oder gelesen werden.',
@@ -54,13 +54,13 @@ $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['syncErrors'] = array(
 $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['noSyncFile'] = "Bitte wählen Sie eine Datei zur Synchronisierung aus.";
 $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['syncFileUnpacked'] = "Das Archiv wurde erfolgreich entpackt. Bitte klicken Sie zum Abschließen erneut auf 'Daten Synchronisieren'";
 $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['no_sync_files_found'] = "Keine Dateien für Synchronisation gefunden.";
-$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['sync_file_select'] = "Wählen Sie die OpenImmo-Datei aus, mit welcher Sie den Katalog synchronisieren möchten";
+$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['sync_file_select'] = "Wählen Sie die OpenImmo-Datei aus, mit welcher Sie den MetaModel synchronisieren möchten";
 $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['sync_file_auto'] = "Automatisch - aktuellste Datei";
 
 /**
  * Buttons
  */
-$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['new']    = array('Neue Katalog-OpenImmo Verknüpfung','Neue Katalog-OpenImmo Verknüpfung erstellen');
+$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['new']    = array('Neue MetaModel-OpenImmo Verknüpfung','Neue MetaModel-OpenImmo Verknüpfung erstellen');
 $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['edit']   = array('Eintrag bearbeiten', 'Eintrag mit ID %s bearbeiten');
 $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['copy']   = array('Eintrag kopieren', 'Eintrag mit ID %s kopieren');
 $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['delete'] = array('Eintrag löschen', 'Eintrag mit ID %s löschen');

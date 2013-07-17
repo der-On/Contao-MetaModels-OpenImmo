@@ -21,7 +21,7 @@
  * PHP version 5
  * @copyright  Ondrej Brinkel 2010 
  * @author     Ondrej Brinkel 
- * @package    CatalogOpenImmo 
+ * @package    MetaModelsOpenImmo
  * @license    GNU 
  * @filesource
  */
@@ -478,9 +478,9 @@ class MetaModelsOpenImmo extends BackendModule
 	{
 		$success = false;
 		$send = false;
-		$obj = $this->getCatalogObject($dc->id);
+		$obj = $this->getMetaModelObject($dc->id);
 		$exportPath = $obj['exportPath'];
-		$catalog = $obj['catalog'];
+		$metamodel = $obj['metamodel'];
 			
 		if ($this->Input->post('FORM_SUBMIT') == 'tl_metamodels_openimmo_sync')
 		{
@@ -563,7 +563,7 @@ class MetaModelsOpenImmo extends BackendModule
 	{
 		$fields = array();
 		foreach($group as $field) {
-			$fields[] = CatalogOpenImmo::parseField($field);
+			$fields[] = MetaModelsOpenImmo::parseField($field);
 		}
 		return $fields;
 	}
@@ -589,16 +589,16 @@ class MetaModelsOpenImmo extends BackendModule
 
 	public static function getFieldsByGroup($oiVersion,$group)
 	{
-		$groups = CatalogOpenImmo::$fields;
+		$groups = MetaModelsOpenImmo::$fields;
 		if(isset($groups[$oiVersion][$group])) {
-			return CatalogOpenImmo::parseFields($groups[$oiVersion][$group]);
+			return MetaModelsOpenImmo::parseFields($groups[$oiVersion][$group]);
 		} else return array();
 	}
 
 	public static function getFieldGroups($oiVersion)
 	{
 		$groups = array();
-		$fields = CatalogOpenImmo::$fields;
+		$fields = MetaModelsOpenImmo::$fields;
 		foreach(array_keys($fields[$oiVersion]) as $group) {
 			$groups[] = $group;
 		}
@@ -606,12 +606,12 @@ class MetaModelsOpenImmo extends BackendModule
 		return $groups;
 	}
 
-	private function getCatalogObject($id)
+	private function getMetaModelObject($id)
 	{
-		return $this->Database->execute("SELECT co.id AS id,co.catalog AS catalogID, co.exportPath AS exportPath, co.filesPath AS filesPath, ct.tableName AS catalog, co.oiVersion AS oiVersion, co.uniqueIDField AS uniqueIDField ".
-										"FROM tl_metamodels_openimmo co ".
-										"LEFT JOIN tl_catalog_types ct ON ct.id=co.catalog ".
-										"WHERE co.id='$id'")->fetchAssoc();
+		return $this->Database->execute("SELECT mmo.id AS id,mmo.metamodel AS metamodelID, mmo.exportPath AS exportPath, mmo.filesPath AS filesPath, mmt.tableName AS metamodel, mmo.oiVersion AS oiVersion, mmo.uniqueIDField AS uniqueIDField ".
+										"FROM tl_metamodels_openimmo mmo ".
+										"LEFT JOIN tl_metamodel mmt ON mmt.id=mmo.metamodel ".
+										"WHERE mmo.id='$id'")->fetchAssoc();
 	}
 
 	private function getSyncFiles($exportPath,$canBeZip = true)
@@ -788,10 +788,10 @@ class MetaModelsOpenImmo extends BackendModule
 	public static function getFlattenedFields($oiVersion)
 	{
 		$fieldsFlat = array();
-		$groups = CatalogOpenImmo::$fields;
+		$groups = MetaModelsOpenImmo::$fields;
 		foreach(array_keys($groups[$oiVersion]) as $group) {
 			foreach($groups[$oiVersion][$group] as $field) {
-				$_field = CatalogOpenImmo::parseField($field);
+				$_field = MetaModelsOpenImmo::parseField($field);
 				$fieldsFlat[$group.'/'.$_field['name']] = $_field['type'];
 			}
 		}
@@ -800,7 +800,7 @@ class MetaModelsOpenImmo extends BackendModule
 	
 	private function flattenFields($oiVersion)
 	{
-		$this->fieldsFlat = CatalogOpenImmo::getFlattenedFields($oiVersion);
+		$this->fieldsFlat = MetaModelsOpenImmo::getFlattenedFields($oiVersion);
 	}
 	
 	private function syncDataWithCatalog(&$data,&$catalogObj,&$syncFields)
@@ -947,8 +947,8 @@ class MetaModelsOpenImmo extends BackendModule
 			$exists = $this->Database->execute("SELECT COUNT(id) FROM $catalog WHERE id='".$item['id']."'")->fetchAssoc();
 
 			//remove if deleteAction is in use
-			$deleted = $this->getFieldData($item['_xml_'],CatalogOpenImmo::$deleteActionField[$catalogObj['oiVersion']]['path'],'anbieter/immobilie',$catalogObj);
-			$deleted = ($deleted == CatalogOpenImmo::$deleteActionField[$catalogObj['oiVersion']]['value'])?true:false;
+			$deleted = $this->getFieldData($item['_xml_'],MetaModelsOpenImmo::$deleteActionField[$catalogObj['oiVersion']]['path'],'anbieter/immobilie',$catalogObj);
+			$deleted = ($deleted == MetaModelsOpenImmo::$deleteActionField[$catalogObj['oiVersion']]['value'])?true:false;
 
 			$this->convertDataValues($item);
 			
@@ -976,7 +976,7 @@ class MetaModelsOpenImmo extends BackendModule
 		$dataPath = FilesHelper::fileDirPath($dataFile);
 		
 		//get attachments in the data folder
-		$files = FilesHelper::scandirByExt($dataPath, explode(',',CatalogOpenImmo::$allowedAttachments));
+		$files = FilesHelper::scandirByExt($dataPath, explode(',',MetaModelsOpenImmo::$allowedAttachments));
 
 		$filesFolder = new Folder($catalogObj['filesPath']);
 
@@ -1003,12 +1003,12 @@ class MetaModelsOpenImmo extends BackendModule
 		return true;
 	}
 
-	private function addMessage($msg)
+	protected function addMessage($msg, $strType = TL_INFO)
 	{
 		$this->messages[] = $msg;
 	}
 
-	protected function getMessages()
+	protected function getMessages($blnDcLayout = false, $blnNoWrapper = false)
 	{
 		$strMsg = '';
 		

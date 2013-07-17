@@ -21,7 +21,7 @@
  * PHP version 5
  * @copyright  Ondrej Brinkel 2010 
  * @author     Ondrej Brinkel 
- * @package    CatalogOpenImmo 
+ * @package    MetaModelsOpenImmo
  * @license    GNU 
  * @filesource
  */
@@ -98,11 +98,11 @@ $GLOBALS['TL_DCA']['tl_metamodels_openimmo'] = array
 				'icon'                => 'tablewizard.gif',
 				//'button_callback'     => array('tl_metamodels_openimmo', 'fieldsButton')
 			),
-			'syncCatalog' => array
+			'syncMetaModel' => array
 			(
 				'label'				  => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['sync'],
 				//'href'				  => 'table=tl_metamodels_openimmo_sync',
-				'href'				  => 'key=syncCatalog',
+				'href'				  => 'key=syncMetaModel',
 				'icon'				  => 'reload.gif',
 				//'attributes'		  => "onclick='if (!confirm(\'". $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['syncConfirm']."\')) return false; Backend.getScrollOffset();'"
 			),
@@ -113,7 +113,7 @@ $GLOBALS['TL_DCA']['tl_metamodels_openimmo'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array(''),
-		'default'                     => 'name,oiVersion,uniqueIDField;catalog,exportPath,filesPath'
+		'default'                     => 'name,oiVersion,uniqueIDField;metamodel,exportPath,filesPath'
 	),
 
 	// Subpalettes
@@ -148,12 +148,12 @@ $GLOBALS['TL_DCA']['tl_metamodels_openimmo'] = array
 			'eval'					  => array('mandatory'=>true),
 			'options_callback'		  => array('tl_metamodels_openimmo','getUniqueIDFieldOptions')
 		),
-		'catalog' => array
+		'metamodel' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['catalog'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['metamodel'],
 			'exclude'                 => true,
 			'inputType'               => 'select',
-			'foreignKey'			  => 'tl_catalog_types.name',
+			'foreignKey'			  => 'tl_metamodel.name',
 			'eval'                    => array('mandatory'=>true, 'maxlength'=>64)
 		),
 		'exportPath' => array
@@ -183,7 +183,7 @@ class tl_metamodels_openimmo extends Backend
 
 	function getUniqueIDFieldOptions(&$dc)
 	{
-		$flattenFields = CatalogOpenImmo::getFlattenedFields($this->getOIVersion($dc->id));
+		$flattenFields = MetaModelsOpenImmo::getFlattenedFields($this->getOIVersion($dc->id));
 		return array_keys($flattenFields);
 	}
 }

@@ -19,7 +19,7 @@ CREATE TABLE `tl_metamodels_openimmo` (
   `sorting` int(10) unsigned NOT NULL default '0',
   `tstamp` int(10) unsigned NOT NULL default '0',
   `name` varchar(64) NOT NULL default '',
-  `catalog` int(10) unsigned NOT NULL default '0',
+  `metamodel` int(10) unsigned NOT NULL default '0',
   `exportPath` varchar(1024) NOT NULL default '',
   `filesPath` varchar(1024) NOT NULL default '',
   `oiVersion` varchar(32) NOT NULL default '1.2.1',
@@ -41,7 +41,7 @@ CREATE TABLE `tl_metamodels_openimmo_fields` (
   `sorting` int(10) unsigned NOT NULL default '0',
   `tstamp` int(10) unsigned NOT NULL default '0',
   `name` varchar(64) NOT NULL default '',
-  `catField` int(10) unsigned NOT NULL default '0',
+  `metamodelAttribute` int(10) unsigned NOT NULL default '0',
   `oiFieldGroup` varchar(1024) NOT NULL default '',
   `oiField` varchar(1024) NOT NULL default '',
   `oiCustomField` varchar(1024) NOT NULL default ''

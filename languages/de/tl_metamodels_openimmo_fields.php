@@ -21,7 +21,7 @@
  * PHP version 5
  * @copyright  Ondrej Brinkel 2010 
  * @author     Ondrej Brinkel 
- * @package    CatalogOpenImmo 
+ * @package    MetaModelsOpenImmo
  * @license    GNU 
  * @filesource
  */
@@ -30,11 +30,11 @@
 /**
  * Fields
  */
-$GLOBALS['TL_LANG']['tl_metamodels_openimmo_fields']['name'] = array('Bezeichnung','Bezeichnung der Katalog-OpenImmo-Verknüpfung.');
-$GLOBALS['TL_LANG']['tl_metamodels_openimmo_fields']['catField'] = array('Katalogfeld', 'Feld des Katalogs welches mit dem OpenImmo-Datenfeld verknüpft werden soll.');
+$GLOBALS['TL_LANG']['tl_metamodels_openimmo_fields']['name'] = array('Bezeichnung','Bezeichnung der MetaModel-OpenImmo-Verknüpfung.');
+$GLOBALS['TL_LANG']['tl_metamodels_openimmo_fields']['metamodelAttribute'] = array('MetaModel-Attribut', 'Attribut des MetaModels welches mit dem OpenImmo-Datenfeld verknüpft werden soll.');
 $GLOBALS['TL_LANG']['tl_metamodels_openimmo_fields']['oiFieldGroup'] = array('OpenImmo-Datenfeldgruppe', 'OpenImmo Datenfeldgruppe, aus welcher ein OpenImmo-Datenfeld ausgewählt werden soll.');
-$GLOBALS['TL_LANG']['tl_metamodels_openimmo_fields']['oiField'] = array('OpenImmo-Datenfeld', 'OpenImmo Datenfeld, welches mit dem Katalogfeld verknüpft werden soll.');
-$GLOBALS['TL_LANG']['tl_metamodels_openimmo_fields']['oiCustomField'] = array('Eigenes OpenImmo-Datenfeld', 'Geben Sie den XML-Pfad zu einem eigenen OpenImmo Datenfeld an, welches mit dem Katalogfeld verknüpft werden soll. Setzen Sie ein "@" vor XML-Attribute. Bsp.: "anbieter/immobilie/user_defined_anyfield/mein_feld@mein_attribut"');
+$GLOBALS['TL_LANG']['tl_metamodels_openimmo_fields']['oiField'] = array('OpenImmo-Datenfeld', 'OpenImmo Datenfeld, welches mit dem MetaModelfeld verknüpft werden soll.');
+$GLOBALS['TL_LANG']['tl_metamodels_openimmo_fields']['oiCustomField'] = array('Eigenes OpenImmo-Datenfeld', 'Geben Sie den XML-Pfad zu einem eigenen OpenImmo Datenfeld an, welches mit dem MetaModelfeld verknüpft werden soll. Setzen Sie ein "@" vor XML-Attribute. Bsp.: "anbieter/immobilie/user_defined_anyfield/mein_feld@mein_attribut"');
 
 
 /**
