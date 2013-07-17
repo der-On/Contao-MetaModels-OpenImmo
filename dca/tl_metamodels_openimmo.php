@@ -137,7 +137,7 @@ $GLOBALS['TL_DCA']['tl_metamodels_openimmo'] = array
 			'label'					  => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['oiVersion'],
 			'exclude'				  => true,
 			'inputType'				  => 'select',
-			'options'				  => array('1.0','1.2.1','1.2.2'),
+			'options'				  => MetaModelsOpenImmo::getSupportedVersions(),
 			''
 		),
 		'uniqueIDField' => array
