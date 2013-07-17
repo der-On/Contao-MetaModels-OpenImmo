@@ -30,22 +30,22 @@
 /**
  * Fields
  */
-$GLOBALS['TL_LANG']['tl_catalog_openimmo'][''] = array('', '');
+$GLOBALS['TL_LANG']['tl_metamodels_openimmo'][''] = array('', '');
 
 
 /**
  * Reference
  */
-$GLOBALS['TL_LANG']['tl_catalog_openimmo'][''] = '';
+$GLOBALS['TL_LANG']['tl_metamodels_openimmo'][''] = '';
 
 
 /**
  * Buttons
  */
-$GLOBALS['TL_LANG']['tl_catalog_openimmo']['new']    = array('', '');
-$GLOBALS['TL_LANG']['tl_catalog_openimmo']['edit']   = array('', '');
-$GLOBALS['TL_LANG']['tl_catalog_openimmo']['copy']   = array('', '');
-$GLOBALS['TL_LANG']['tl_catalog_openimmo']['delete'] = array('', '');
-$GLOBALS['TL_LANG']['tl_catalog_openimmo']['show']   = array('', '');
+$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['new']    = array('', '');
+$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['edit']   = array('', '');
+$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['copy']   = array('', '');
+$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['delete'] = array('', '');
+$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['show']   = array('', '');
 
 ?>

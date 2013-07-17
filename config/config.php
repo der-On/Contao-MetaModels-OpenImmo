@@ -55,22 +55,22 @@
  * Use function array_insert() to modify an existing modules array.
  */
 
-$GLOBALS['BE_MOD']['content']['catalog_openimmo'] = array(
-	'tables' => array('tl_catalog_openimmo','tl_catalog_openimmo_fields'),
+$GLOBALS['BE_MOD']['content']['metamodels_openimmo'] = array(
+	'tables' => array('tl_metamodels_openimmo','tl_metamodels_openimmo_fields'),
 	'syncCatalog' => array('CatalogOpenImmo','sync'),
-	'icon' => 'system/modules/catalog_openimmo/html/icon.gif'
+	'icon' => 'system/modules/metamodels_openimmo/html/icon.gif'
 );
 
 $GLOBALS['BE_MOD']['content']['catalog']['fieldTypes']['hidden'] = array
 (
-	'typeimage'    => 'system/modules/catalog_openimmo/html/invisible.gif',
+	'typeimage'    => 'system/modules/metamodels_openimmo/html/invisible.gif',
 	'fieldDef'     => array('inputType' => 'hidden'),
 	'sqlDefColumn' => "text NULL",
 );
 
 $GLOBALS['BE_MOD']['content']['catalog']['typesCatalogFields'][] = 'hidden';
 
-$GLOBALS['TL_CSS'][] = 'system/modules/catalog_openimmo/html/catalog_openimmo.css';
+$GLOBALS['TL_CSS'][] = 'system/modules/metamodels_openimmo/html/metamodels_openimmo.css';
 
 /**
  * -------------------------------------------------------------------------

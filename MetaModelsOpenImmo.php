@@ -38,20 +38,20 @@
  */
 
 /**
- * Class CatalogOpenImmo 
+ * Class MetaModelsOpenImmo
  *
  * @copyright  Ondrej Brinkel 2010 
  * @author     Ondrej Brinkel 
  * @package    Controller
  */
-class CatalogOpenImmo extends BackendModule
+class MetaModelsOpenImmo extends BackendModule
 {
 
 	/**
 	 * Template
 	 * @var string
 	 */
-	protected $strTemplate = 'mod_catalog_openimmo';
+	protected $strTemplate = 'mod_metamodels_openimmo';
 	
 
 	public static $allowedAttachments = 'png,jpg,gif,pdf';
@@ -482,19 +482,19 @@ class CatalogOpenImmo extends BackendModule
 		$exportPath = $obj['exportPath'];
 		$catalog = $obj['catalog'];
 			
-		if ($this->Input->post('FORM_SUBMIT') == 'tl_catalog_openimmo_sync')
+		if ($this->Input->post('FORM_SUBMIT') == 'tl_metamodels_openimmo_sync')
 		{
-			$unpacked = $this->Input->post('tl_catalog_openimmo_zip_unpacked');
-			if($this->Input->post('tl_catalog_openimmo_sync_file')!="") {
+			$unpacked = $this->Input->post('tl_metamodels_openimmo_zip_unpacked');
+			if($this->Input->post('tl_metamodels_openimmo_sync_file')!="") {
 				if($unpacked=="2") {
 					$this->zip_unpacked = 2;
-				} else $sync_file = $this->Input->post('tl_catalog_openimmo_sync_file');
+				} else $sync_file = $this->Input->post('tl_metamodels_openimmo_sync_file');
 
 				$file = $this->getSyncFile($exportPath);
 
 				if($file) {
-					if ($this->Input->post("tl_catalog_openimmo_sync_file")) {
-						$sync_file = $this->Input->post('tl_catalog_openimmo_sync_file');
+					if ($this->Input->post("tl_metamodels_openimmo_sync_file")) {
+						$sync_file = $this->Input->post('tl_metamodels_openimmo_sync_file');
 					}
 					$this->addMessage('OpenImmo file: '.$file);
 					$data = $this->loadData($file);
@@ -519,7 +519,7 @@ class CatalogOpenImmo extends BackendModule
 				} else $error = 0;
 
 				$send = true;
-			} else $this->addMessage($GLOBALS['TL_LANG']['tl_catalog_openimmo']['noSyncFile']);
+			} else $this->addMessage($GLOBALS['TL_LANG']['tl_metamodels_openimmo']['noSyncFile']);
 		}
 		
 		$this->Template = new BackendTemplate($this->strTemplate);
@@ -533,40 +533,7 @@ class CatalogOpenImmo extends BackendModule
 			'error' => $error,
 			"sync_file" => $sync_file
 		));
-		// Return form
-		/*$output = '
-		<div id="tl_buttons">
-			<a href="'.$this->getReferer(ENCODE_AMPERSANDS).'" class="header_back" title="'.specialchars($GLOBALS['TL_LANG']['MSC']['backBT']).'">'.$GLOBALS['TL_LANG']['MSC']['backBT'].'</a>
-			</div>
-		<h2 class="sub_headline">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['sync'][0].'</h2>
 
-		<form action="'.ampersand($this->Environment->request, ENCODE_AMPERSANDS).'" id="tl_catalog_openimmo_sync" class="tl_form" method="post">
-		<div class="tl_formbody_edit">
-		<input type="hidden" name="FORM_SUBMIT" value="tl_catalog_openimmo_sync" />
-		<div class="tl_tbox">
-		<p style="line-height:16px; padding-top:6px;">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncConfirm'].'</p>';
-		$output.='<p>'.$this->getMessages().'</p>';
-		if(!$send) $output.=$this->getSyncFileSelect($exportPath);
-		if($send) {
-			if($this->zip_unpacked==1) {
-				$output.='<p class="tl_confirm">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncFileUnpacked'].'</p>'.
-				'<input type="hidden" name="tl_catalog_openimmo_zip_unpacked" value="2">';
-			} else $output.=($success ? '<p class="tl_confirm">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncSuccess'].'</p>' : '<p class="tl_error">'.$GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncErrors'][$error].'</p>');
-		}
-		$output.='</div>
-		</div>';
-		if(!$send || $this->zip_unpacked==1) {
-			$output.='
-			<div class="tl_formbody_submit">
-
-			<div class="tl_submit_container">
-			<input type="submit" name="save" id="save" class="tl_submit" alt="regenerate dca" accesskey="s" value="'.specialchars($GLOBALS['TL_LANG']['tl_catalog_openimmo']['sync'][0]).'" />
-			</div>
-
-			</div>';
-		}
-		$output.='</form>';
-		return $output;*/
 		return $this->Template->parse();
 	}
 
@@ -574,9 +541,9 @@ class CatalogOpenImmo extends BackendModule
 	{
 		$files = $this->getSyncFiles($exportPath);
 		if($files) {
-			$output = "<label for='tl_catalog_openimmo_sync_files'>".$GLOBALS['TL_LANG']['tl_catalog_openimmo']['sync_file_select']."</label><br/>";
-			$output.="<select id='tl_catalog_openimmo_sync_files' name='tl_catalog_openimmo_sync_file'>";
-			$output.="<option value=''>".$GLOBALS['TL_LANG']['tl_catalog_openimmo']['sync_file_auto']."</option>";
+			$output = "<label for='tl_metamodels_openimmo_sync_files'>".$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['sync_file_select']."</label><br/>";
+			$output.="<select id='tl_metamodels_openimmo_sync_files' name='tl_metamodels_openimmo_sync_file'>";
+			$output.="<option value=''>".$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['sync_file_auto']."</option>";
 			foreach($files as &$file) {
 				if($file['size']<1024) {
 					$size = $file['size'].' Bytes';
@@ -589,7 +556,7 @@ class CatalogOpenImmo extends BackendModule
 			}
 			$output.="</select>";
 			return $output;
-		} else return "<p class='tl_error'>".$GLOBALS['TL_LANG']['tl_catalog_openimmo']['no_sync_files_found']."</p>";
+		} else return "<p class='tl_error'>".$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['no_sync_files_found']."</p>";
 	}
 
 	public static function parseFields(&$group)
@@ -642,7 +609,7 @@ class CatalogOpenImmo extends BackendModule
 	private function getCatalogObject($id)
 	{
 		return $this->Database->execute("SELECT co.id AS id,co.catalog AS catalogID, co.exportPath AS exportPath, co.filesPath AS filesPath, ct.tableName AS catalog, co.oiVersion AS oiVersion, co.uniqueIDField AS uniqueIDField ".
-										"FROM tl_catalog_openimmo co ".
+										"FROM tl_metamodels_openimmo co ".
 										"LEFT JOIN tl_catalog_types ct ON ct.id=co.catalog ".
 										"WHERE co.id='$id'")->fetchAssoc();
 	}
@@ -653,7 +620,7 @@ class CatalogOpenImmo extends BackendModule
 
 		$synced = array();
 
-		$history = $this->Database->execute("SELECT * FROM tl_catalog_openimmo_history")->fetchAllAssoc();
+		$history = $this->Database->execute("SELECT * FROM tl_metamodels_openimmo_history")->fetchAllAssoc();
 		
 		foreach($history as $entry) {
 			$synced[$entry['file']] = array(
@@ -718,7 +685,7 @@ class CatalogOpenImmo extends BackendModule
 		$currentTime = 0;
 		
 		if(!$folder->isEmpty()) {
-			$sync_file = $this->Input->post('tl_catalog_openimmo_sync_file');
+			$sync_file = $this->Input->post('tl_metamodels_openimmo_sync_file');
 			
 			if(!$use_post || ($use_post && ($sync_file==null || $sync_file==''))) {
 				//get latest file
@@ -775,11 +742,11 @@ class CatalogOpenImmo extends BackendModule
 			"status" => $status,
 			"user" => $GLOBALS['TL_USERNAME']
 		);
-		$exists = $this->Database->execute("SELECT id,filetime FROM tl_catalog_openimmo_history WHERE file = '$item[file]'")->fetchAssoc();
+		$exists = $this->Database->execute("SELECT id,filetime FROM tl_metamodels_openimmo_history WHERE file = '$item[file]'")->fetchAssoc();
 		if($exists!=false && count($exists)>0) {
 			$item["filetime"] = $exists["filetime"];
-			$this->Database->prepare("UPDATE tl_catalog_openimmo_history %s WHERE id='$exists[id]'")->set($item)->execute();
-		} else $this->Database->prepare("INSERT INTO tl_catalog_openimmo_history %s")->set($item)->execute();
+			$this->Database->prepare("UPDATE tl_metamodels_openimmo_history %s WHERE id='$exists[id]'")->set($item)->execute();
+		} else $this->Database->prepare("INSERT INTO tl_metamodels_openimmo_history %s")->set($item)->execute();
 
 	}
 
@@ -798,7 +765,7 @@ class CatalogOpenImmo extends BackendModule
 	{
 		$fields = array();
 		$_fields = $this->Database->execute("SELECT cf.colName as catField, cof.catField AS catFieldID , cof.oiField AS oiField, cof.oiFieldGroup as oiFieldGroup, cof.oiCustomField as oiCustomField ".
-											"FROM tl_catalog_openimmo_fields cof ".
+											"FROM tl_metamodels_openimmo_fields cof ".
 											"LEFT JOIN tl_catalog_fields cf ON cf.id=cof.catField ".
 											"WHERE cof.pid='".$id."'")->fetchAllAssoc();
 

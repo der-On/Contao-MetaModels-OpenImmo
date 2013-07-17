@@ -11,10 +11,10 @@
 -- --------------------------------------------------------
 
 -- 
--- Table `tl_catalog_openimmo`
+-- Table `tl_metamodels_openimmo`
 -- 
 
-CREATE TABLE `tl_catalog_openimmo` (
+CREATE TABLE `tl_metamodels_openimmo` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `sorting` int(10) unsigned NOT NULL default '0',
   `tstamp` int(10) unsigned NOT NULL default '0',
@@ -32,10 +32,10 @@ CREATE TABLE `tl_catalog_openimmo` (
 -- --------------------------------------------------------
 
 -- 
--- Table `tl_catalog_openimmo_fields`
+-- Table `tl_metamodels_openimmo_fields`
 -- 
 
-CREATE TABLE `tl_catalog_openimmo_fields` (
+CREATE TABLE `tl_metamodels_openimmo_fields` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `pid` int(10) unsigned NOT NULL default '0',
   `sorting` int(10) unsigned NOT NULL default '0',
@@ -54,10 +54,10 @@ CREATE TABLE `tl_catalog_openimmo_fields` (
 -- --------------------------------------------------------
 
 --
--- Table `tl_catalog_openimmo_history`
+-- Table `tl_metamodels_openimmo_history`
 --
 
-CREATE TABLE `tl_catalog_openimmo_history` (
+CREATE TABLE `tl_metamodels_openimmo_history` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `file` varchar(1024) NOT NULL default '',
   `synctime` int(10) unsigned NOT NULL default '0',

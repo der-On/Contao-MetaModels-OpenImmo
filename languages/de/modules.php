@@ -30,7 +30,7 @@
 /**
  * Back end modules
  */
-$GLOBALS['TL_LANG']['MOD']['catalog_openimmo'] = array('Katalog - OpenImmo', 'Mit diesem Modul können Sie im OpenImmo-Daten mit einem Katalog synchronisieren.');
+$GLOBALS['TL_LANG']['MOD']['metamodels_openimmo'] = array('MetaModels - OpenImmo', 'Mit diesem Modul können Sie im OpenImmo-Daten mit einem MetaModel synchronisieren.');
 
 
 /**

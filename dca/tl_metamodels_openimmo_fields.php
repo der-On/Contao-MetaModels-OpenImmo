@@ -28,9 +28,9 @@
 
 
 /**
- * Table tl_catalog_openimmo_fields 
+ * Table tl_metamodels_openimmo_fields
  */
-$GLOBALS['TL_DCA']['tl_catalog_openimmo_fields'] = array
+$GLOBALS['TL_DCA']['tl_metamodels_openimmo_fields'] = array
 (
 
 	// Config
@@ -38,7 +38,7 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo_fields'] = array
 	(
 		'dataContainer'               => 'Table',
 		'enableVersioning'            => true,
-		'ptable'                      => 'tl_catalog_openimmo',
+		'ptable'                      => 'tl_metamodels_openimmo',
 	),
 
 	// List
@@ -51,12 +51,12 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo_fields'] = array
 			'flag'                    => 1,
 			'panelLayout'			  => 'filter,limit',
 			'headerFields'			  => array('name','oiVersion','catalog','exportPath'),
-			'child_record_callback'   => array('tl_catalog_openimmo_fields', 'renderField')
+			'child_record_callback'   => array('tl_metamodels_openimmo_fields', 'renderField')
 		),
 		'label' => array
 		(
 			'fields'                  => array('name','oiFieldGroup','oiField'),
-			'format'                  => &$GLOBALS['TL_LANG']['tl_catalog_openimmo_fields']['fields']
+			'format'                  => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo_fields']['fields']
 		),
 		'global_operations' => array
 		(
@@ -72,26 +72,26 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo_fields'] = array
 		(
 			'edit' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_catalog_openimmo_fields']['edit'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo_fields']['edit'],
 				'href'                => 'act=edit',
 				'icon'                => 'edit.gif'
 			),
 			'copy' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_catalog_openimmo_fields']['copy'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo_fields']['copy'],
 				'href'                => 'act=copy',
 				'icon'                => 'copy.gif'
 			),
 			'delete' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_catalog_openimmo_fields']['delete'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo_fields']['delete'],
 				'href'                => 'act=delete',
 				'icon'                => 'delete.gif',
 				'attributes'          => 'onclick="if (!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\')) return false; Backend.getScrollOffset();"'
 			),
 			'show' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_catalog_openimmo_fields']['show'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo_fields']['show'],
 				'href'                => 'act=show',
 				'icon'                => 'show.gif'
 			)
@@ -116,38 +116,38 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo_fields'] = array
 	(
 		'name' => array
 		(
-			'label'					  => &$GLOBALS['TL_LANG']['tl_catalog_openimmo_fields']['name'],
+			'label'					  => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo_fields']['name'],
 			'exclude'				  => true,
 			'inputType'				  => 'text',
 			'eval'					  => array('mandatory'=>true,'maxlength'=>64,'unique'=>true)
 		),
 		'catField' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_catalog_openimmo_fields']['catField'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo_fields']['catField'],
 			'exclude'                 => true,
 			'inputType'               => 'select',
 			'eval'                    => array('mandatory'=>true, 'maxlength'=>64),
-			'options_callback'		  => array('tl_catalog_openimmo_fields','getCatFieldOptions')
+			'options_callback'		  => array('tl_metamodels_openimmo_fields','getCatFieldOptions')
 		),
 		'oiFieldGroup' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_catalog_openimmo_fields']['oiFieldGroup'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo_fields']['oiFieldGroup'],
 			'exclude'                 => true,
 			'inputType'               => 'select',
 			'eval'                    => array('mandatory'=>false, 'maxlength'=>64,'submitOnChange'=>true,'includeBlankOption'=>true),
-			'options_callback'		  => array('tl_catalog_openimmo_fields','getOIFieldGroupOptions')
+			'options_callback'		  => array('tl_metamodels_openimmo_fields','getOIFieldGroupOptions')
 		),
 		'oiField' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_catalog_openimmo_fields']['oiField'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo_fields']['oiField'],
 			'exclude'                 => true,
 			'inputType'               => 'select',
 			'eval'                    => array('mandatory'=>false, 'maxlength'=>64),
-			'options_callback'		  => array('tl_catalog_openimmo_fields','getOIFieldOptions')
+			'options_callback'		  => array('tl_metamodels_openimmo_fields','getOIFieldOptions')
 		),
 		'oiCustomField' => array
 		(
-			'label'					  => &$GLOBALS['TL_LANG']['tl_catalog_openimmo_fields']['oiCustomField'],
+			'label'					  => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo_fields']['oiCustomField'],
 			'exclude'				  => true,
 			'inputType'				  => 'text',
 			'eval'					  => array('mandatory'=>false, 'maxlength'=>1024)
@@ -156,20 +156,20 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo_fields'] = array
 );
 
 
-class tl_catalog_openimmo_fields extends Backend
+class tl_metamodels_openimmo_fields extends Backend
 {
 	private function getCatalogTypeID($id)
 	{
-		$catalogID = $this->Database->execute("SELECT co.catalog AS catalog FROM tl_catalog_openimmo co ".
-											"LEFT JOIN tl_catalog_openimmo_fields cof ON cof.id='$id' ".
+		$catalogID = $this->Database->execute("SELECT co.catalog AS catalog FROM tl_metamodels_openimmo co ".
+											"LEFT JOIN tl_metamodels_openimmo_fields cof ON cof.id='$id' ".
 											"WHERE co.id=cof.pid")->fetchEach('catalog');
 		return $catalogID[0];
 	}
 
 	private function getOIVersion($id)
 	{
-		$version = $this->Database->execute("SELECT co.oiVersion AS oiVersion FROM tl_catalog_openimmo co ".
-											"LEFT JOIN tl_catalog_openimmo_fields cof ON cof.id='$id' ".
+		$version = $this->Database->execute("SELECT co.oiVersion AS oiVersion FROM tl_metamodels_openimmo co ".
+											"LEFT JOIN tl_metamodels_openimmo_fields cof ON cof.id='$id' ".
 											"WHERE co.id=cof.pid")->fetchEach('oiVersion');
 		return $version[0];
 	}
@@ -191,7 +191,7 @@ class tl_catalog_openimmo_fields extends Backend
 
 	public function getOIFieldOptions(&$dc)
 	{
-		$group = $this->Database->execute("SELECT oiFieldGroup FROM tl_catalog_openimmo_fields WHERE id='".$dc->id."'")->fetchEach('oiFieldGroup');
+		$group = $this->Database->execute("SELECT oiFieldGroup FROM tl_metamodels_openimmo_fields WHERE id='".$dc->id."'")->fetchEach('oiFieldGroup');
 		$group = $group[0];
 
 		$fields = CatalogOpenImmo::getFieldsByGroup($this->getOIVersion($dc->id),$group);

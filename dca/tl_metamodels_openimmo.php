@@ -28,16 +28,16 @@
 
 
 /**
- * Table tl_catalog_openimmo 
+ * Table tl_metamodels_openimmo
  */
-$GLOBALS['TL_DCA']['tl_catalog_openimmo'] = array
+$GLOBALS['TL_DCA']['tl_metamodels_openimmo'] = array
 (
 	// Config
 	'config' => array
 	(
 		'dataContainer'               => 'Table',
 		'enableVersioning'            => true,
-		'cTable'					  =>'tl_catalog_openimmo_fields'
+		'cTable'					  =>'tl_metamodels_openimmo_fields'
 	),
 
 	// List
@@ -68,43 +68,43 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo'] = array
 		(
 			'edit' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_catalog_openimmo']['edit'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['edit'],
 				'href'                => 'act=edit',
 				'icon'                => 'edit.gif'
 			),
 			'copy' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_catalog_openimmo']['copy'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['copy'],
 				'href'                => 'act=copy',
 				'icon'                => 'copy.gif'
 			),
 			'delete' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_catalog_openimmo']['delete'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['delete'],
 				'href'                => 'act=delete',
 				'icon'                => 'delete.gif',
 				'attributes'          => 'onclick="if (!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\')) return false; Backend.getScrollOffset();"'
 			),
 			'show' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_catalog_openimmo']['show'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['show'],
 				'href'                => 'act=show',
 				'icon'                => 'show.gif'
 			),
 			'fields' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_catalog_openimmo']['fields'],
-				'href'                => 'table=tl_catalog_openimmo_fields',
+				'label'               => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['fields'],
+				'href'                => 'table=tl_metamodels_openimmo_fields',
 				'icon'                => 'tablewizard.gif',
-				//'button_callback'     => array('tl_catalog_openimmo', 'fieldsButton')
+				//'button_callback'     => array('tl_metamodels_openimmo', 'fieldsButton')
 			),
 			'syncCatalog' => array
 			(
-				'label'				  => &$GLOBALS['TL_LANG']['tl_catalog_openimmo']['sync'],
-				//'href'				  => 'table=tl_catalog_openimmo_sync',
+				'label'				  => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['sync'],
+				//'href'				  => 'table=tl_metamodels_openimmo_sync',
 				'href'				  => 'key=syncCatalog',
 				'icon'				  => 'reload.gif',
-				//'attributes'		  => "onclick='if (!confirm(\'". $GLOBALS['TL_LANG']['tl_catalog_openimmo']['syncConfirm']."\')) return false; Backend.getScrollOffset();'"
+				//'attributes'		  => "onclick='if (!confirm(\'". $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['syncConfirm']."\')) return false; Backend.getScrollOffset();'"
 			),
 		)
 	),
@@ -127,14 +127,14 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo'] = array
 	(
 		'name' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_catalog_openimmo']['name'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['name'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
 			'eval'                    => array('mandatory'=>true, 'maxlength'=>64)
 		),
 		'oiVersion' => array
 		(
-			'label'					  => &$GLOBALS['TL_LANG']['tl_catalog_openimmo']['oiVersion'],
+			'label'					  => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['oiVersion'],
 			'exclude'				  => true,
 			'inputType'				  => 'select',
 			'options'				  => array('1.0','1.2.1','1.2.2'),
@@ -142,15 +142,15 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo'] = array
 		),
 		'uniqueIDField' => array
 		(
-			'label'					  => &$GLOBALS['TL_LANG']['tl_catalog_openimmo']['uniqueIDField'],
+			'label'					  => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['uniqueIDField'],
 			'exclude'				  => true,
 			'inputType'				  => 'select',
 			'eval'					  => array('mandatory'=>true),
-			'options_callback'		  => array('tl_catalog_openimmo','getUniqueIDFieldOptions')
+			'options_callback'		  => array('tl_metamodels_openimmo','getUniqueIDFieldOptions')
 		),
 		'catalog' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_catalog_openimmo']['catalog'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['catalog'],
 			'exclude'                 => true,
 			'inputType'               => 'select',
 			'foreignKey'			  => 'tl_catalog_types.name',
@@ -158,14 +158,14 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo'] = array
 		),
 		'exportPath' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_catalog_openimmo']['exportPath'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['exportPath'],
 			'exclude'                 => true,
 			'inputType'               => 'fileTree',
 			'eval'                    => array('mandatory'=>true, 'maxlength'=>1024,'files'=>false,'filesOnly'=>false,'fieldType'=>'radio')
 		),
 		'filesPath' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_catalog_openimmo']['filesPath'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['filesPath'],
 			'exclude'                 => true,
 			'inputType'               => 'fileTree',
 			'eval'                    => array('mandatory'=>true, 'maxlength'=>1024,'files'=>false,'filesOnly'=>false,'fieldType'=>'radio')
@@ -173,11 +173,11 @@ $GLOBALS['TL_DCA']['tl_catalog_openimmo'] = array
 	)
 );
 
-class tl_catalog_openimmo extends Backend
+class tl_metamodels_openimmo extends Backend
 {
 	private function getOIVersion($id)
 	{
-		$version = $this->Database->execute("SELECT oiVersion FROM tl_catalog_openimmo WHERE id='$id'")->fetchEach('oiVersion');
+		$version = $this->Database->execute("SELECT oiVersion FROM tl_metamodels_openimmo WHERE id='$id'")->fetchEach('oiVersion');
 		return $version[0];
 	}
 
