@@ -30,8 +30,8 @@
 /*
  * TODO:
  *	- allow partly updates recognizing also deleted entries (if possible)
- *	- allow mapping of multiple tags with same name to different catalog fields or array fields
- *	- add type check when mapping catalog field to openImmo field
+ *	- allow mapping of multiple tags with same name to different metamodel fields or array fields
+ *	- add type check when mapping metamodel field to openImmo field
  *	- anbieter/ should not be parsed for each immo again
  *	- anbieter/immobilie/ should not be parsed when getting anbieter/
  *	- add support for other openImmo versions
@@ -578,11 +578,11 @@ class MetaModelsOpenImmo extends BackendModule
 		return $field;
 	}
 
-	private function parseFieldType($xpath,$value,$catalogObj)
+	private function parseFieldType($xpath,$value,$metamodelObj)
 	{
 		//if($this->fieldsFlat!=null) {
 			if(isset($this->fieldsFlat[$xpath]) && $this->fieldsFlat[$xpath]=='path') {
-				return $catalogObj['filesPath'].'/'.$value;
+				return $metamodelObj['filesPath'].'/'.$value;
 			} else return $value;
 		//} else return $value;
 	}
@@ -764,18 +764,18 @@ class MetaModelsOpenImmo extends BackendModule
 	private function getSyncFields($id,$uniqueIDField)
 	{
 		$fields = array();
-		$_fields = $this->Database->execute("SELECT cf.colName as catField, cof.catField AS catFieldID , cof.oiField AS oiField, cof.oiFieldGroup as oiFieldGroup, cof.oiCustomField as oiCustomField ".
-											"FROM tl_metamodels_openimmo_fields cof ".
-											"LEFT JOIN tl_catalog_fields cf ON cf.id=cof.catField ".
-											"WHERE cof.pid='".$id."'")->fetchAllAssoc();
+		$_fields = $this->Database->execute("SELECT mma.colname as metamodelAttribute, mmof.metamodelAttribute AS metamodelAttributeID , mmof.oiField AS oiField, mmof.oiFieldGroup as oiFieldGroup, mmof.oiCustomField as oiCustomField ".
+											"FROM tl_metamodels_openimmo_fields mmof ".
+											"LEFT JOIN tl_metamodel_attribute mma ON mma.id=mmof.metamodelAttribute ".
+											"WHERE mmof.pid='".$id."'")->fetchAllAssoc();
 
 		foreach($_fields as $field) {
-			//prevent loading missing catalog fields
-			if($field['catField']!='') {
-				if(!isset($fields[$field['catField']])) $fields[$field['catField']] = array();
+			//prevent loading missing metamodel fields
+			if($field['metamodelAttribute']!='') {
+				if(!isset($fields[$field['metamodelAttribute']])) $fields[$field['metamodelAttribute']] = array();
 				if($field['oiCustomField']!='') {
-					$fields[$field['catField']][] = $field['oiCustomField'];
-				} else $fields[$field['catField']][] = $field['oiFieldGroup'].'/'.$field['oiField'];
+					$fields[$field['metamodelAttribute']][] = $field['oiCustomField'];
+				} else $fields[$field['metamodelAttribute']][] = $field['oiFieldGroup'].'/'.$field['oiField'];
 			}
 		}
 
@@ -803,12 +803,12 @@ class MetaModelsOpenImmo extends BackendModule
 		$this->fieldsFlat = MetaModelsOpenImmo::getFlattenedFields($oiVersion);
 	}
 	
-	private function syncDataWithCatalog(&$data,&$catalogObj,&$syncFields)
+	private function syncDataWithCatalog(&$data,&$metamodelObj,&$syncFields)
 	{
 		if($this->dataIsValid($data)) {
 
 			//flatten fields array temporally
-			$this->flattenFields($catalogObj['oiVersion']);
+			$this->flattenFields($metamodelObj['oiVersion']);
 			
 			$anbieter = $this->getAnbieter($data);
 			
@@ -822,7 +822,7 @@ class MetaModelsOpenImmo extends BackendModule
 				foreach($anbieter as $_anbieter) {
 					$immo_anbieter = array();
 					$xpath = 'anbieter';
-					$this->setImmoFields($_anbieter,$immo_anbieter,$syncFields,$xpath,$catalogObj);
+					$this->setImmoFields($_anbieter,$immo_anbieter,$syncFields,$xpath,$metamodelObj);
 
 					$immobilien = $this->getImmobilien($_anbieter);
 
@@ -834,11 +834,11 @@ class MetaModelsOpenImmo extends BackendModule
 						$sorting++;
 						
 						//add anbieter info to immo
-						$immo = array("id"=>$immo_id,"pid"=>$catalogObj['catalogID'],"tstamp"=>time(),"sorting"=>$sorting);
+						$immo = array("id"=>$immo_id,"pid"=>$metamodelObj['metamodelID'],"tstamp"=>time(),"sorting"=>$sorting);
 						$immo = array_merge($immo_anbieter,$immo);
 						
 						//immo info
-						$this->setImmoFields($immobilie,$immo,$syncFields,$xpath,$catalogObj);
+						$this->setImmoFields($immobilie,$immo,$syncFields,$xpath,$metamodelObj);
 
 						//store reference to xml-node
 						$immo['_xml_'] = $immobilie;
@@ -848,7 +848,7 @@ class MetaModelsOpenImmo extends BackendModule
 				}
 				$this->addMessage("found ".count($immos)." objects");
 				
-				return $this->updateCatalog($immos,$catalogObj);
+				return $this->updateCatalog($immos,$metamodelObj);
 			} else return false;
 		} else {
 			$this->addMessage('invalid OpenImmo data');
@@ -866,17 +866,17 @@ class MetaModelsOpenImmo extends BackendModule
 		} else return false;
 	}
 
-	private function setImmoFields(&$xml,&$immo,&$fields,$xpath,&$catalogObj)
+	private function setImmoFields(&$xml,&$immo,&$fields,$xpath,&$metamodelObj)
 	{
-		foreach(array_keys($fields) as $catField) {
-			foreach($fields[$catField] as $fieldPath) {
-				$value = $this->getFieldData($xml,$fieldPath,$xpath,$catalogObj);
-				if($value!=null) $immo[$catField] = $value;
+		foreach(array_keys($fields) as $metamodelAttribute) {
+			foreach($fields[$metamodelAttribute] as $fieldPath) {
+				$value = $this->getFieldData($xml,$fieldPath,$xpath,$metamodelObj);
+				if($value!=null) $immo[$metamodelAttribute] = $value;
 			}
 		}
 	}
 
-	private function getFieldData(&$xml,$fieldPath,$xpath,&$catalogObj)
+	private function getFieldData(&$xml,$fieldPath,$xpath,&$metamodelObj)
 	{
 		$attr_pos = strpos($fieldPath,'@');
 		if($attr_pos!=FALSE) {
@@ -896,7 +896,7 @@ class MetaModelsOpenImmo extends BackendModule
 					$attributes = $results[$i]->attributes();
 					$results[$i] = $attributes[$attr];
 				}
-				$results[$i] = $this->parseFieldType($fieldPath,$results[$i].'',$catalogObj);
+				$results[$i] = $this->parseFieldType($fieldPath,$results[$i].'',$metamodelObj);
 			}
 			
 			if($count==1) {
@@ -936,51 +936,51 @@ class MetaModelsOpenImmo extends BackendModule
 		}
 	}
 
-	private function updateCatalog(&$items,$catalogObj)
+	private function updateCatalog(&$items,$metamodelObj)
 	{
 		//TODO: generate ID from uniqueIDField
 
-		$catalog = $catalogObj['catalog'];
+		$metamodel = $metamodelObj['metamodel'];
 		
 		foreach($items as &$item) {
 			//check if entry already exists
-			$exists = $this->Database->execute("SELECT COUNT(id) FROM $catalog WHERE id='".$item['id']."'")->fetchAssoc();
+			$exists = $this->Database->execute("SELECT COUNT(id) FROM $metamodel WHERE id='".$item['id']."'")->fetchAssoc();
 
 			//remove if deleteAction is in use
-			$deleted = $this->getFieldData($item['_xml_'],MetaModelsOpenImmo::$deleteActionField[$catalogObj['oiVersion']]['path'],'anbieter/immobilie',$catalogObj);
-			$deleted = ($deleted == MetaModelsOpenImmo::$deleteActionField[$catalogObj['oiVersion']]['value'])?true:false;
+			$deleted = $this->getFieldData($item['_xml_'],MetaModelsOpenImmo::$deleteActionField[$metamodelObj['oiVersion']]['path'],'anbieter/immobilie',$metamodelObj);
+			$deleted = ($deleted == MetaModelsOpenImmo::$deleteActionField[$metamodelObj['oiVersion']]['value'])?true:false;
 
 			$this->convertDataValues($item);
 			
 			if(intval($exists['COUNT(id)'])>0) {
 				//remove old entry if one exists and this should be deleted
 				if($deleted) {
-					$this->Database->execute("DELETE FROM $catalog WHERE id='".$item['id']."'");
+					$this->Database->execute("DELETE FROM $metamodel WHERE id='".$item['id']."'");
 					$this->addMessage("deleted object: ".$item['id']);
 				} else {
 					$id = $item['id'];
 					unset($item['id']);
 					unset($item['_xml_']);
-					$this->Database->prepare("UPDATE $catalog %s WHERE id='$id'")->set($item)->execute();
+					$this->Database->prepare("UPDATE $metamodel %s WHERE id='$id'")->set($item)->execute();
 				}
 			} elseif(!$deleted) {
 				unset($item['_xml_']);
-				$this->Database->prepare("INSERT INTO $catalog %s")->set($item)->execute();
+				$this->Database->prepare("INSERT INTO $metamodel %s")->set($item)->execute();
 			}
 		}
 		return true;
 	}
 
-	private function syncDataFiles(&$catalogObj,$dataFile)
+	private function syncDataFiles(&$metamodelObj,$dataFile)
 	{
 		$dataPath = FilesHelper::fileDirPath($dataFile);
 		
 		//get attachments in the data folder
 		$files = FilesHelper::scandirByExt($dataPath, explode(',',MetaModelsOpenImmo::$allowedAttachments));
 
-		$filesFolder = new Folder($catalogObj['filesPath']);
+		$filesFolder = new Folder($metamodelObj['filesPath']);
 
-		if(FilesHelper::isWritable($catalogObj['filesPath'])) {
+		if(FilesHelper::isWritable($metamodelObj['filesPath'])) {
 
 			//remove old files
 			//$filesFolder->clear();
@@ -988,10 +988,10 @@ class MetaModelsOpenImmo extends BackendModule
 			$filesObj = Files::getInstance();
 
 			foreach($files as $file) {
-				$filesObj->copy($dataPath.$file,$catalogObj['filesPath'].'/'.$file);
+				$filesObj->copy($dataPath.$file,$metamodelObj['filesPath'].'/'.$file);
 			}
-			$this->addMessage('copied '.count($files).' files from temporary directory to: '.$catalogObj['filesPath']);
-		} else $this->addMessage('cannot copy temporary files: '.$catalogObj['filesPath'].' not writable');
+			$this->addMessage('copied '.count($files).' files from temporary directory to: '.$metamodelObj['filesPath']);
+		} else $this->addMessage('cannot copy temporary files: '.$metamodelObj['filesPath'].' not writable');
 		
 		//empty the data directory if it is the temp directory so we do not have files doubled
 		if(substr($dataPath,-4)=='tmp/') {
