@@ -874,26 +874,36 @@ class MetaModelsOpenImmo extends BackendModule
 		return simplexml_load_string($data);
 	}
 
-	private function getSyncFields($id,$uniqueIDField)
+	private function getSyncFields($id, $uniqueIDField)
 	{
 		$fields = array();
-		$_fields = $this->Database->execute("SELECT mma.colname as metamodelAttribute, mmof.metamodelAttribute AS metamodelAttributeID , mmof.oiField AS oiField, mmof.oiFieldGroup as oiFieldGroup, mmof.oiCustomField as oiCustomField ".
+		$_fields = $this->Database->execute("SELECT mma.colname as metamodelAttribute, mmof.metamodelAttribute AS metamodelAttributeID , mmof.oiField AS oiField, mmof.oiFieldGroup as oiFieldGroup, mmof.oiCustomField as oiCustomField, mmof.oiConditionField as oiConditionField, mmof.oiConditionValue as oiConditionValue ".
 											"FROM tl_metamodels_openimmo_fields mmof ".
 											"LEFT JOIN tl_metamodel_attribute mma ON mma.id=mmof.metamodelAttribute ".
 											"WHERE mmof.pid='".$id."'")->fetchAllAssoc();
 
-		foreach($_fields as $field) {
-			//prevent loading missing metamodel fields
-			if($field['metamodelAttribute']!='') {
-				if(!isset($fields[$field['metamodelAttribute']])) $fields[$field['metamodelAttribute']] = array();
-				if($field['oiCustomField']!='') {
-					$fields[$field['metamodelAttribute']][] = $field['oiCustomField'];
-				} else $fields[$field['metamodelAttribute']][] = $field['oiFieldGroup'].'/'.$field['oiField'];
-			}
-		}
+        foreach ($_fields as $field) {
+            //prevent loading missing metamodel fields
+            if ($field['metamodelAttribute'] != '') {
+                if (!isset($fields[$field['metamodelAttribute']])) {
+                    $fields[$field['metamodelAttribute']] = array();
+                }
+                if ($field['oiCustomField'] != '') {
+                    $field_obj = new MetaModelsOpenImmoField($field['metamodelAttribute'], $field['oiCustomField']);
+
+                } else {
+                    $field_obj = new MetaModelsOpenImmoField($field['metamodelAttribute'], $field['oiFieldGroup'] . '/' . $field['oiField']);
+                }
+                if (!empty($field['oiConditionField'])) {
+                    $field_obj->setConditionField($field['oiConditionField']);
+                    $field_obj->setConditionValue($field['oiConditionValue']);
+                }
+                $fields[$field['metamodelAttribute']][] = $field_obj;
+            }
+        }
 
 		//add uniqueIDField
-		if($uniqueIDField!='') $fields['id'] = array($uniqueIDField);
+		if($uniqueIDField != '') $fields['id'] = array(new MetaModelsOpenImmoField('id', $uniqueIDField));
 
 		return $fields;
 	}
@@ -982,14 +992,42 @@ class MetaModelsOpenImmo extends BackendModule
 	private function setImmoFields(&$xml,&$immo,&$fields,$xpath,&$metamodelObj)
 	{
 		foreach(array_keys($fields) as $metamodelAttribute) {
-			foreach($fields[$metamodelAttribute] as $fieldPath) {
-				$value = $this->getFieldData($xml,$fieldPath,$xpath,$metamodelObj);
-				if($value!=null) $immo[$metamodelAttribute] = $value;
+			foreach($fields[$metamodelAttribute] as $field_obj) {
+                $value = $this->getFieldData($xml, $field_obj->getField(), $xpath, $metamodelObj, false);
+
+                if ($field_obj->hasCondition()) {
+                    $condition_value = $this->getFieldData($xml, $field_obj->getConditionField(), $xpath, $metamodelObj, false);
+
+                    // both value and condition value are not arrays
+                    if (!is_array($condition_value)) {
+                        // if not equal set value to null
+                        if ($condition_value != $field_obj->getConditionValue()) {
+                            $value = null;
+                        }
+                    }
+                    // value and condition are arrays, so we have to compare each value item against the corresponding condition value item
+                    elseif (is_array($value) && is_array($condition_value)) {
+                        foreach($value as $i => $value_item) {
+                            // if not equal we have to remove the value item
+                            if (isset($condition_value[$i]) && $condition_value[$i] != $field_obj->getConditionValue()) {
+                                unset($value[$i]);
+                            }
+                        }
+                    }
+                }
+
+                if($value != null) {
+                    if (is_array($value)) {
+                        $value = serialize($value);
+                    }
+
+                    $immo[$metamodelAttribute] = $value;
+                }
 			}
 		}
 	}
 
-	private function getFieldData(&$xml,$fieldPath,$xpath,&$metamodelObj)
+	private function getFieldData(&$xml,$fieldPath,$xpath,&$metamodelObj, $serialize = true)
 	{
 		$attr_pos = strpos($fieldPath,'@');
 		if($attr_pos!=FALSE) {
@@ -1015,7 +1053,12 @@ class MetaModelsOpenImmo extends BackendModule
 			if($count==1) {
 				return $results[0];
 			} elseif($count>1) {
-				return serialize($results);
+                if ($serialize) {
+                    return serialize($results);
+                }
+                else {
+                    return $results;
+                }
 			}
 			
 		} else return null;

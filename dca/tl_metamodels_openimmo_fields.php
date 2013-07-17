@@ -102,7 +102,7 @@ $GLOBALS['TL_DCA']['tl_metamodels_openimmo_fields'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array(''),
-		'default'                     => 'name,metamodelAttribute;oiFieldGroup,oiField,oiCustomField'
+		'default'                     => 'name,metamodelAttribute;oiFieldGroup,oiField,oiCustomField;oiConditionField,oiConditionValue;'
 	),
 
 	// Subpalettes
@@ -151,8 +151,20 @@ $GLOBALS['TL_DCA']['tl_metamodels_openimmo_fields'] = array
 			'exclude'				  => true,
 			'inputType'				  => 'text',
 			'eval'					  => array('mandatory'=>false, 'maxlength'=>1024)
-		)
-	)
+		),
+        'oiConditionField' => array(
+            'label'                   => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo_fields']['oiConditionField'],
+            'exclude'				  => true,
+            'inputType'				  => 'text',
+            'eval'                    => array('mandatory'=>false, 'maxlength'=>1024)
+        ),
+        'oiConditionValue' => array(
+            'label'                   => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo_fields']['oiConditionValue'],
+            'exclude'                 => true,
+            'inputType'               => 'text',
+            'eval'                    => array('mandatory'=>false, 'maxlength'=>1024),
+        ),
+	),
 );
 
 

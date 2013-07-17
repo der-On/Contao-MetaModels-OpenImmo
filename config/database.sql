@@ -44,7 +44,9 @@ CREATE TABLE `tl_metamodels_openimmo_fields` (
   `metamodelAttribute` int(10) unsigned NOT NULL default '0',
   `oiFieldGroup` varchar(1024) NOT NULL default '',
   `oiField` varchar(1024) NOT NULL default '',
-  `oiCustomField` varchar(1024) NOT NULL default ''
+  `oiCustomField` varchar(1024) NOT NULL default '',
+  `oiConditionField` varchar(1024) NOT NULL default '',
+  `oiConditionValue` varchar(1024) NOT NULL default ''
 
   PRIMARY KEY  (`id`),
   KEY `pid` (`pid`)

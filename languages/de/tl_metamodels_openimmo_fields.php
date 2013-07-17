@@ -35,6 +35,8 @@ $GLOBALS['TL_LANG']['tl_metamodels_openimmo_fields']['metamodelAttribute'] = arr
 $GLOBALS['TL_LANG']['tl_metamodels_openimmo_fields']['oiFieldGroup'] = array('OpenImmo-Datenfeldgruppe', 'OpenImmo Datenfeldgruppe, aus welcher ein OpenImmo-Datenfeld ausgewählt werden soll.');
 $GLOBALS['TL_LANG']['tl_metamodels_openimmo_fields']['oiField'] = array('OpenImmo-Datenfeld', 'OpenImmo Datenfeld, welches mit dem MetaModelfeld verknüpft werden soll.');
 $GLOBALS['TL_LANG']['tl_metamodels_openimmo_fields']['oiCustomField'] = array('Eigenes OpenImmo-Datenfeld', 'Geben Sie den XML-Pfad zu einem eigenen OpenImmo Datenfeld an, welches mit dem MetaModelfeld verknüpft werden soll. Setzen Sie ein "@" vor XML-Attribute. Bsp.: "anbieter/immobilie/user_defined_anyfield/mein_feld@mein_attribut"');
+$GLOBALS['TL_LANG']['tl_metamodels_openimmo_fields']['oiConditionField'] = array('Bedingungsfeld', 'Geben Sie den XML-Pfad zu einem eigenen OpenImmo Datenfeld an, welches als Vergleich mit dem Bedingungswert herangezogen wird. Das Attribut des MetaModels wird nur bei Übereinstimmung mit dem Bedingungswert befüllt. Setzen Sie ein "@" vor XML-Attribute. Bsp.: "anbieter/immobilie/user_defined_anyfield/mein_feld@mein_attribut"');
+$GLOBALS['TL_LANG']['tl_metamodels_openimmo_fields']['oiConditionValue'] = array('Bedingungswert', 'Wert den das Bedingungsfeld haben muss, damit das MetaModel Attribut befüllt wird.');
 
 
 /**

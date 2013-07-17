@@ -61,15 +61,6 @@ $GLOBALS['BE_MOD']['content']['metamodels_openimmo'] = array(
 	'icon' => 'system/modules/metamodels_openimmo/html/icon.gif'
 );
 
-$GLOBALS['BE_MOD']['content']['catalog']['fieldTypes']['hidden'] = array
-(
-	'typeimage'    => 'system/modules/metamodels_openimmo/html/invisible.gif',
-	'fieldDef'     => array('inputType' => 'hidden'),
-	'sqlDefColumn' => "text NULL",
-);
-
-$GLOBALS['BE_MOD']['content']['catalog']['typesCatalogFields'][] = 'hidden';
-
 $GLOBALS['TL_CSS'][] = 'system/modules/metamodels_openimmo/html/metamodels_openimmo.css';
 
 /**
