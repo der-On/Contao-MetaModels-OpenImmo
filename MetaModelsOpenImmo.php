@@ -146,7 +146,7 @@ class MetaModelsOpenImmo extends BackendModule
                     'tel_zentrale:string',
                     'tel_durchw:string',
                     'tel_fax:string',
-                    'tel_handly:string',
+                    'tel_handy:string',
                     'name:string',
                     'vorname:string',
                     'titel:string',
