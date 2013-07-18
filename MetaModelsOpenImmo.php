@@ -1010,9 +1010,15 @@ class MetaModelsOpenImmo extends BackendModule
                         foreach($value as $i => $value_item) {
                             // if not equal we have to remove the value item
                             if (isset($condition_value[$i]) && $condition_value[$i] != $field_obj->getConditionValue()) {
-                                array_splice($value, $i, 1);
+                                unset($value[$i]);
                             }
                         }
+                        // reindex array
+                        $_value = array();
+                        foreach($value as $value_item) {
+                            $_value[] = $value_item;
+                        }
+                        $value = $_value;
                     }
                 }
 
