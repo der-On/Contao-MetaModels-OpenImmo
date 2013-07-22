@@ -153,7 +153,7 @@ $GLOBALS['TL_DCA']['tl_metamodels_openimmo_fields'] = array
 			'eval'					  => array('mandatory'=>false, 'maxlength'=>1024)
 		),
         'oiDefaultValue' =>  array(
-            'label'                   => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo_fields']['oiDefaultField'],
+            'label'                   => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo_fields']['oiDefaultValue'],
             'exclude'				  => true,
             'inputType'				  => 'text',
             'eval'                    => array('mandatory'=>false, 'maxlength'=>1024)
