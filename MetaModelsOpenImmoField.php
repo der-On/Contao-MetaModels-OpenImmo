@@ -5,11 +5,13 @@ class MetaModelsOpenImmoField
     public $field = null;
     public $conditionField = null;
     public $conditionValue = null;
+    public $defaultValue = null;
 
-    public function __construct($attribute, $field, $conditionField = null, $conditionValue = null)
+    public function __construct($attribute, $field, $defaultValue = null, $conditionField = null, $conditionValue = null)
     {
         $this->attribute = $attribute;
         $this->field = $field;
+        $this->defaultValue = $defaultValue;
         $this->conditionField = $conditionField;
         $this->conditionValue = $conditionValue;
     }
@@ -78,11 +80,36 @@ class MetaModelsOpenImmoField
         return $this->field;
     }
 
+
+    /**
+     * @param null $defaultValue
+     */
+    public function setDefaultValue($defaultValue)
+    {
+        $this->defaultValue = $defaultValue;
+    }
+
+    /**
+     * @return null
+     */
+    public function getDefaultValue()
+    {
+        return $this->defaultValue;
+    }
+
     /**
      * @return bool
      */
     public function hasCondition()
     {
         return (!empty($this->conditionField));
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasDefaultValue()
+    {
+        return (!empty($this->defaultValue));
     }
 }

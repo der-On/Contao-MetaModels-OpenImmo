@@ -877,7 +877,7 @@ class MetaModelsOpenImmo extends BackendModule
 	private function getSyncFields($id, $uniqueIDField)
 	{
 		$fields = array();
-		$_fields = $this->Database->execute("SELECT mma.colname as metamodelAttribute, mmof.metamodelAttribute AS metamodelAttributeID , mmof.oiField AS oiField, mmof.oiFieldGroup as oiFieldGroup, mmof.oiCustomField as oiCustomField, mmof.oiConditionField as oiConditionField, mmof.oiConditionValue as oiConditionValue ".
+		$_fields = $this->Database->execute("SELECT mma.colname as metamodelAttribute, mmof.metamodelAttribute AS metamodelAttributeID , mmof.oiField AS oiField, mmof.oiFieldGroup as oiFieldGroup, mmof.oiDefaultValue as oiDefaultValue, mmof.oiCustomField as oiCustomField, mmof.oiConditionField as oiConditionField, mmof.oiConditionValue as oiConditionValue ".
 											"FROM tl_metamodels_openimmo_fields mmof ".
 											"LEFT JOIN tl_metamodel_attribute mma ON mma.id=mmof.metamodelAttribute ".
 											"WHERE mmof.pid='".$id."'")->fetchAllAssoc();
@@ -889,10 +889,10 @@ class MetaModelsOpenImmo extends BackendModule
                     $fields[$field['metamodelAttribute']] = array();
                 }
                 if ($field['oiCustomField'] != '') {
-                    $field_obj = new MetaModelsOpenImmoField($field['metamodelAttribute'], $field['oiCustomField']);
+                    $field_obj = new MetaModelsOpenImmoField($field['metamodelAttribute'], $field['oiCustomField'], $field['oiDefaultValue']);
 
                 } else {
-                    $field_obj = new MetaModelsOpenImmoField($field['metamodelAttribute'], $field['oiFieldGroup'] . '/' . $field['oiField']);
+                    $field_obj = new MetaModelsOpenImmoField($field['metamodelAttribute'], $field['oiFieldGroup'] . '/' . $field['oiField'], $field['oiDefaultValue']);
                 }
                 if (!empty($field['oiConditionField'])) {
                     $field_obj->setConditionField($field['oiConditionField']);
@@ -1020,6 +1020,11 @@ class MetaModelsOpenImmo extends BackendModule
                         }
                         $value = $_value;
                     }
+                }
+
+                // set default as fallback if any
+                if (empty($value) && $field_obj->hasDefaultValue()) {
+                    $value = $field_obj->getDefaultValue();
                 }
 
                 if($value != null) {
