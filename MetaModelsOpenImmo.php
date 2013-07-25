@@ -324,6 +324,7 @@ class MetaModelsOpenImmo extends BackendModule
                 'anbieter/immobilie/ausstattung' => array(
                     'wg_geeignet:bool',
                     'raeume_veraenderbar:bool',
+                    'bad',
                     'bad@DUSCHE:bool',
                     'bad@WANNE:bool',
                     'bad@FENSTER:bool',
@@ -475,7 +476,7 @@ class MetaModelsOpenImmo extends BackendModule
             break;
 
             case '1.2.2':
-                $fields = array_replace_recursive(self::getFields('1.2.1'), array(
+                $fields = array_merge_recursive(self::getFields('1.2.1'), array(
                     'anbieter/immobilie/versteigerung' => array(
                         'aktenzeichen:string',
                         'zvtermin:string',
@@ -516,7 +517,7 @@ class MetaModelsOpenImmo extends BackendModule
                 break;
 
             case '1.2.3':
-                $fields = array_replace_recursive(self::getFields('1.2.2'), array(
+                $fields = array_merge_recursive(self::getFields('1.2.2'), array(
                         'anbieter/immobilie/preise' => array(
                             'courtage_hinweis:string',
                             'nettorendite_soll:float',
