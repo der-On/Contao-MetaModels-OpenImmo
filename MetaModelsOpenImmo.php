@@ -1023,18 +1023,21 @@ class MetaModelsOpenImmo extends BackendModule
                     }
                 }
 
-                // set default as fallback if any
-                if (empty($value) && $field_obj->hasDefaultValue()) {
-                    $value = $field_obj->getDefaultValue();
-                }
-
                 if($value != null) {
                     if (is_array($value)) {
                         $value = serialize($value);
                     }
-
-                    $immo[$metamodelAttribute] = $value;
                 }
+                // set default as fallback if any
+                elseif (empty($value) && $field_obj->hasDefaultValue()) {
+                    $value = $field_obj->getDefaultValue();
+                }
+                // no default an not existing in import, set to empty string
+                else {
+                    $value = '';
+                }
+
+                $immo[$metamodelAttribute] = $value;
 			}
 		}
 	}
