@@ -45,6 +45,7 @@ CREATE TABLE `tl_metamodels_openimmo_fields` (
   `oiFieldGroup` varchar(1024) NOT NULL default '',
   `oiField` varchar(1024) NOT NULL default '',
   `oiCustomField` varchar(1024) NOT NULL default '',
+  `oiCallback` varchar(1024) NOT NULL default '',
   `oiDefaultValue` varchar(1024) NOT NULL default '',
   `oiConditionField` varchar(1024) NOT NULL default '',
   `oiConditionValue` varchar(1024) NOT NULL default ''

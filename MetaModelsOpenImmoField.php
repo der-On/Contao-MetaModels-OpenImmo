@@ -3,14 +3,16 @@ class MetaModelsOpenImmoField
 {
     public $attribute = null;
     public $field = null;
+    public $callback = null;
     public $conditionField = null;
     public $conditionValue = null;
     public $defaultValue = null;
 
-    public function __construct($attribute, $field, $defaultValue = null, $conditionField = null, $conditionValue = null)
+    public function __construct($attribute, $field, $defaultValue = null, $conditionField = null, $conditionValue = null, $callback = null)
     {
         $this->attribute = $attribute;
         $this->field = $field;
+        $this->callback = $callback;
         $this->defaultValue = $defaultValue;
         $this->conditionField = $conditionField;
         $this->conditionValue = $conditionValue;
@@ -111,5 +113,29 @@ class MetaModelsOpenImmoField
     public function hasDefaultValue()
     {
         return (!empty($this->defaultValue));
+    }
+
+    /**
+     * @param array $callback
+     */
+    public function setCallback($callback)
+    {
+        $this->callback = $callback;
+    }
+
+    /**
+     * @return null|array
+     */
+    public function getCallback()
+    {
+        return $this->callback;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasCallback()
+    {
+        return (!empty($this->callback));
     }
 }

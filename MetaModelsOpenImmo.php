@@ -878,7 +878,7 @@ class MetaModelsOpenImmo extends BackendModule
 	private function getSyncFields($id, $uniqueIDField)
 	{
 		$fields = array();
-		$_fields = $this->Database->execute("SELECT mma.colname as metamodelAttribute, mmof.metamodelAttribute AS metamodelAttributeID , mmof.oiField AS oiField, mmof.oiFieldGroup as oiFieldGroup, mmof.oiDefaultValue as oiDefaultValue, mmof.oiCustomField as oiCustomField, mmof.oiConditionField as oiConditionField, mmof.oiConditionValue as oiConditionValue ".
+		$_fields = $this->Database->execute("SELECT mma.colname as metamodelAttribute, mmof.metamodelAttribute AS metamodelAttributeID , mmof.oiField AS oiField, mmof.oiFieldGroup as oiFieldGroup, mmof.oiDefaultValue as oiDefaultValue, mmof.oiCustomField as oiCustomField, mmof.oiConditionField as oiConditionField, mmof.oiConditionValue as oiConditionValue, mmof.oiCallback as oiCallback ".
 											"FROM tl_metamodels_openimmo_fields mmof ".
 											"LEFT JOIN tl_metamodel_attribute mma ON mma.id=mmof.metamodelAttribute ".
 											"WHERE mmof.pid='".$id."'")->fetchAllAssoc();
@@ -898,6 +898,9 @@ class MetaModelsOpenImmo extends BackendModule
                 if (!empty($field['oiConditionField'])) {
                     $field_obj->setConditionField($field['oiConditionField']);
                     $field_obj->setConditionValue($field['oiConditionValue']);
+                }
+                if (!empty($field['oiCallback'])) {
+                    $field_obj->setCallback(explode(',', $field['oiCallback'], 2));
                 }
                 $fields[$field['metamodelAttribute']][] = $field_obj;
             }
@@ -994,6 +997,11 @@ class MetaModelsOpenImmo extends BackendModule
 	{
 		foreach(array_keys($fields) as $metamodelAttribute) {
 			foreach($fields[$metamodelAttribute] as $field_obj) {
+                // prevent setting immo fields to anbieter
+                if ($xpath === 'anbieter' && strpos($field_obj->getField(), 'anbieter/immobilie') === 0) {
+                    continue;
+                }
+
                 $value = $this->getFieldData($xml, $field_obj->getField(), $xpath, $metamodelObj, false);
 
                 if ($field_obj->hasCondition()) {
@@ -1020,6 +1028,16 @@ class MetaModelsOpenImmo extends BackendModule
                             $_value[] = $value_item;
                         }
                         $value = $_value;
+                    }
+                }
+
+                if ($field_obj->hasCallback()) {
+
+                    $return_value = call_user_func_array($field_obj->getCallback(), array($value, $field_obj, &$immo, &$xml, $xpath, $metamodelAttribute));
+
+                    // prevent setting value to false when call_user_func_array produced an error
+                    if ($return_value) {
+                        $value = $return_value;
                     }
                 }
 
