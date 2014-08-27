@@ -19,13 +19,14 @@
  * Software Foundation website at <http://www.gnu.org/licenses/>.
  *
  * PHP version 5
- * @copyright  Ondrej Brinkel 2010 
+ * @copyright  Ondrej Brinkel 2014
  * @author     Ondrej Brinkel 
  * @package    MetaModelsOpenImmo
  * @license    GNU 
  * @filesource
  */
 
+use MetaModelsOpenImmo\MetaModelsOpenImmo;
 
 /**
  * Table tl_metamodels_openimmo_fields
@@ -50,7 +51,7 @@ $GLOBALS['TL_DCA']['tl_metamodels_openimmo_fields'] = array
 			'fields'                  => array('sorting'),
 			'flag'                    => 1,
 			'panelLayout'			  => 'filter,limit',
-			'headerFields'			  => array('name','oiVersion','catalog','exportPath'),
+			'headerFields'			  => array('name','oiVersion','catalog'),
 			'child_record_callback'   => array('tl_metamodels_openimmo_fields', 'renderField')
 		),
 		'label' => array
@@ -181,7 +182,7 @@ $GLOBALS['TL_DCA']['tl_metamodels_openimmo_fields'] = array
 );
 
 
-class tl_metamodels_openimmo_fields extends Backend
+class tl_metamodels_openimmo_fields extends \Backend
 {
 	private function getMetaModelTypeID($id)
 	{

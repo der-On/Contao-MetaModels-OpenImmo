@@ -20,8 +20,8 @@ CREATE TABLE `tl_metamodels_openimmo` (
   `tstamp` int(10) unsigned NOT NULL default '0',
   `name` varchar(64) NOT NULL default '',
   `metamodel` int(10) unsigned NOT NULL default '0',
-  `exportPath` varchar(1024) NOT NULL default '',
-  `filesPath` varchar(1024) NOT NULL default '',
+  `exportPath` blob NULL,
+  `filesPath` blob NULL,
   `oiVersion` varchar(32) NOT NULL default '1.2.1',
   `uniqueIDField` varchar(1024) NOT NULL default ''
 

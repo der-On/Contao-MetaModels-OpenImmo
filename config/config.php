@@ -19,7 +19,7 @@
  * Software Foundation website at <http://www.gnu.org/licenses/>.
  *
  * PHP version 5
- * @copyright  Ondrej Brinkel 2010 
+ * @copyright  Ondrej Brinkel 2014
  * @author     Ondrej Brinkel 
  * @package    MetaModelsOpenImmo
  * @license    GNU 
@@ -57,11 +57,11 @@
 
 $GLOBALS['BE_MOD']['content']['metamodels_openimmo'] = array(
 	'tables' => array('tl_metamodels_openimmo','tl_metamodels_openimmo_fields'),
-	'syncMetaModel' => array('MetaModelsOpenImmo','sync'),
-	'icon' => 'system/modules/metamodels_openimmo/html/icon.gif'
+	'syncMetaModel' => array('MetaModelsOpenImmo\MetaModelsOpenImmo','sync'),
+	'icon' => 'system/modules/metamodels_openimmo/assets/icon.gif'
 );
 
-$GLOBALS['TL_CSS'][] = 'system/modules/metamodels_openimmo/html/metamodels_openimmo.css';
+$GLOBALS['TL_CSS'][] = 'system/modules/metamodels_openimmo/assets/metamodels_openimmo.css';
 
 /**
  * -------------------------------------------------------------------------

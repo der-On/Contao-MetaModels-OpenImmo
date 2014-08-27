@@ -1,4 +1,6 @@
 <?php
+namespace MetaModelsOpenImmo;
+
 class MetaModelsOpenImmoField
 {
     public $attribute = null;

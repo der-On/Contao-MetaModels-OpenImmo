@@ -1,4 +1,7 @@
-<?php if (!defined('TL_ROOT')) die('You can not access this file directly!');
+<?php
+namespace MetaModelsOpenImmo;
+
+if (!defined('TL_ROOT')) die('You can not access this file directly!');
 
 /**
  * TYPOlight Open Source CMS
@@ -26,25 +29,14 @@
  * @filesource
  */
 
-
-/*
- * TODO:
- *	- allow partly updates recognizing also deleted entries (if possible)
- *	- allow mapping of multiple tags with same name to different metamodel fields or array fields
- *	- add type check when mapping metamodel field to openImmo field
- *	- anbieter/ should not be parsed for each immo again
- *	- anbieter/immobilie/ should not be parsed when getting anbieter/
- *	- add support for other openImmo versions
- */
-
 /**
  * Class MetaModelsOpenImmo
  *
- * @copyright  Ondrej Brinkel 2010 
+ * @copyright  Ondrej Brinkel 2014
  * @author     Ondrej Brinkel 
  * @package    Controller
  */
-class MetaModelsOpenImmo extends BackendModule
+class MetaModelsOpenImmo extends \BackendModule
 {
 
 	/**
@@ -632,7 +624,7 @@ class MetaModelsOpenImmo extends BackendModule
 			} else $this->addMessage($GLOBALS['TL_LANG']['tl_metamodels_openimmo']['noSyncFile']);
 		}
 		
-		$this->Template = new BackendTemplate($this->strTemplate);
+		$this->Template = new \BackendTemplate($this->strTemplate);
 
 		$this->Template->setData(array(
 			'send' => $send,
@@ -722,15 +714,24 @@ class MetaModelsOpenImmo extends BackendModule
 
 	private function getMetaModelObject($id)
 	{
-		return $this->Database->execute("SELECT mmo.id AS id,mmo.metamodel AS metamodelID, mmo.exportPath AS exportPath, mmo.filesPath AS filesPath, mmt.tableName AS metamodel, mmo.oiVersion AS oiVersion, mmo.uniqueIDField AS uniqueIDField ".
+		$obj = $this->Database->execute("SELECT mmo.id AS id,mmo.metamodel AS metamodelID, mmo.exportPath AS exportPath, mmo.filesPath AS filesPath, mmt.tableName AS metamodel, mmo.oiVersion AS oiVersion, mmo.uniqueIDField AS uniqueIDField ".
 										"FROM tl_metamodels_openimmo mmo ".
 										"LEFT JOIN tl_metamodel mmt ON mmt.id=mmo.metamodel ".
 										"WHERE mmo.id='$id'")->fetchAssoc();
+
+        // Contao 3 stores files in database using uuids
+        if (VERSION > '2') {
+            $obj['filesPath'] = \FilesModel::findByUuid($obj['filesPath']);
+            $obj['exportPath'] = \FilesModel::findByUuid($obj['exportPath']);
+            $obj['filesPath'] = $obj['filesPath']->path;
+            $obj['exportPath'] = $obj['exportPath']->path;
+        }
+        return $obj;
 	}
 
 	private function getSyncFiles($exportPath,$canBeZip = true)
 	{
-		$folder = new Folder($exportPath);
+		$folder = new \Folder($exportPath);
 
 		$synced = array();
 
@@ -794,7 +795,7 @@ class MetaModelsOpenImmo extends BackendModule
 
 	private function getSyncFile($exportPath,$canBeZip = true,$use_post = true)
 	{
-		$folder = new Folder($exportPath);
+		$folder = new \Folder($exportPath);
 		$currentFile = null;
 		$currentTime = 0;
 		
@@ -829,14 +830,14 @@ class MetaModelsOpenImmo extends BackendModule
 
 	private function unpackSyncFile($path)
 	{
-		$tmpFolder = new Folder(FilesHelper::fileDirPath($path).'tmp');
+		$tmpFolder = new \Folder(FilesHelper::fileDirPath($path).'tmp');
 		//clear tmp folder if not empty
 		if(!$tmpFolder->isEmpty()) $tmpFolder->clear();
 		
 		$tmpPath = $tmpFolder->__get('value');
 		
 		//extract zip to tmp folder
-		$zip = new ZipReader($path);
+		$zip = new \ZipReader($path);
 		$files = $zip->getFileList();
 		$zip->first();
 		foreach($files as $file) {
@@ -1167,14 +1168,14 @@ class MetaModelsOpenImmo extends BackendModule
 		//get attachments in the data folder
 		$files = FilesHelper::scandirByExt($dataPath, explode(',',MetaModelsOpenImmo::$allowedAttachments));
 
-		$filesFolder = new Folder($metamodelObj['filesPath']);
+		$filesFolder = new \Folder($metamodelObj['filesPath']);
 
 		if(FilesHelper::isWritable($metamodelObj['filesPath'])) {
 
 			//remove old files
 			//$filesFolder->clear();
 
-			$filesObj = Files::getInstance();
+			$filesObj = \Files::getInstance();
 
 			foreach($files as $file) {
 				$filesObj->copy($dataPath.$file,$metamodelObj['filesPath'].'/'.$file);
@@ -1184,7 +1185,7 @@ class MetaModelsOpenImmo extends BackendModule
 		
 		//empty the data directory if it is the temp directory so we do not have files doubled
 		if(substr($dataPath,-4)=='tmp/') {
-			$dataFolder = new Folder($dataPath);
+			$dataFolder = new \Folder($dataPath);
 			$dataFolder->clear();
 			$this->addMessage('emptied temporary directory: '.$dataPath);
 		}

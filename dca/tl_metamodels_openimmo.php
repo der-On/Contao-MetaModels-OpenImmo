@@ -19,13 +19,14 @@
  * Software Foundation website at <http://www.gnu.org/licenses/>.
  *
  * PHP version 5
- * @copyright  Ondrej Brinkel 2010 
+ * @copyright  Ondrej Brinkel 2014
  * @author     Ondrej Brinkel 
  * @package    MetaModelsOpenImmo
  * @license    GNU 
  * @filesource
  */
 
+use MetaModelsOpenImmo\MetaModelsOpenImmo;
 
 /**
  * Table tl_metamodels_openimmo
@@ -161,19 +162,19 @@ $GLOBALS['TL_DCA']['tl_metamodels_openimmo'] = array
 			'label'                   => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['exportPath'],
 			'exclude'                 => true,
 			'inputType'               => 'fileTree',
-			'eval'                    => array('mandatory'=>true, 'maxlength'=>1024,'files'=>false,'filesOnly'=>false,'fieldType'=>'radio')
+			'eval'                    => array('mandatory'=>true, 'multiple'=>false, 'files'=>false,'filesOnly'=>false, 'fieldType'=>'radio')
 		),
 		'filesPath' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['filesPath'],
 			'exclude'                 => true,
 			'inputType'               => 'fileTree',
-			'eval'                    => array('mandatory'=>true, 'maxlength'=>1024,'files'=>false,'filesOnly'=>false,'fieldType'=>'radio')
+			'eval'                    => array('mandatory'=>true, 'multiple'=>false, 'files'=>false,'filesOnly'=>false, 'fieldType'=>'radio')
 		)
 	)
 );
 
-class tl_metamodels_openimmo extends Backend
+class tl_metamodels_openimmo extends \Backend
 {
 	private function getOIVersion($id)
 	{

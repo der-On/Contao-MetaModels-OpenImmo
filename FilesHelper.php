@@ -1,4 +1,6 @@
 <?php
+namespace MetaModelsOpenImmo;
+
 class FilesHelper
 {
 	public static function fileExt($file,$uc = true,$last = true)
