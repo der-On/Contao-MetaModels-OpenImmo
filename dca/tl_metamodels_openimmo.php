@@ -1,28 +1,12 @@
 <?php if (!defined('TL_ROOT')) die('You can not access this file directly!');
 
 /**
- * TYPOlight Open Source CMS
- * Copyright (C) 2005-2010 Leo Feyer
- *
- * This program is free software: you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation, either
- * version 3 of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program. If not, please visit the Free
- * Software Foundation website at <http://www.gnu.org/licenses/>.
  *
  * PHP version 5
  * @copyright  Ondrej Brinkel 2014
- * @author     Ondrej Brinkel 
+ * @author     Ondrej Brinkel
  * @package    MetaModelsOpenImmo
- * @license    GNU 
+ * @license    MIT
  * @filesource
  */
 
@@ -114,7 +98,7 @@ $GLOBALS['TL_DCA']['tl_metamodels_openimmo'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array(''),
-		'default'                     => 'name,oiVersion,uniqueIDField;metamodel,exportPath,filesPath'
+		'default'                     => 'name,oiVersion,uniqueIDField;metamodel,exportPath,deleteFilesOlderThen,filesPath'
 	),
 
 	// Subpalettes
@@ -164,6 +148,14 @@ $GLOBALS['TL_DCA']['tl_metamodels_openimmo'] = array
 			'inputType'               => 'fileTree',
 			'eval'                    => array('mandatory'=>true, 'multiple'=>false, 'files'=>false,'filesOnly'=>false, 'fieldType'=>'radio')
 		),
+        'deleteFilesOlderThen' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['deleteFilesOlderThen'],
+            'exclude'                 => true,
+            'inputType'               => 'select',
+            'eval'                    => array('mandatory'=>false),
+            'options_callback'        => array('tl_metamodels_openimmo', 'getDeleteFilesOlderThenOptions')
+        ),
 		'filesPath' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['filesPath'],
@@ -182,10 +174,23 @@ class tl_metamodels_openimmo extends \Backend
 		return $version[0];
 	}
 
-	function getUniqueIDFieldOptions(&$dc)
+	public function getUniqueIDFieldOptions(&$dc)
 	{
 		$flattenFields = MetaModelsOpenImmo::getFlattenedFields($this->getOIVersion($dc->id));
 		return array_keys($flattenFields);
 	}
+
+    public function getDeleteFilesOlderThenOptions(&$dc)
+    {
+        return array(
+            '0' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['deleteFilesOlderThen_none'],
+            '7' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['deleteFilesOlderThen_week'],
+            '14' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['deleteFilesOlderThen_two_weeks'],
+            '30' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['deleteFilesOlderThen_month'],
+            '90' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['deleteFilesOlderThen_three_months'],
+            '183' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['deleteFilesOlderThen_half_year'],
+            '365' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['deleteFilesOlderThen_year'],
+        );
+    }
 }
 ?>

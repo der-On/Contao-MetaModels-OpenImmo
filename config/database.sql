@@ -23,7 +23,8 @@ CREATE TABLE `tl_metamodels_openimmo` (
   `exportPath` blob NULL,
   `filesPath` blob NULL,
   `oiVersion` varchar(32) NOT NULL default '1.2.1',
-  `uniqueIDField` varchar(1024) NOT NULL default ''
+  `uniqueIDField` varchar(1024) NOT NULL default '',
+  `deleteFilesOlderThen` int(10) unsigned NOT NULL default '0'
 
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
