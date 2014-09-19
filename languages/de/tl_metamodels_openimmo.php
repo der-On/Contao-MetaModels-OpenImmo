@@ -44,6 +44,11 @@ $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['deleteFilesOlderThen_month'] = 'e
 $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['deleteFilesOlderThen_three_months'] = 'drei Monate';
 $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['deleteFilesOlderThen_half_year'] = 'ein halbes Jahr';
 $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['deleteFilesOlderThen_year'] = 'ein Jahr';
+$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['autoSync'] = array('Automatisch synchronisieren', 'Wählen Sie aus ob und wann die Daten automatisch synchronisiert werden sollen.');
+$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['autoSync_never'] = 'niemals';
+$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['autoSync_hourly'] = 'stündlich';
+$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['autoSync_daily'] = 'täglich';
+$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['autoSync_weekly'] = 'wöchentlich';
 
 /**
  * Reference

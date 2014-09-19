@@ -626,6 +626,9 @@ class MetaModelsOpenImmo extends \BackendModule
                                 $this->addMessage('data synced');
                                 if ($this->syncDataFiles($obj, $file)) {
                                     $this->addMessage('files synced');
+                                    $mm_id = $dc->id;
+                                    $now = time();
+                                    $this->Database->execute("UPDATE tl_metamodels_openimmo SET lastSync='$now' WHERE id='$mm_id'");
                                     $success = true;
                                 } else $error = 4;
                             } else $error = 3;
@@ -770,7 +773,7 @@ class MetaModelsOpenImmo extends \BackendModule
      */
     public function getMetaModelObject($id)
     {
-        $obj = $this->Database->execute("SELECT mmo.id AS id,mmo.metamodel AS metamodelID, mmo.exportPath AS exportPath, mmo.filesPath AS filesPath, mmt.tableName AS metamodel, mmo.oiVersion AS oiVersion, mmo.uniqueIDField AS uniqueIDField, mmo.deleteFilesOlderThen AS deleteFilesOlderThen " .
+        $obj = $this->Database->execute("SELECT mmo.id AS id,mmo.metamodel AS metamodelID, mmo.exportPath AS exportPath, mmo.filesPath AS filesPath, mmt.tableName AS metamodel, mmo.oiVersion AS oiVersion, mmo.uniqueIDField AS uniqueIDField, mmo.deleteFilesOlderThen AS deleteFilesOlderThen, mmo.autoSync AS autoSync, mmo.lastSync AS lastSync " .
             "FROM tl_metamodels_openimmo mmo " .
             "LEFT JOIN tl_metamodel mmt ON mmt.id=mmo.metamodel " .
             "WHERE mmo.id='$id'")->fetchAssoc();
@@ -862,7 +865,7 @@ class MetaModelsOpenImmo extends \BackendModule
      * @param bool $use_post - if true the sync file from the post data will be used, else the latest unsynced file will be used
      * @return bool|null|string
      */
-    private function getSyncFile($exportPath, $canBeZip = true, $use_post = true)
+    public function getSyncFile($exportPath, $canBeZip = true, $use_post = true)
     {
         $folder = new \Folder($exportPath);
         $currentFile = null;
@@ -902,7 +905,7 @@ class MetaModelsOpenImmo extends \BackendModule
      * @param string $path - path to file to unpack
      * @throws \Exception
      */
-    private function unpackSyncFile($path)
+    public function unpackSyncFile($path)
     {
         $tmpFolder = new \Folder(FilesHelper::fileDirPath($path) . 'tmp');
         //clear tmp folder if not empty
@@ -927,8 +930,9 @@ class MetaModelsOpenImmo extends \BackendModule
      * @param string $exportPath
      * @param array $file
      * @param string $status - status to attach to this file
+     * @param string $user - (optional) username, if not set current user will be used
      */
-    private function addFileToHistory($exportPath, $file, $status)
+    public function addFileToHistory($exportPath, $file, $status, $user = null)
     {
         $filetime = FilesHelper::fileModTime($exportPath . '/' . $file);
         $item = array(
@@ -936,7 +940,7 @@ class MetaModelsOpenImmo extends \BackendModule
             "filetime" => $filetime,
             "synctime" => time(),
             "status" => $status,
-            "user" => $GLOBALS['TL_USERNAME']
+            "user" => ($user) ? $user : $GLOBALS['TL_USERNAME']
         );
         $exists = $this->Database->execute("SELECT id,filetime FROM tl_metamodels_openimmo_history WHERE file = '$item[file]'")->fetchAssoc();
         if ($exists != false && count($exists) > 0) {
@@ -951,7 +955,7 @@ class MetaModelsOpenImmo extends \BackendModule
      * @param array $file
      * @return \SimpleXMLElement
      */
-    private function loadData($file)
+    public function loadData($file)
     {
         $data = file_get_contents(TL_ROOT . '/' . $file);
 
@@ -972,7 +976,7 @@ class MetaModelsOpenImmo extends \BackendModule
      * @param string $uniqueIDField - name of the xml field containing the unique ID
      * @return array
      */
-    private function getSyncFields($id, $uniqueIDField)
+    public function getSyncFields($id, $uniqueIDField)
     {
         $fields = array();
         $_fields = $this->Database->execute("SELECT mma.colname as metamodelAttribute, mmof.metamodelAttribute AS metamodelAttributeID , mmof.oiField AS oiField, mmof.oiFieldGroup as oiFieldGroup, mmof.oiDefaultValue as oiDefaultValue, mmof.oiCustomField as oiCustomField, mmof.oiConditionField as oiConditionField, mmof.oiConditionValue as oiConditionValue, mmof.oiCallback as oiCallback " .
@@ -1043,7 +1047,7 @@ class MetaModelsOpenImmo extends \BackendModule
      * @param array $syncFields - list of fields to sync
      * @return bool - true if sync was successfull, else false
      */
-    private function syncDataWithCatalog(&$data, &$metamodelObj, &$syncFields)
+    public function syncDataWithCatalog(&$data, &$metamodelObj, &$syncFields)
     {
         if ($this->dataIsValid($data)) {
 
@@ -1313,7 +1317,7 @@ class MetaModelsOpenImmo extends \BackendModule
      * @param string $dataFile
      * @return bool - true if sync was successful else false
      */
-    private function syncDataFiles(&$metamodelObj, $dataFile)
+    public function syncDataFiles(&$metamodelObj, $dataFile)
     {
         $dataPath = FilesHelper::fileDirPath($dataFile);
 

@@ -98,7 +98,7 @@ $GLOBALS['TL_DCA']['tl_metamodels_openimmo'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array(''),
-		'default'                     => 'name,oiVersion,uniqueIDField;metamodel,exportPath,deleteFilesOlderThen,filesPath'
+		'default'                     => 'name,oiVersion,uniqueIDField;metamodel,exportPath,deleteFilesOlderThen,filesPath;autoSync'
 	),
 
 	// Subpalettes
@@ -162,7 +162,15 @@ $GLOBALS['TL_DCA']['tl_metamodels_openimmo'] = array
 			'exclude'                 => true,
 			'inputType'               => 'fileTree',
 			'eval'                    => array('mandatory'=>true, 'multiple'=>false, 'files'=>false,'filesOnly'=>false, 'fieldType'=>'radio')
-		)
+		),
+        'autoSync' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['autoSync'],
+            'exclude'                 => true,
+            'inputType'               => 'select',
+            'eval'                    => array('mandatory'=>false),
+            'options_callback'        => array('tl_metamodels_openimmo', 'getAutoSyncOptions')
+        ),
 	)
 );
 
@@ -190,6 +198,16 @@ class tl_metamodels_openimmo extends \Backend
             '90' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['deleteFilesOlderThen_three_months'],
             '183' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['deleteFilesOlderThen_half_year'],
             '365' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['deleteFilesOlderThen_year'],
+        );
+    }
+
+    public function getAutoSyncOptions(&$dc)
+    {
+        return array(
+            'never' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['autoSync_never'],
+            'hourly' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['autoSync_hourly'],
+            'daily' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['autoSync_daily'],
+            'weekly' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['autoSync_weekly'],
         );
     }
 }
