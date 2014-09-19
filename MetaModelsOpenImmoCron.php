@@ -41,7 +41,34 @@ class MetaModelsOpenImmoCron extends \Frontend {
             }
 
             if ($metamodelObj['autoSync'] !== 'never') {
-                $this->sync($metamodelObj);
+                $now = time();
+                $syncTime = intval($metamodelObj['lastSync']);
+                $timeDiff = $now - $syncTime;
+                $hoursDiff = $timeDiff / 60 / 60;
+                $daysDiff = $timeDiff / 60 / 60 / 24;
+                $needsSync = false;
+
+                switch($metamodelObj['autoSync']) {
+                    case '':
+                        break;
+
+                    case 'hourly':
+                        if ($hoursDiff >= 1) $needsSync = true;
+                        break;
+
+                    case 'daily':
+                        if ($daysDiff >= 1) $needsSync = true;
+                        break;
+
+                    case 'weekly':
+                        if ($daysDiff >= 7) $needsSync = true;
+                        break;
+                }
+
+                if ($needsSync) {
+                    $this->sync($metamodelObj);
+                }
+
             }
         }
     }
@@ -87,7 +114,6 @@ class MetaModelsOpenImmoCron extends \Frontend {
         }
 
         $syncFiles = array_reverse($syncFiles);
-        var_dump($syncFiles);
 
         foreach($syncFiles as $syncFile) {
             if ($syncFile) {
