@@ -98,7 +98,7 @@ $GLOBALS['TL_DCA']['tl_metamodels_openimmo'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array(''),
-		'default'                     => 'name,oiVersion,uniqueIDField;metamodel,exportPath,deleteFilesOlderThen,filesPath;autoSync'
+		'default'                     => 'name,oiVersion,uniqueIDField;metamodel,exportPath,filesPath;deleteFilesOlderThen,autoSync'
 	),
 
 	// Subpalettes
