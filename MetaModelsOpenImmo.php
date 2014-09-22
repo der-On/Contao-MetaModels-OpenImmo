@@ -1090,7 +1090,6 @@ class MetaModelsOpenImmo extends \BackendModule
                         if (isset($GLOBALS['TL_HOOKS']['metaModelsOpenImmoSync'])) {
                             foreach ($GLOBALS['TL_HOOKS']['metaModelsOpenImmoSync'] as $callback)
                             {
-                                var_dump($callback);
                                 $this->import($callback[0]);
                                 $immo = $this->$callback[0]->$callback[1]($immo);
                             }
