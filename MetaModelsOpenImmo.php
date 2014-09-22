@@ -1087,10 +1087,13 @@ class MetaModelsOpenImmo extends \BackendModule
                         $immo['_xml_'] = $immobilie;
 
                         // execute
-                        foreach ($GLOBALS['TL_HOOKS']['metaModelsOpenImmoSync'] as $callback)
-                        {
-                            $this->import($callback[0]);
-                            $immo = $this->$callback[0]->$callback[1]($immo);
+                        if (isset($GLOBALS['TL_HOOKS']['metaModelsOpenImmoSync'])) {
+                            foreach ($GLOBALS['TL_HOOKS']['metaModelsOpenImmoSync'] as $callback)
+                            {
+                                var_dump($callback);
+                                $this->import($callback[0]);
+                                $immo = $this->$callback[0]->$callback[1]($immo);
+                            }
                         }
 
                         $immos[] = $immo;
