@@ -16,39 +16,38 @@ namespace MetaModelsOpenImmo;
 class MetaModelsOpenImmoCron extends \Frontend {
 
     protected $mmoi = null;
+    protected $api = null;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->mmoi = new MetaModelsOpenImmo();
+        $this->api = new MetaModelsOpenImmoApi();
+    }
 
     protected function compile()
     {
 
     }
 
-    protected function addMessage($msg, $type = TL_INFO)
-    {
-        $this->log($msg, TL_CRON, $type);
-    }
-
     public function run()
     {
-        $this->import('Database');
-        $this->mmoi = new MetaModelsOpenImmo();
+        $objects = $this->api->loadAllMetaModelObjects();
 
-        $rows = $this->Database->execute("SELECT id FROM tl_metamodels_openimmo WHERE deleteFilesOlderThen>0 OR autoSync!='never'")->fetchAllAssoc();
-        foreach($rows as $row) {
-            $metamodelObj = $this->mmoi->getMetaModelObject($row['id']);
-
-            if ($metamodelObj['deleteFilesOlderThen'] != '0') {
-                $this->deleteFiles($metamodelObj);
+        foreach($objects as $mmobj) {
+            if ($mmobj->deleteFilesOlderThen != 0) {
+                $this->deleteFiles($mmobj);
             }
 
-            if ($metamodelObj['autoSync'] !== 'never') {
+            if ($mmobj->autoSync !== 'never') {
                 $now = time();
-                $syncTime = intval($metamodelObj['lastSync']);
+                $syncTime = intval($mmobj->lastSync);
                 $timeDiff = $now - $syncTime;
                 $hoursDiff = $timeDiff / 60 / 60;
                 $daysDiff = $timeDiff / 60 / 60 / 24;
                 $needsSync = false;
 
-                switch($metamodelObj['autoSync']) {
+                switch($mmobj->autoSync) {
                     case '':
                         break;
 
@@ -66,23 +65,22 @@ class MetaModelsOpenImmoCron extends \Frontend {
                 }
 
                 if ($needsSync) {
-                    $this->sync($metamodelObj);
+                    $this->sync($mmobj);
                 }
-
             }
         }
     }
 
     /**
      * Automaticly deletes files older then limit
-     * @param array $metamodelObj
+     * @param Models\MetaModelObject $mmobj
      */
-    public function deleteFiles($metamodelObj)
+    public function deleteFiles(Models\MetaModelObject $mmobj)
     {
-        $exportPath = $metamodelObj['exportPath'];
+        $exportPath = $mmobj->exportPath;
         $files = $this->mmoi->getSyncFiles($exportPath);
 
-        $days = intval($metamodelObj['deleteFilesOlderThen']);
+        $days = intval($mmobj->deleteFilesOlderThen);
 
         $now = time();
 
@@ -97,18 +95,16 @@ class MetaModelsOpenImmoCron extends \Frontend {
         }
     }
 
-    public function sync($metamodelObj)
+    public function sync(Models\MetaModelObject $mmobj)
     {
-        $obj = $metamodelObj;
-        $exportPath = $metamodelObj['exportPath'];
-        $files = $this->mmoi->getSyncFiles($exportPath);
+        $files = $this->api->getSyncFilesFor($mmobj);
 
         $file = null;
         $syncFiles = array();
 
         foreach($files as $file)
         {
-            if ($file['synctime'] === 0) {
+            if ($file->syncTime === 0) {
                 $syncFiles[] = $file;
             }
         }
@@ -116,40 +112,7 @@ class MetaModelsOpenImmoCron extends \Frontend {
         $syncFiles = array_reverse($syncFiles);
 
         foreach($syncFiles as $syncFile) {
-            if ($syncFile) {
-                $path = $exportPath . '/' . $syncFile['file'];
-                $rel_path = $syncFile['file'];
-                if (strtolower(substr($path, -4, 4)) === '.zip') {
-                    $this->mmoi->unpackSyncFile($path);
-                    $extracted_path = $this->mmoi->getSyncFile($exportPath . '/tmp', false, false);
-                }
-                else {
-                    $extracted_path = $path;
-                }
-
-                $data = $this->mmoi->loadData($extracted_path);
-
-                if ($data) {
-                    $this->addMessage('OpenImmo data loaded');
-                    $syncFields = $this->mmoi->getSyncFields($obj['id'], $obj['uniqueIDField']);
-                    if ($syncFields) {
-                        $this->addMessage($path . ': loaded synchronization data');
-                        if ($this->mmoi->syncDataWithCatalog($data, $obj, $syncFields)) {
-                            $this->addMessage($path . ': data synced');
-                            if ($this->mmoi->syncDataFiles($obj, $extracted_path)) {
-                                $this->addMessage($path . ': files synced');
-                                $mm_id = $metamodelObj['id'];
-                                $now = time();
-                                $this->Database->execute("UPDATE tl_metamodels_openimmo SET lastSync='$now' WHERE id='$mm_id'");
-                                $success = true;
-                            } else $error = 4;
-                        } else $error = 3;
-                    } else $error = 2;
-                } else $error = 1;
-                if ($error) {
-                    $this->mmoi->addFileToHistory($exportPath, $rel_path, 2, 'cron');
-                } else $this->mmoi->addFileToHistory($exportPath, $rel_path, 1, 'cron');
-            }
+            $this->api->syncFileFor($mmobj, $syncFile, 'cron');
         }
     }
 } 

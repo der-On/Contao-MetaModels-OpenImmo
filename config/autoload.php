@@ -44,6 +44,9 @@ ClassLoader::addClasses(array
     'MetaModelsOpenImmo\MetaModelsOpenImmo' => 'system/modules/metamodels_openimmo/MetaModelsOpenImmo.php',
     'MetaModelsOpenImmo\MetaModelsOpenImmoField' => 'system/modules/metamodels_openimmo/MetaModelsOpenImmoField.php',
     'MetaModelsOpenImmo\MetaModelsOpenImmoCron' => 'system/modules/metamodels_openimmo/MetaModelsOpenImmoCron.php',
+    'MetaModelsOpenImmo\MetaModelsOpenImmoApi' => 'system/modules/metamodels_openimmo/MetaModelsOpenImmoApi.php',
+    'MetaModelsOpenImmo\Models\MetaModelObject' => 'system/modules/metamodels_openimmo/models/MetaModelObject.php',
+    'MetaModelsOpenImmo\Models\SyncFile' => 'system/modules/metamodels_openimmo/models/SyncFile.php',
 ));
 
 
