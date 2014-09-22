@@ -622,9 +622,9 @@ class MetaModelsOpenImmo extends \BackendModule
                         $syncFields = $this->getSyncFields($obj['id'], $obj['uniqueIDField']);
                         if ($syncFields) {
                             $this->addMessage('loaded synchronization data');
-                            if ($this->syncDataWithCatalog($data, $obj, $syncFields)) {
+                            if ($this->syncDataFiles($obj, $file)) {
                                 $this->addMessage('data synced');
-                                if ($this->syncDataFiles($obj, $file)) {
+                                if ($this->syncDataWithCatalog($data, $obj, $syncFields)) {
                                     $this->addMessage('files synced');
                                     $mm_id = $dc->id;
                                     $now = time();
@@ -1227,6 +1227,23 @@ class MetaModelsOpenImmo extends \BackendModule
                 $results[$i] = $this->parseFieldType($fieldPath, $results[$i] . '', $metamodelObj);
             }
 
+            // Contao 3 has FileModels
+            if (VERSION > 2) {
+                if (isset($this->fieldsFlat[$fieldPath]) && $this->fieldsFlat[$fieldPath] == 'path') {
+                    $files = \FilesModel::findMultipleByPaths($results);
+                    $results = array();
+
+                    if ($files) {
+                        foreach($files->getModels() as $i => $file) {
+                            //var_dump($file);
+                            $results[] = $file->uuid;
+                        }
+                    }
+
+                    return serialize($results);
+                }
+            }
+
             if ($count == 1) {
                 return $results[0];
             } elseif ($count > 1) {
@@ -1236,7 +1253,6 @@ class MetaModelsOpenImmo extends \BackendModule
                     return $results;
                 }
             }
-
         }
 
         return null;
@@ -1351,8 +1367,19 @@ class MetaModelsOpenImmo extends \BackendModule
         //empty the data directory if it is the temp directory so we do not have files doubled
         if (substr($dataPath, -4) == 'tmp/') {
             $dataFolder = new \Folder($dataPath);
-            $dataFolder->clear();
+            if (VERSION > 2) {
+                $dataFolder->purge();
+            }
+            else {
+                $dataFolder->clear();
+            }
             $this->addMessage('emptied temporary directory: ' . $dataPath);
+        }
+
+        // Since Contao 3 files must be synced with database
+        if (VERSION > 2) {
+            $updater = new \Contao\Database\Updater();
+            $updater->scanUploadFolder();
         }
 
         return true;
