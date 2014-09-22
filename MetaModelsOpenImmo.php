@@ -1235,23 +1235,18 @@ class MetaModelsOpenImmo extends \BackendModule
 
                     if ($files) {
                         foreach($files->getModels() as $i => $file) {
-                            //var_dump($file);
                             $results[] = $file->uuid;
                         }
                     }
 
-                    return serialize($results);
+                    return ($serialize) ? serialize($results) : $results;
                 }
             }
 
             if ($count == 1) {
                 return $results[0];
             } elseif ($count > 1) {
-                if ($serialize) {
-                    return serialize($results);
-                } else {
-                    return $results;
-                }
+                return ($serialize) ? serialize($results) : $results;
             }
         }
 
@@ -1378,8 +1373,7 @@ class MetaModelsOpenImmo extends \BackendModule
 
         // Since Contao 3 files must be synced with database
         if (VERSION > 2) {
-            $updater = new \Contao\Database\Updater();
-            $updater->scanUploadFolder();
+            \Dbafs::syncFiles();
         }
 
         return true;
