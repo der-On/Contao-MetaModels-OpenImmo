@@ -14,10 +14,10 @@ namespace MetaModelsOpenImmo\Models;
 class MetaModelObject {
 
     public $id;
-    public $metamodelID;
+    public $metamodel;
     public $exportPath;
     public $filesPath;
-    public $metamodel;
+    public $tableName;
     public $oiVersion;
     public $uniqueIDField;
     public $deleteFilesOlderThen;
@@ -32,10 +32,10 @@ class MetaModelObject {
     public function __construct(array $data = array())
     {
         $this->id = isset($data['id']) ? $data['id'] : null;
-        $this->metamodelID = isset($data['metamodel']) ? $data['metamodel'] : null;
+        $this->metamodel = isset($data['metamodel']) ? $data['metamodel'] : null;
         $this->exportPath = isset($data['exportPath']) ? $data['exportPath'] : null;
         $this->filesPath = isset($data['filesPath']) ? $data['filesPath'] : null;
-        $this->metamodel = isset($data['tableName']) ? $data['tableName'] : null;
+        $this->tableName = isset($data['tableName']) ? $data['tableName'] : null;
         $this->oiVersion = isset($data['oiVersion']) ? $data['oiVersion'] : null;
         $this->uniqueIDField = isset($data['uniqueIDField']) ? $data['uniqueIDField'] : null;
         $this->deleteFilesOlderThen = isset($data['deleteFilesOlderThen']) ? intval($data['deleteFilesOlderThen']) : 0;
@@ -47,10 +47,10 @@ class MetaModelObject {
     {
         return array(
             'id' => $this->id,
-            'metamodel' => $this->metamodelID,
+            'metamodel' => $this->metamodel,
             'exportPath' => $this->exportPath,
             'filesPath' => $this->filesPath,
-            'tableName' => $this->metamodel,
+            'tableName' => $this->tableName,
             'oiVersion' => $this->oiVersion,
             'uniqueIDField' => $this->uniqueIDField,
             'deleteFilesOlderThen' => $this->deleteFilesOlderThen,

@@ -773,7 +773,7 @@ class MetaModelsOpenImmo extends \BackendModule
      */
     public function getMetaModelObject($id)
     {
-        $obj = $this->Database->execute("SELECT mmo.id AS id,mmo.metamodel AS metamodelID, mmo.exportPath AS exportPath, mmo.filesPath AS filesPath, mmt.tableName AS metamodel, mmo.oiVersion AS oiVersion, mmo.uniqueIDField AS uniqueIDField, mmo.deleteFilesOlderThen AS deleteFilesOlderThen, mmo.autoSync AS autoSync, mmo.lastSync AS lastSync " .
+        $obj = $this->Database->execute("SELECT mmo.id AS id,mmo.metamodel AS metamodel, mmo.exportPath AS exportPath, mmo.filesPath AS filesPath, mmt.tableName AS tableName, mmo.oiVersion AS oiVersion, mmo.uniqueIDField AS uniqueIDField, mmo.deleteFilesOlderThen AS deleteFilesOlderThen, mmo.autoSync AS autoSync, mmo.lastSync AS lastSync " .
             "FROM tl_metamodels_openimmo mmo " .
             "LEFT JOIN tl_metamodel mmt ON mmt.id=mmo.metamodel " .
             "WHERE mmo.id='$id'")->fetchAssoc();
@@ -785,6 +785,7 @@ class MetaModelsOpenImmo extends \BackendModule
             $obj['filesPath'] = $obj['filesPath']->path;
             $obj['exportPath'] = $obj['exportPath']->path;
         }
+
         return $obj;
     }
 
@@ -1077,7 +1078,7 @@ class MetaModelsOpenImmo extends \BackendModule
                         $sorting++;
 
                         //add anbieter info to immo
-                        $immo = array("id" => $immo_id, "pid" => $metamodelObj['metamodelID'], "tstamp" => time(), "sorting" => $sorting);
+                        $immo = array("id" => $immo_id, "pid" => $metamodelObj['metamodel'], "tstamp" => time(), "sorting" => $sorting);
                         $immo = array_merge($immo_anbieter, $immo);
 
                         //immo info
@@ -1300,11 +1301,11 @@ class MetaModelsOpenImmo extends \BackendModule
      */
     private function updateCatalog(&$items, $metamodelObj)
     {
-        $metamodel = $metamodelObj['metamodel'];
+        $tableName = $metamodelObj['tableName'];
 
         foreach ($items as &$item) {
             //check if entry already exists
-            $exists = $this->Database->execute("SELECT COUNT(id) FROM $metamodel WHERE id='" . $item['id'] . "'")->fetchAssoc();
+            $exists = $this->Database->execute("SELECT COUNT(id) FROM $tableName WHERE id='" . $item['id'] . "'")->fetchAssoc();
 
             //remove if deleteAction is in use
             $deleted = $this->getFieldData($item['_xml_'], MetaModelsOpenImmo::$deleteActionField[$metamodelObj['oiVersion']]['path'], 'anbieter/immobilie', $metamodelObj);
@@ -1315,17 +1316,17 @@ class MetaModelsOpenImmo extends \BackendModule
             if (intval($exists['COUNT(id)']) > 0) {
                 //remove old entry if one exists and this should be deleted
                 if ($deleted) {
-                    $this->Database->execute("DELETE FROM $metamodel WHERE id='" . $item['id'] . "'");
+                    $this->Database->execute("DELETE FROM $tableName WHERE id='" . $item['id'] . "'");
                     $this->addMessage("deleted object: " . $item['id']);
                 } else {
                     $id = $item['id'];
                     unset($item['id']);
                     unset($item['_xml_']);
-                    $this->Database->prepare("UPDATE $metamodel %s WHERE id='$id'")->set($item)->execute();
+                    $this->Database->prepare("UPDATE $tableName %s WHERE id='$id'")->set($item)->execute();
                 }
             } elseif (!$deleted) {
                 unset($item['_xml_']);
-                $this->Database->prepare("INSERT INTO $metamodel %s")->set($item)->execute();
+                $this->Database->prepare("INSERT INTO $tableName %s")->set($item)->execute();
             }
         }
         return true;
