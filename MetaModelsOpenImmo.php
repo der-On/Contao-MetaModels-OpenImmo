@@ -12,6 +12,9 @@
 
 namespace MetaModelsOpenImmo;
 
+require_once __DIR__ . '/FilesHelper.php';
+require_once __DIR__ . '/MetaModelsOpenImmoField.php';
+
 /**
  * Class MetaModelsOpenImmo
  *
@@ -779,7 +782,7 @@ class MetaModelsOpenImmo extends \BackendModule
             "WHERE mmo.id='$id'")->fetchAssoc();
 
         // Contao 3 stores files in database using uuids
-        if (VERSION > '2') {
+        if (VERSION >= '3') {
             $obj['filesPath'] = \FilesModel::findByUuid($obj['filesPath']);
             $obj['exportPath'] = \FilesModel::findByUuid($obj['exportPath']);
             $obj['filesPath'] = $obj['filesPath']->path;
@@ -1229,7 +1232,7 @@ class MetaModelsOpenImmo extends \BackendModule
             }
 
             // Contao 3 has FileModels
-            if (VERSION > 2) {
+            if (VERSION >= '3') {
                 if (isset($this->fieldsFlat[$fieldPath]) && $this->fieldsFlat[$fieldPath] == 'path') {
                     $files = \FilesModel::findMultipleByPaths($results);
                     $results = array();
@@ -1363,7 +1366,7 @@ class MetaModelsOpenImmo extends \BackendModule
         //empty the data directory if it is the temp directory so we do not have files doubled
         if (substr($dataPath, -4) == 'tmp/') {
             $dataFolder = new \Folder($dataPath);
-            if (VERSION > 2) {
+            if (VERSION >= '3') {
                 $dataFolder->purge();
             }
             else {
@@ -1373,7 +1376,7 @@ class MetaModelsOpenImmo extends \BackendModule
         }
 
         // Since Contao 3 files must be synced with database
-        if (VERSION > 2) {
+        if (VERSION >= '3') {
             \Dbafs::syncFiles();
         }
 

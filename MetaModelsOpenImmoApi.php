@@ -12,6 +12,9 @@
 
 namespace MetaModelsOpenImmo;
 
+require_once __DIR__ . '/MetaModelsOpenImmo.php';
+require_once __DIR__ . '/models/MetaModelObject.php';
+require_once __DIR__ . '/models/SyncFile.php';
 
 class MetaModelsOpenImmoApi extends \Controller {
 
@@ -37,7 +40,7 @@ class MetaModelsOpenImmoApi extends \Controller {
     {
         $objects = array();
 
-        $rows = $this->Database->execute("SELECT id FROM tl_metamodels_openimmo WHERE deleteFilesOlderThen>0 OR autoSync!='never'")->fetchAllAssoc();
+        $rows = $this->Database->execute("SELECT id FROM tl_metamodels_openimmo")->fetchAllAssoc();
         foreach($rows as $row) {
             $objects[] = $this->loadMetaModelObject($row['id']);
         }
