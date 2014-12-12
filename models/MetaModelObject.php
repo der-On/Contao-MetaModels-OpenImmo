@@ -39,7 +39,7 @@ class MetaModelObject {
         $this->oiVersion = isset($data['oiVersion']) ? $data['oiVersion'] : null;
         $this->uniqueIDField = isset($data['uniqueIDField']) ? $data['uniqueIDField'] : null;
         $this->deleteFilesOlderThen = isset($data['deleteFilesOlderThen']) ? intval($data['deleteFilesOlderThen']) : 0;
-        $this->autoSync = isset($data['autoSync']) ? intval($data['autoSync']) : 'never';
+        $this->autoSync = isset($data['autoSync']) ? $data['autoSync'] : 'never';
         $this->lastSync = isset($data['lastSync']) ? intval($data['lastSync']) : 0;
     }
 
