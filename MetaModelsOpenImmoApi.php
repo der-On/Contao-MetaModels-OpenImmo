@@ -133,11 +133,11 @@ class MetaModelsOpenImmoApi extends \Controller {
                 if ($syncFields) {
                     $this->log($path . ': loaded synchronization data', 'MetaModelsOpenImmoApi->syncFileFor', TL_IFNO);
 
-                    if ($this->mmoi->syncDataWithCatalog($data, $obj, $syncFields)) {
-                        $this->log($path . ': data synced', 'MetaModelsOpenImmoApi->syncFileFor', TL_IFNO);
+                    if ($this->mmoi->syncDataFiles($obj, $extracted_path)) {
+                        $this->log($path . ': files synced', 'MetaModelsOpenImmoApi->syncFileFor', TL_IFNO);
 
-                        if ($this->mmoi->syncDataFiles($obj, $extracted_path)) {
-                            $this->log($path . ': files synced', 'MetaModelsOpenImmoApi->syncFileFor', TL_IFNO);
+                        if ($this->mmoi->syncDataWithCatalog($data, $obj, $syncFields)) {
+                            $this->log($path . ': data synced', 'MetaModelsOpenImmoApi->syncFileFor', TL_IFNO);
 
                             $mm_id = $mmobj->id;
                             $now = time();
