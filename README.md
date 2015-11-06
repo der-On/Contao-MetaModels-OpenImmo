@@ -8,11 +8,21 @@ This module makes it possible to import OpenImmo-Data into an existing MetaModel
 
 The files need to be placed within the folder system/modules/metamodels_openimmo/
 
+## Import the Template
+
+You can save a lot of time and work by importing the pre-made template.
+
+It consists of the MetaModel "immo" and pre-configured attributes and the corresponding MetaModel-OpenImmo link.
+
+1. In the Backend under "MetaModels - OpenImmo > Settings" select the MetaModels-Version you have installed.
+2. Hit "Import Template" and you will get a good starting point for your object catalog.
+
+**Warning:** Importing the template will erase all of your existing MetaModels and MetaModels-OpenImmo links.
 
 ## Usage
 
 1. Create your metamodel
-2. In the Backend under "Content > MetaModels - OpenImmo" add a new MetaModel-OpenImmo link
+2. In the Backend under "MetaModels - OpenImmo > Links" add a new MetaModel-OpenImmo link
 3. Select the folder in which the object-data will be uploaded to by your Software
 4. Select the folder in which file attachments for object should be stored
 5. Link each field in your metamodel to an OpenImmo field.
@@ -21,7 +31,7 @@ The files need to be placed within the folder system/modules/metamodels_openimmo
 ## Synchronising
 
 1. Trigger uploading of the data in your software
-2. In the Backend unter "Content > MetaModels - OpenImmo" click on the "sync" icon
+2. In the Backend unter "MetaModels - OpenImmo > Links" click on the "sync" icon
 3. Select the data-file to sync, by default the oldest unsynced file will be selected
 4. hit the "Sync" button, if it is a zip file it gets unpacked and you must hit the "Sync" button again
 5. The data is now synced with your database
