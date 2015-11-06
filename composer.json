@@ -28,6 +28,9 @@
     "contao/core": ">=3.2,<3.6",
     "metamodels/core": ">=2.0.0"
   },
+  "conflict": {
+    "contao/core": "3.4.0"
+  },
   "autoload": {
     "psr-0": {
       "MetaModelsOpenImmo": "src"
