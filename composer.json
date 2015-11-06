@@ -26,7 +26,7 @@
   "require": {
     "php": ">=5.3",
     "contao/core": ">=3.2,<3.6",
-    "metamodels/core": "*"
+    "metamodels/core": ">=2.0.0"
   },
   "autoload": {
     "psr-0": {
@@ -36,14 +36,17 @@
   "extra": {
     "contao": {
       "sources": {
-        "system/modules/metamodels_openimmo"
+        "contao": "system/modules/metamodels_openimmo"
       }
     },
      "transifex": {
-        "project": "metamodels_openimmo",
-        "languages_cto": "contao/languages",
-        "languages_tx": ".tx"
-      },
+      "project": "metamodels_openimmo",
+      "languages_cto": "contao/languages",
+      "languages_tx": ".tx"
+    },
+    "branch-alias": {
+      "dev-master": "2.0.x-dev"
+    }
   },
   "prefer-stable": true,
   "minimum-stability": "dev"
