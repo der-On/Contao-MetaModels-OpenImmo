@@ -154,9 +154,9 @@ INSERT INTO `tl_metamodels_openimmo_fields` (`name`, `metamodelAttribute`, `oiFi
 ('Titelbild', 64, 'anbieter/immobilie/anhaenge', 'anhang/daten/pfad', '', '', '', 'anbieter/immobilie/anhaenge/anhang@gruppe', 'TITELBILD', 81, 1, 1472, 1411386910),
 ('Alias', 3, 'anbieter/immobilie/verwaltung_techn', 'objektnr_extern', '', '', '', '', '', 82, 1, 64, 1411412930),
 ('Kurzbeschreibung', 65, 'anbieter/immobilie/freitexte', 'dreizeiler', '', '', '', '', '', 83, 1, 3648, 1411415082),
-('Zustand', 66, '', '', 'Blumenauer,oiFieldCallback', 'anbieter/immobilie/user_defined_anyfield/zustand_klartext', '', '', '', 84, 1, 7936, 1416498255),
+('Zustand', 66, '', '', '', 'anbieter/immobilie/user_defined_anyfield/zustand_klartext', '', '', '', 84, 1, 7936, 1416498255),
 ('Keller', 67, 'anbieter/immobilie/ausstattung', 'unterkellert@keller', '', '', '', '', '', 85, 1, 3616, 1411461040),
-('Objektart', 68, '', '', 'Blumenauer,oiFieldCallback', 'anbieter/immobilie/user_defined_anyfield/objektart_klartext', '', '', '', 86, 1, 4800, 1416497817),
+('Objektart', 68, '', '', '', 'anbieter/immobilie/user_defined_anyfield/objektart_klartext', '', '', '', 86, 1, 4800, 1416497817),
 ('Gäste WC', 69, 'anbieter/immobilie/ausstattung', 'gaestewc', '', '', '', '', '', 87, 1, 2496, 1411464358),
 ('Verwalter E-Mail Zentrale', 70, 'anbieter/immobilie/kontaktperson', 'email_zentrale', '', '', '', '', '', 88, 1, 6976, 1411476467),
 ('Verwalter Firma', 71, 'anbieter/immobilie/kontaktperson', 'firma', '', '', '', '', '', 89, 1, 7008, 1411476500),
@@ -165,8 +165,8 @@ INSERT INTO `tl_metamodels_openimmo_fields` (`name`, `metamodelAttribute`, `oiFi
 ('Verwalter PLZ', 74, 'anbieter/immobilie/kontaktperson', 'plz', '', '', '', '', '', 92, 1, 7036, 1411476620),
 ('Verwalter Ort', 75, 'anbieter/immobilie/kontaktperson', 'ort', '', '', '', '', '', 93, 1, 7038, 1411476679),
 ('Hausnummer', 76, 'anbieter/immobilie/geo', 'hausnummer', '', '', '', '', '', 94, 1, 5952, 1411476750),
-('Qualität der Austattung', 77, '', '', 'Blumenauer,oiFieldCallback', 'anbieter/immobilie/verwaltung_techn/user_defined_anyfield/qualitaet_der_ausstattung', '', '', '', 95, 1, 5984, 1413193109),
-('Gewerbefläche', 78, 'anbieter/immobilie/flaechen', 'gastroflaeche', 'Blumenauer,oiFieldCallback', '', '', '', '', 96, 1, 2752, 1413884362),
+('Qualität der Austattung', 77, '', '', '', 'anbieter/immobilie/verwaltung_techn/user_defined_anyfield/qualitaet_der_ausstattung', '', '', '', 95, 1, 5984, 1413193109),
+('Gewerbefläche', 78, 'anbieter/immobilie/flaechen', 'gastroflaeche', '', '', '', '', '', 96, 1, 2752, 1413884362),
 ('Etagenanzahl', 79, 'anbieter/immobilie/geo', 'anzahl_etagen', '', '', '', '', '', 97, 1, 2240, 1413884733),
 ('Letzte Modernisierung', 80, 'anbieter/immobilie/zustand_angaben', 'letzemodernisierung', '', '', '', '', '', 98, 1, 3776, 1413885314),
 ('Denkmalgeschützt', 81, 'anbieter/immobilie/verwaltung_objekt', 'denkmalgeschuetzt', '', '', '', '', '', 99, 1, 1856, 1413885422),
@@ -309,7 +309,7 @@ INSERT INTO `tl_metamodel_attribute` (`tstamp`, `sorting`, `type`, `name`, `desc
 (1413895464, 512, 'checkbox', 'Top Angebot', '', 'top_angebot', '', '', NULL, '', '', '', '', '', '', '', NULL, '', '', '', '', '', NULL, '', 85, 1, '', NULL, NULL, 0, NULL, 0, NULL),
 (1416323583, 1664, 'decimal', 'Fläche', 'Fläche, die für die Suche verwendet wird.', 'flaeche', '', '', NULL, '', '', '', '', '', '', '', NULL, '', '', '', '', '', NULL, '', 86, 1, '', NULL, NULL, 0, NULL, 0, NULL),
 (1416323583, 9216, 'text', 'Vermarktungsart', 'Verkauf oder Vermietung', 'vermarktungsart', '', '', NULL, '', '', '', '', '', '', '', NULL, '', '', '', '', '', NULL, '', 87, 1, '', NULL, NULL, 0, NULL, 0, NULL),
-(1416323583, 8832, 'text', 'Nutzungsart', '', 'nutzungsart', '', '', NULL, '', '', 'tl_blumenauer_variables', 'value', 'id', 'name', 'sorting', 'name=''immo_nutzungsart''', '', '', '', '', '', NULL, '', 88, 1, '', NULL, NULL, 0, NULL, 0, NULL),
+(1416323583, 8832, 'text', 'Nutzungsart', '', 'nutzungsart', '', '', NULL, '', '', 'tl_your_variables', 'value', 'id', 'name', 'sorting', 'name=''immo_nutzungsart''', '', '', '', '', '', NULL, '', 88, 1, '', NULL, NULL, 0, NULL, 0, NULL),
 (1416325206, 640, 'checkbox', 'Investment', 'Ist dieses Objekt ein Investmentangebot', 'investment', '', '', NULL, '', '', '', '', '', '', '', NULL, '', '', '', '', '', NULL, '', 89, 1, '', NULL, NULL, 0, NULL, 0, NULL);
 
 -- --------------------------------------------------------
