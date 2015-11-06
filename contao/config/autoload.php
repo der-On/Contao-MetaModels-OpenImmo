@@ -41,6 +41,7 @@ ClassLoader::addClasses(array
 (
 	// Classes
 	'MetaModelsOpenImmo\FilesHelper' => 'system/modules/metamodels_openimmo/FilesHelper.php',
+  'MetaModelsOpenImmo\OpenImmo' => 'system/modules/metamodels_openimmo/OpenImmo.php',
   'MetaModelsOpenImmo\MetaModelsOpenImmo' => 'system/modules/metamodels_openimmo/MetaModelsOpenImmo.php',
   'MetaModelsOpenImmo\MetaModelsOpenImmoField' => 'system/modules/metamodels_openimmo/MetaModelsOpenImmoField.php',
   'MetaModelsOpenImmo\MetaModelsOpenImmoCron' => 'system/modules/metamodels_openimmo/MetaModelsOpenImmoCron.php',

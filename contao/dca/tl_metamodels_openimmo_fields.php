@@ -196,7 +196,7 @@ class tl_metamodels_openimmo_fields extends \Backend
 
 	public function getOIFieldGroupOptions(&$dc)
 	{
-		return MetaModelsOpenImmo::getFieldGroups($this->getOIVersion($dc->id));
+		return OpenImmo::getFieldGroups($this->getOIVersion($dc->id));
 	}
 
 	public function getOIFieldOptions(&$dc)
@@ -204,7 +204,7 @@ class tl_metamodels_openimmo_fields extends \Backend
 		$group = $this->Database->execute("SELECT oiFieldGroup FROM tl_metamodels_openimmo_fields WHERE id='".$dc->id."'")->fetchEach('oiFieldGroup');
 		$group = $group[0];
 
-		$fields = MetaModelsOpenImmo::getFieldsByGroup($this->getOIVersion($dc->id),$group);
+		$fields = OpenImmo::getFieldsByGroup($this->getOIVersion($dc->id),$group);
 
 		$_fields = array();
 		foreach($fields as &$field) {

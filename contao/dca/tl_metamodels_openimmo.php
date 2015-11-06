@@ -11,6 +11,7 @@
  */
 
 use MetaModelsOpenImmo\MetaModelsOpenImmo;
+use MetaModelsOpenImmo\OpenImmo;
 
 /**
  * Table tl_metamodels_openimmo
@@ -122,7 +123,7 @@ $GLOBALS['TL_DCA']['tl_metamodels_openimmo'] = array
 			'label'					  => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['oiVersion'],
 			'exclude'				  => true,
 			'inputType'				  => 'select',
-			'options'				  => MetaModelsOpenImmo::getSupportedVersions(),
+			'options'				  => OpenImmo::getSupportedVersions(),
 			''
 		),
 		'uniqueIDField' => array
@@ -184,7 +185,7 @@ class tl_metamodels_openimmo extends \Backend
 
 	public function getUniqueIDFieldOptions(&$dc)
 	{
-		$flattenFields = MetaModelsOpenImmo::getFlattenedFields($this->getOIVersion($dc->id));
+		$flattenFields = OpenImmo::getFlattenedFields($this->getOIVersion($dc->id));
 		return array_keys($flattenFields);
 	}
 
