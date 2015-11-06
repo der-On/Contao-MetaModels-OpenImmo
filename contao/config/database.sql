@@ -10,9 +10,9 @@
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table `tl_metamodels_openimmo`
--- 
+--
 
 CREATE TABLE `tl_metamodels_openimmo` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -34,9 +34,9 @@ CREATE TABLE `tl_metamodels_openimmo` (
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table `tl_metamodels_openimmo_fields`
--- 
+--
 
 CREATE TABLE `tl_metamodels_openimmo_fields` (
   `id` int(10) unsigned NOT NULL auto_increment,
@@ -73,5 +73,4 @@ CREATE TABLE `tl_metamodels_openimmo_history` (
   `status` int(1) unsigned NOT NULL default '0',
 
   PRIMARY KEY  (`id`),
-  KEY `file` (`file`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

@@ -10,8 +10,6 @@
  * @filesource
  */
 
-require_once __DIR__ . '/../MetaModelsOpenImmo.php';
-
 use MetaModelsOpenImmo\MetaModelsOpenImmo;
 
 /**

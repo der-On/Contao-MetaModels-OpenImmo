@@ -12,10 +12,6 @@
 
 namespace MetaModelsOpenImmo;
 
-require_once __DIR__ . '/MetaModelsOpenImmo.php';
-require_once __DIR__ . '/models/MetaModelObject.php';
-require_once __DIR__ . '/models/SyncFile.php';
-
 class Api extends \Controller {
 
     protected $mmoi = null;

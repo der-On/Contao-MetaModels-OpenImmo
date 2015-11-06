@@ -12,9 +12,6 @@
 
 namespace MetaModelsOpenImmo;
 
-require_once __DIR__ . '/FilesHelper.php';
-require_once __DIR__ . '/MetaModelsOpenImmoField.php';
-
 /**
  * Class MetaModelsOpenImmo
  *

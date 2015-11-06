@@ -11,7 +11,6 @@
 
 namespace MetaModelsOpenImmo\Models;
 
-
 class SyncFile {
 
     public $file;
@@ -42,4 +41,4 @@ class SyncFile {
             'synctime' => $this->syncTime
         );
     }
-} 
+}
