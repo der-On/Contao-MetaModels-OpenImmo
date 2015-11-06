@@ -16,7 +16,7 @@ require_once __DIR__ . '/MetaModelsOpenImmo.php';
 require_once __DIR__ . '/models/MetaModelObject.php';
 require_once __DIR__ . '/models/SyncFile.php';
 
-class MetaModelsOpenImmoApi extends \Controller {
+class Api extends \Controller {
 
     protected $mmoi = null;
 
@@ -169,4 +169,4 @@ class MetaModelsOpenImmoApi extends \Controller {
             $this->syncFileFor($mmobj, $syncFile, $user);
         }
     }
-} 
+}

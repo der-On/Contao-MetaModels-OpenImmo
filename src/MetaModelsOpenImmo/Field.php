@@ -12,7 +12,7 @@
 
 namespace MetaModelsOpenImmo;
 
-class MetaModelsOpenImmoField
+class Field
 {
     public $attribute = null;
     public $field = null;

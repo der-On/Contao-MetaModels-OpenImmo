@@ -16,7 +16,7 @@ require_once __DIR__ . '/MetaModelsOpenImmo.php';
 require_once __DIR__ . '/MetaModelsOpenImmoApi.php';
 require_once __DIR__ . '/models/MetaModelObject.php';
 
-class MetaModelsOpenImmoCron extends \Frontend {
+class Cron extends \Frontend {
 
     protected $mmoi = null;
     protected $api = null;
@@ -118,4 +118,4 @@ class MetaModelsOpenImmoCron extends \Frontend {
             $this->api->syncFileFor($mmobj, $syncFile, 'cron');
         }
     }
-} 
+}

@@ -1,8 +1,50 @@
 {
-  "name": "der-On/Contao-MetaModels-OpenImmo",
+  "name": "anzui/metamodels_openimmo",
   "description": "Import OpenImmo-Data into an existing MetaModel (for Contao CMS)",
-
+  "keywords": [
+    "contao",
+    "metamodels",
+    "openimmo"
+  ],
+  "type": "contao-module",
+  "homepage": "https://github.com/der-On/Contao-MetaModels-OpenImmo/",
+  "license": "LGPL-3.0+",
+  "authors": [
+    {
+      "name": "Ondrej Brinkel",
+      "email": "info@anzui.de",
+      "homepage": "http://www.anzui.de",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "email": "info@anzui.de",
+    "issues": "https://github.com/der-On/Contao-MetaModels-OpenImmo/issues",
+    "wiki": "https://github.com/der-On/Contao-MetaModels-OpenImmo/wiki",
+    "source": "https://github.com/der-On/Contao-MetaModels-OpenImmo"
+  },
   "require": {
-    "php": ">=5.3.0"
-  }
+    "php": ">=5.3",
+    "contao/core": ">=3.2,<3.6",
+    "metamodels/core": "*"
+  },
+  "autoload": {
+    "psr-0": {
+      "MetaModelsOpenImmo": "src"
+    }
+  },
+  "extra": {
+    "contao": {
+      "sources": {
+        "system/modules/metamodels_openimmo"
+      }
+    },
+     "transifex": {
+        "project": "metamodels_openimmo",
+        "languages_cto": "contao/languages",
+        "languages_tx": ".tx"
+      },
+  },
+  "prefer-stable": true,
+  "minimum-stability": "dev"
 }
