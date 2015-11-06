@@ -1,0 +1,26 @@
+<form action="<?php print ampersand($this->Environment->request, ENCODE_AMPERSANDS); ?>" id="be_metamodels_openimmo_import_template" class="tl_form" method="post">
+	<div class="tl_formbody_edit">
+		<input type="hidden" name="FORM_SUBMIT" value="be_metamodels_openimmo_import_template" />
+    <input type="hidden" name="REQUEST_TOKEN" value="<?php echo REQUEST_TOKEN; ?>">
+
+		<div class="tl_tbox">
+			<h2>Template importieren</h2>
+			<p>
+				Das Template bietet einen guten Startpunkt für die Einrichtung einer Immobilien-Webseite.
+			</p>
+			<p>
+				<strong>Achtung:</strong> Dabei werden alle MetaModels und MetaModels-OpenImmo Daten überschrieben!
+			</p>
+		</div>
+		<div class="tl_tbox">
+			<label>Bitte wählen Sie die Template-Version aus, die zu Ihrer MetaModels Version passt:<br/>
+			<select name="version">
+				<?php foreach($this->versions as $version): ?>
+					<option value="<?php echo $version; ?>"><?php echo $version; ?></option>
+				<?php endforeach; ?>
+			</select>
+			</label>
+		</div>
+		<button type="submit">Template Importieren</button>
+  </div>
+</form>

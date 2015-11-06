@@ -4,7 +4,7 @@
  *
  * PHP version 5
  * @copyright  Ondrej Brinkel 2014
- * @author     Ondrej Brinkel 
+ * @author     Ondrej Brinkel
  * @package    MetaModelsOpenImmo
  * @license    MIT
  * @filesource
@@ -16,10 +16,10 @@
  * BACK END MODULES
  * -------------------------------------------------------------------------
  *
- * Back end modules are stored in a global array called "BE_MOD". Each module 
- * has certain properties like an icon, an optional callback function and one 
+ * Back end modules are stored in a global array called "BE_MOD". Each module
+ * has certain properties like an icon, an optional callback function and one
  * or more tables. Each module belongs to a particular group.
- * 
+ *
  *   $GLOBALS['BE_MOD'] = array
  *   (
  *       'group_1' => array
@@ -35,14 +35,20 @@
  *           )
  *       )
  *   );
- * 
+ *
  * Use function array_insert() to modify an existing modules array.
  */
 
-$GLOBALS['BE_MOD']['content']['metamodels_openimmo'] = array(
-	'tables' => array('tl_metamodels_openimmo','tl_metamodels_openimmo_fields'),
-	'syncMetaModel' => array('MetaModelsOpenImmo\MetaModelsOpenImmo','sync'),
-	'icon' => 'system/modules/metamodels_openimmo/assets/icon.gif'
+$GLOBALS['BE_MOD']['metamodels_openimmo'] = array(
+	'metamodels_openimmo_links' => array(
+		'tables' => array('tl_metamodels_openimmo','tl_metamodels_openimmo_fields'),
+		'syncMetaModel' => array('MetaModelsOpenImmo\MetaModelsOpenImmo','sync'),
+		'icon' => 'system/modules/metamodels_openimmo/assets/icon.gif'
+	),
+	'metamodels_openimmo_settings' => array(
+		'callback' => 'MetaModelsOpenImmo\Settings',
+		'icon' => 'system/modules/metamodels_openimmo/assets/settings.gif',
+	)
 );
 
 $GLOBALS['TL_CSS'][] = 'system/modules/metamodels_openimmo/assets/metamodels_openimmo.css';

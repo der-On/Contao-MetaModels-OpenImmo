@@ -41,12 +41,12 @@ ClassLoader::addClasses(array
 (
 	// Classes
 	'MetaModelsOpenImmo\FilesHelper' => 'system/modules/metamodels_openimmo/FilesHelper.php',
-    'MetaModelsOpenImmo\MetaModelsOpenImmo' => 'system/modules/metamodels_openimmo/MetaModelsOpenImmo.php',
-    'MetaModelsOpenImmo\MetaModelsOpenImmoField' => 'system/modules/metamodels_openimmo/MetaModelsOpenImmoField.php',
-    'MetaModelsOpenImmo\MetaModelsOpenImmoCron' => 'system/modules/metamodels_openimmo/MetaModelsOpenImmoCron.php',
-    'MetaModelsOpenImmo\MetaModelsOpenImmoApi' => 'system/modules/metamodels_openimmo/MetaModelsOpenImmoApi.php',
-    'MetaModelsOpenImmo\Models\MetaModelObject' => 'system/modules/metamodels_openimmo/models/MetaModelObject.php',
-    'MetaModelsOpenImmo\Models\SyncFile' => 'system/modules/metamodels_openimmo/models/SyncFile.php',
+  'MetaModelsOpenImmo\MetaModelsOpenImmo' => 'system/modules/metamodels_openimmo/MetaModelsOpenImmo.php',
+  'MetaModelsOpenImmo\MetaModelsOpenImmoField' => 'system/modules/metamodels_openimmo/MetaModelsOpenImmoField.php',
+  'MetaModelsOpenImmo\MetaModelsOpenImmoCron' => 'system/modules/metamodels_openimmo/MetaModelsOpenImmoCron.php',
+  'MetaModelsOpenImmo\MetaModelsOpenImmoApi' => 'system/modules/metamodels_openimmo/MetaModelsOpenImmoApi.php',
+  'MetaModelsOpenImmo\Models\MetaModelObject' => 'system/modules/metamodels_openimmo/models/MetaModelObject.php',
+  'MetaModelsOpenImmo\Models\SyncFile' => 'system/modules/metamodels_openimmo/models/SyncFile.php',
 ));
 
 
@@ -56,4 +56,5 @@ ClassLoader::addClasses(array
 TemplateLoader::addFiles(array
 (
 	'mod_metamodels_openimmo' => 'system/modules/metamodels_openimmo/templates',
+	'be_metamodels_openimmo_settings' => 'system/modules/metamodels_openimmo/templates',
 ));
