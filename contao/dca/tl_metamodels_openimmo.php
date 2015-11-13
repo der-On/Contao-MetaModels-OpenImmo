@@ -99,7 +99,7 @@ $GLOBALS['TL_DCA']['tl_metamodels_openimmo'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array(''),
-		'default'                     => 'name,oiVersion,uniqueIDField;metamodel,exportPath,filesPath;deleteFilesOlderThen,autoSync'
+		'default'                     => 'name,oiVersion,uniqueIDField;metamodel,uniqueIDMetamodelAttribute,exportPath,filesPath;deleteFilesOlderThen,autoSync'
 	),
 
 	// Subpalettes
@@ -133,6 +133,14 @@ $GLOBALS['TL_DCA']['tl_metamodels_openimmo'] = array
 			'inputType'				  => 'select',
 			'eval'					  => array('mandatory'=>true),
 			'options_callback'		  => array('tl_metamodels_openimmo','getUniqueIDFieldOptions')
+		),
+		'uniqueIDMetamodelAttribute' => array
+		(
+			'label'					  => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['uniqueIDMetamodelAttribute'],
+			'exclude'				  => true,
+			'inputType'				  => 'select',
+			'eval'					  => array('mandatory'=>true),
+			'options_callback'		  => array('tl_metamodels_openimmo','getUniqueIDMetamodelAttributeOptions')
 		),
 		'metamodel' => array
 		(
@@ -187,6 +195,16 @@ class tl_metamodels_openimmo extends \Backend
 	{
 		$flattenFields = OpenImmo::getFlattenedFields($this->getOIVersion($dc->id));
 		return array_keys($flattenFields);
+	}
+
+	public function getUniqueIDMetamodelAttributeOptions(&$dc)
+	{
+		$_options = $this->Database->execute("SELECT id, name FROM tl_metamodel_attribute WHERE pid='" . $dc->activeRecord->metamodel . "' ORDER BY name")->fetchAllAssoc();
+		$options = array();
+		foreach($_options as $option) {
+			$options[$option['id']] = $option['name'];
+		}
+		return $options;
 	}
 
     public function getDeleteFilesOlderThenOptions(&$dc)

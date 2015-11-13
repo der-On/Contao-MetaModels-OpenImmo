@@ -20,6 +20,7 @@ class MetaModelObject {
     public $tableName;
     public $oiVersion;
     public $uniqueIDField;
+    public $uniqueIDMetamodelAttribute;
     public $deleteFilesOlderThen;
     public $autoSync;
     public $lastSync;
@@ -38,6 +39,7 @@ class MetaModelObject {
         $this->tableName = isset($data['tableName']) ? $data['tableName'] : null;
         $this->oiVersion = isset($data['oiVersion']) ? $data['oiVersion'] : null;
         $this->uniqueIDField = isset($data['uniqueIDField']) ? $data['uniqueIDField'] : null;
+        $this->uniqueIDMetamodelAttribute = isset($data['uniqueIDMetamodelAttribute']) ? $data['uniqueIDMetamodelAttribute'] : null;
         $this->deleteFilesOlderThen = isset($data['deleteFilesOlderThen']) ? intval($data['deleteFilesOlderThen']) : 0;
         $this->autoSync = isset($data['autoSync']) ? $data['autoSync'] : 'never';
         $this->lastSync = isset($data['lastSync']) ? intval($data['lastSync']) : 0;
@@ -53,9 +55,10 @@ class MetaModelObject {
             'tableName' => $this->tableName,
             'oiVersion' => $this->oiVersion,
             'uniqueIDField' => $this->uniqueIDField,
+            'uniqueIDMetamodelAttribute' => $this->uniqueIDMetamodelAttribute,
             'deleteFilesOlderThen' => $this->deleteFilesOlderThen,
             'autoSync' => $this->autoSync,
             'lastSync' => $this->lastSync,
         );
     }
-} 
+}

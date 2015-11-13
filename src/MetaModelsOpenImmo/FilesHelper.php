@@ -49,7 +49,7 @@ class FilesHelper
 		return substr($path,0,$pos+1);
 	}
 
-	public static function scandirByExt($path,$extensions = array())
+	public static function scandirByExt($path, $extensions = array(), $recursive = false)
 	{
 		$result = array();
 
@@ -57,13 +57,20 @@ class FilesHelper
 			$files = scandir(TL_ROOT . '/' . $path);
 
 			foreach($files as $file) {
-				if(!is_dir(TL_ROOT . '/' . $path.'/'.$file)) {
-					$ext = explode('.',$file);
-					$ext = strtolower($ext[count($ext)-1]);
-					if(in_array($ext,$extensions,false)) $result[] = $file;
+				if (in_array($file, array('.', '..'))) {
+					continue;
+				}
+
+				if(!is_dir(TL_ROOT . '/' . $path . '/' . $file)) {
+					$ext = explode('.', $file);
+					$ext = strtolower($ext[count($ext) - 1]);
+					if (in_array($ext, $extensions, false)) $result[] = $path . '/' . $file;
+				} elseif ($recursive) {
+					$result = array_merge($result, self::scandirByExt($path . '/' . $file, $extensions, $recursive));
 				}
 			}
 		}
+		
 		return $result;
 	}
 

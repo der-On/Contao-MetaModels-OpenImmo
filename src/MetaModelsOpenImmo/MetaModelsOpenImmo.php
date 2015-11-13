@@ -39,7 +39,7 @@ class MetaModelsOpenImmo extends \BackendModule
      * @var array
      */
     protected $messages = array();
-    
+
     /**
      * Flag if exported zip file was already unpacked
      * @var int
@@ -51,6 +51,12 @@ class MetaModelsOpenImmo extends \BackendModule
      * @var array
      */
     public $fieldsFlat;
+
+    /**
+     * Name of he attribute containing unique object IDs
+     * @var string
+     */
+    protected $uniqueIDMetamodelAttributeName = null;
 
     /**
      * Generate module
@@ -181,7 +187,7 @@ class MetaModelsOpenImmo extends \BackendModule
      */
     public function getMetaModelObject($id)
     {
-        $obj = $this->Database->execute("SELECT mmo.id AS id,mmo.metamodel AS metamodel, mmo.exportPath AS exportPath, mmo.filesPath AS filesPath, mmt.tableName AS tableName, mmo.oiVersion AS oiVersion, mmo.uniqueIDField AS uniqueIDField, mmo.deleteFilesOlderThen AS deleteFilesOlderThen, mmo.autoSync AS autoSync, mmo.lastSync AS lastSync " .
+        $obj = $this->Database->execute("SELECT mmo.id AS id,mmo.metamodel AS metamodel, mmo.exportPath AS exportPath, mmo.filesPath AS filesPath, mmt.tableName AS tableName, mmo.oiVersion AS oiVersion, mmo.uniqueIDField AS uniqueIDField, mmo.uniqueIDMetamodelAttribute AS uniqueIDMetamodelAttribute, mmo.deleteFilesOlderThen AS deleteFilesOlderThen, mmo.autoSync AS autoSync, mmo.lastSync AS lastSync " .
             "FROM tl_metamodels_openimmo mmo " .
             "LEFT JOIN tl_metamodel mmt ON mmt.id=mmo.metamodel " .
             "WHERE mmo.id='$id'")->fetchAssoc();
@@ -285,14 +291,14 @@ class MetaModelsOpenImmo extends \BackendModule
 
             if (!$use_post || ($use_post && ($sync_file == null || $sync_file == ''))) {
                 //get latest file
-                foreach (FilesHelper::scandirByExt($exportPath, ($canBeZip) ? array('zip', 'xml') : array('xml')) as $file) {
-                    $mtime = FilesHelper::fileModTime($exportPath . '/' . $file);
+                foreach (FilesHelper::scandirByExt($exportPath, ($canBeZip) ? array('zip', 'xml') : array('xml'), !$canBeZip) as $file) {
+                    $mtime = FilesHelper::fileModTime($file);
                     if ($mtime > $currentTime) {
                         $currentTime = $mtime;
-                        $currentFile = $exportPath . '/' . $file;
+                        $currentFile = $file;
                     }
                 }
-            } else $currentFile = $exportPath . '/' . $sync_file;
+            } else $currentFile = $sync_file;
 
             if (file_exists(TL_ROOT . '/' . $currentFile)) {
                 //check if it is a zip, and if so unpack it
@@ -328,6 +334,12 @@ class MetaModelsOpenImmo extends \BackendModule
         $zip->first();
         foreach ($files as $file) {
             $content = $zip->unzip();
+            $filePath = TL_ROOT . '/' . $tmpPath . '/' . $file;
+            $dir = dirname($filePath);
+
+            if (!file_exists($dir)) {
+              mkdir($dir);
+            }
             file_put_contents(TL_ROOT . '/' . $tmpPath . '/' . $file, $content);
             $zip->next();
         }
@@ -400,10 +412,10 @@ class MetaModelsOpenImmo extends \BackendModule
                     $fields[$field['metamodelAttribute']] = array();
                 }
                 if ($field['oiCustomField'] != '') {
-                    $field_obj = new MetaModelsOpenImmoField($field['metamodelAttribute'], $field['oiCustomField'], $field['oiDefaultValue']);
+                    $field_obj = new Field($field['metamodelAttribute'], $field['oiCustomField'], $field['oiDefaultValue']);
 
                 } else {
-                    $field_obj = new MetaModelsOpenImmoField($field['metamodelAttribute'], $field['oiFieldGroup'] . '/' . $field['oiField'], $field['oiDefaultValue']);
+                    $field_obj = new Field($field['metamodelAttribute'], $field['oiFieldGroup'] . '/' . $field['oiField'], $field['oiDefaultValue']);
                 }
                 if (!empty($field['oiConditionField'])) {
                     $field_obj->setConditionField($field['oiConditionField']);
@@ -417,7 +429,7 @@ class MetaModelsOpenImmo extends \BackendModule
         }
 
         //add uniqueIDField
-        if ($uniqueIDField != '') $fields['id'] = array(new MetaModelsOpenImmoField('id', $uniqueIDField));
+        if ($uniqueIDField != '') $fields['id'] = array(new Field('id', $uniqueIDField));
 
         return $fields;
     }
@@ -683,6 +695,15 @@ class MetaModelsOpenImmo extends \BackendModule
         }
     }
 
+    private function getUniqueIdMetaModelAttributeName($metamodelObj) {
+      if (!$this->uniqueIDMetamodelAttributeName) {
+        $name = $this->Database->execute('SELECT colname FROM tl_metamodel_attribute WHERE id=' . $metamodelObj['uniqueIDMetamodelAttribute'])->fetchAssoc();
+        $this->uniqueIDMetamodelAttributeName = $name['colname'];
+      }
+
+      return $this->uniqueIDMetamodelAttributeName;
+    }
+
     /**
      * Updates the database with items retrieved from an openimmo xml
      * @param array $items
@@ -691,11 +712,12 @@ class MetaModelsOpenImmo extends \BackendModule
      */
     private function updateCatalog(&$items, $metamodelObj)
     {
+        $uniqueIdField = $this->getUniqueIdMetaModelAttributeName($metamodelObj);
         $tableName = $metamodelObj['tableName'];
 
         foreach ($items as &$item) {
             //check if entry already exists
-            $exists = $this->Database->execute("SELECT COUNT(id) FROM $tableName WHERE id='" . $item['id'] . "'")->fetchAssoc();
+            $exists = $this->Database->execute("SELECT COUNT(id) FROM $tableName WHERE $uniqueIdField='" . $item['id'] . "'")->fetchAssoc();
 
             //remove if deleteAction is in use
             $deleted = $this->getFieldData($item['_xml_'], OpenImmo::$deleteActionField[$metamodelObj['oiVersion']]['path'], 'anbieter/immobilie', $metamodelObj);
@@ -706,16 +728,17 @@ class MetaModelsOpenImmo extends \BackendModule
             if (intval($exists['COUNT(id)']) > 0) {
                 //remove old entry if one exists and this should be deleted
                 if ($deleted) {
-                    $this->Database->execute("DELETE FROM $tableName WHERE id='" . $item['id'] . "'");
+                    $this->Database->execute("DELETE FROM $tableName WHERE $uniqueIdField='" . $item['id'] . "'");
                     $this->addMessage("deleted object: " . $item['id']);
                 } else {
                     $id = $item['id'];
                     unset($item['id']);
                     unset($item['_xml_']);
-                    $this->Database->prepare("UPDATE $tableName %s WHERE id='$id'")->set($item)->execute();
+                    $this->Database->prepare("UPDATE $tableName %s WHERE $uniqueIdField='$id'")->set($item)->execute();
                 }
             } elseif (!$deleted) {
                 unset($item['_xml_']);
+                unset($item['id']);
                 $this->Database->prepare("INSERT INTO $tableName %s")->set($item)->execute();
             }
         }
