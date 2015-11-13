@@ -32,6 +32,8 @@ class OpenImmo
       '1.2.3' => array('path' => 'anbieter/immobilie/verwaltung_techn/aktion@aktionart', 'value' => 'DELETE'),
       '1.2.4' => array('path' => 'anbieter/immobilie/verwaltung_techn/aktion@aktionart', 'value' => 'DELETE'),
       '1.2.5' => array('path' => 'anbieter/immobilie/verwaltung_techn/aktion@aktionart', 'value' => 'DELETE'),
+      '1.2.6' => array('path' => 'anbieter/immobilie/verwaltung_techn/aktion@aktionart', 'value' => 'DELETE'),
+      '1.2.7' => array('path' => 'anbieter/immobilie/verwaltung_techn/aktion@aktionart', 'value' => 'DELETE'),
   );
 
   /**
@@ -40,7 +42,15 @@ class OpenImmo
    */
   public static function getSupportedVersions()
   {
-      return array('1.2.1', '1.2.2', '1.2.3', '1.2.4', '1.2.5');
+      return array(
+        '1.2.1',
+        '1.2.2',
+        '1.2.3',
+        '1.2.4',
+        '1.2.5',
+        '1.2.6',
+        '1.2.7',
+      );
   }
 
   /**
@@ -543,6 +553,98 @@ class OpenImmo
 
           case '1.2.5':
               return self::getFields('1.2.4');
+              break;
+
+          case '1.2.6':
+              $fields = array_merge_recursive(self::getFields('1.2.4'), array(
+                'anbieter/immobilie/preise' => array(
+                    'kaufpreisnetto:float',
+                    'kaufpreisnetto@kaufpreisust:float',
+                    'kaufpreisbrutto:float',
+                    'hauptmietzinsnetto:float',
+                    'hauptmietzinsnetto@hauptmietzinsust:float',
+                    'pauschalmiete:float',
+                    'betriebskostennetto:float',
+                    'betriebskostennetto@betriebskostenust:float',
+                    'evbnetto:float',
+                    'evbnetto@evbust:float',
+                    'gesamtmietenetto:float',
+                    'gesamtmietenetto@gesamtmieteust:float',
+                    'gesamtmietebrutto:float',
+                    'gesamtbelastungnetto:float',
+                    'gesamtbelastungnetto@gesamtbelastungust:float',
+                    'gesamtbelastungbrutto:float',
+                    'gesamtkostenprom2von:float',
+                    'gesamtkostenprom2von@gesamtkostenprom2bis:float',
+                    'heizkostennetto:float',
+                    'heizkostennetto@heizkostenust:float',
+                    'monatlichekostennetto:float',
+                    'monatlichekostennetto@monatlichekostenust:float',
+                    'monatlichekostenbrutto:float',
+                    'nebenkostenprom2von:float',
+                    'nebenkostenprom2von@nebenkostenprom2bis:float',
+                    'ruecklagenetto:float',
+                    'ruecklagenetto@ruecklageust:float',
+                    'sonstigekostennetto:float',
+                    'sonstigekostennetto@sonstigekostenust:float',
+                    'sonstigemietenetto:float',
+                    'sonstigemietenetto@sonstigemieteust:float',
+                    'summemietenetto:float',
+                    'summemietenetto@summemieteust:float',
+                    'nettomieteprom2von:float',
+                    'nettomieteprom2von@nettomieteprom2bis:float',
+                    'provisionnetto:float',
+                    'provisionnetto@provisionust:float',
+                    'provisionbrutto:float',
+                    'richtpreis:float',
+                    'richtpreisprom2:float',
+                ),
+                'anbieter/immobilie/versteigerung' => array(
+                    'zwangsversteigerung:bool'
+                ),
+                'anbieter/immobilie/flaechen' => array(
+                    'kubatur:float',
+                    'ausnuetzungsziffer:float',
+                    'flaechevon:float',
+                    'flaechebis:float',
+                ),
+                'anbieter/immobilie/zustand_angaben' => array(
+                    'bauzone:string',
+                ),
+                'anbieter/immobilie/ausstattung' => array(
+                  'boden@GRANIT:bool',
+                  'energietyp@MINERGIEBAUWEISE:bool',
+                  'energietyp@MINERGIE_ZERTIFIZIERT:bool',
+                ),
+                'anbieter/immobilie/zustand_angaben' => array(
+                  'bauzone:string',
+                ),
+              ));
+              return $fields;
+              break;
+
+          case '1.2.7':
+              $fields = array_merge_recursive(self::getFields('1.2.6'), array(
+                'anbieter/immobilie/freitexte' => array(
+                    'objekt_text:string',
+                ),
+                'anbieter/immobilie/ausstattung' => array(
+                  'befeuerung@KOHLE:bool',
+                  'befeuerung@HOLZ:bool',
+                  'befeuerung@FLUESSIGGAS:bool',
+                ),
+                'anbieter/immobilie/zustand_angaben' => array(
+                  'energiepass/primaerenergietraeger:string',
+                  'energiepass/stromwert:string',
+                  'energiepass/waermewert:string',
+                  'energiepass/wertklasse:string',
+                  'energiepass/baujahr:string',
+                  'energiepass/ausstelldatum:string',
+                  'energiepass/gebaeudeart:string',
+                  'energiepass/epasstext:string',
+                )
+              ));
+              return $fields;
               break;
 
           default:
