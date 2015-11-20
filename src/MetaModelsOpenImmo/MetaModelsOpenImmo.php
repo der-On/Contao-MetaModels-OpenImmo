@@ -233,8 +233,8 @@ class MetaModelsOpenImmo extends \BackendModule
 
             //get latest file
             foreach (FilesHelper::scandirByExt($exportPath, ($canBeZip) ? array('zip', 'xml') : array('xml')) as $i => $file) {
-                $mtime = FilesHelper::fileModTime($exportPath . '/' . $file);
-                $size = FilesHelper::fileSize($exportPath . '/' . $file);
+                $mtime = FilesHelper::fileModTime($file);
+                $size = FilesHelper::fileSize($file);
 
                 if (array_key_exists($file, $synced)) {
                     $mtime = intval($synced[$file]['filetime']);

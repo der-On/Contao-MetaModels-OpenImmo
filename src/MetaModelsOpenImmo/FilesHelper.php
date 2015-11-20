@@ -70,7 +70,7 @@ class FilesHelper
 				}
 			}
 		}
-		
+
 		return $result;
 	}
 
@@ -84,7 +84,7 @@ class FilesHelper
 	public static function fileSize($path)
 	{
 		if(file_exists(TL_ROOT . '/'. $path)) {
-			return filesize(TL_ROOT.'/'.$path);
+			return filesize(TL_ROOT . '/' . $path);
 		} else return false;
 	}
 
