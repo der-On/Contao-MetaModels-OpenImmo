@@ -110,7 +110,7 @@ class Api extends \Controller {
         $obj = $mmobj->toArray();
 
         if ($syncFile) {
-            $path = $exportPath . '/' . $syncFile->file;
+            $path = $syncFile->file;
             $rel_path = $syncFile->file;
             if (strtolower(substr($path, -4, 4)) === '.zip') {
                 $this->mmoi->unpackSyncFile($path);

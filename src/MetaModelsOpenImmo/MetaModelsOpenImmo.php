@@ -647,7 +647,7 @@ class MetaModelsOpenImmo extends \BackendModule
             }
 
             if ($count == 1) {
-                return $results[0];
+                return trim($results[0]);
             } elseif ($count > 1) {
                 return ($serialize) ? serialize($results) : $results;
             }
