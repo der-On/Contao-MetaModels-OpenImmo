@@ -753,7 +753,7 @@ class MetaModelsOpenImmo extends \BackendModule
      */
     public function syncDataFiles(&$metamodelObj, $dataFile)
     {
-        $dataPath = FilesHelper::fileDirPath($dataFile);
+        $dataPath = $metamodelObj['exportPath'] . '/tmp';
 
         //get attachments in the data folder
         $files = FilesHelper::scandirByExt($dataPath, explode(',', MetaModelsOpenImmo::$allowedAttachments));
@@ -761,14 +761,11 @@ class MetaModelsOpenImmo extends \BackendModule
         $filesFolder = new \Folder($metamodelObj['filesPath']);
 
         if (FilesHelper::isWritable($metamodelObj['filesPath'])) {
-
-            //remove old files
-            //$filesFolder->clear();
-
             $filesObj = \Files::getInstance();
 
             foreach ($files as $file) {
-                $filesObj->copy($dataPath . $file, $metamodelObj['filesPath'] . '/' . $file);
+                $file = FilesHelper::filename($file);
+                $filesObj->copy($dataPath . '/' . $file, $metamodelObj['filesPath'] . '/' . $file);
             }
             $this->addMessage('copied ' . count($files) . ' files from temporary directory to: ' . $metamodelObj['filesPath']);
         } else $this->addMessage('cannot copy temporary files: ' . $metamodelObj['filesPath'] . ' not writable');
@@ -787,6 +784,8 @@ class MetaModelsOpenImmo extends \BackendModule
 
         // Since Contao 3 files must be synced with database
         if (VERSION >= '3') {
+            // FIXME: in Contao 3.5.3 this re-indexes folders
+            // selected as export and attachment folders in a metamodel-openimmo link
             \Dbafs::syncFiles();
         }
 

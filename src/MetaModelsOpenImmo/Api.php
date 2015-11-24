@@ -160,7 +160,7 @@ class Api extends \Controller {
         $files = $this->getSyncFilesFor($mmobj);
 
         $syncFiles = array_reverse($files);
-
+        
         foreach($syncFiles as $syncFile) {
             $this->syncFileFor($mmobj, $syncFile, $user);
         }

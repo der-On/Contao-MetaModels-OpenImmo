@@ -43,6 +43,14 @@ class FilesHelper
 		return implode('.',$parts);
 	}
 
+	public static function filename($file)
+	{
+		//remove directories
+		$parts = explode('/',$file);
+		$file = $parts[count($parts)-1];
+		return $file;
+	}
+
 	public static function fileDirPath($path)
 	{
 		$pos = strrpos($path,'/');

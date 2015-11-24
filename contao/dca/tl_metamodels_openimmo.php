@@ -157,14 +157,14 @@ $GLOBALS['TL_DCA']['tl_metamodels_openimmo'] = array
 			'inputType'               => 'fileTree',
 			'eval'                    => array('mandatory'=>true, 'multiple'=>false, 'files'=>false,'filesOnly'=>false, 'fieldType'=>'radio')
 		),
-        'deleteFilesOlderThen' => array
-        (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['deleteFilesOlderThen'],
-            'exclude'                 => true,
-            'inputType'               => 'select',
-            'eval'                    => array('mandatory'=>false),
-            'options_callback'        => array('tl_metamodels_openimmo', 'getDeleteFilesOlderThenOptions')
-        ),
+    'deleteFilesOlderThen' => array
+    (
+        'label'                   => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['deleteFilesOlderThen'],
+        'exclude'                 => true,
+        'inputType'               => 'select',
+        'eval'                    => array('mandatory'=>false),
+        'options_callback'        => array('tl_metamodels_openimmo', 'getDeleteFilesOlderThenOptions')
+    ),
 		'filesPath' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['filesPath'],
@@ -172,14 +172,14 @@ $GLOBALS['TL_DCA']['tl_metamodels_openimmo'] = array
 			'inputType'               => 'fileTree',
 			'eval'                    => array('mandatory'=>true, 'multiple'=>false, 'files'=>false,'filesOnly'=>false, 'fieldType'=>'radio')
 		),
-        'autoSync' => array
-        (
-            'label'                   => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['autoSync'],
-            'exclude'                 => true,
-            'inputType'               => 'select',
-            'eval'                    => array('mandatory'=>false),
-            'options_callback'        => array('tl_metamodels_openimmo', 'getAutoSyncOptions')
-        ),
+    'autoSync' => array
+    (
+        'label'                   => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['autoSync'],
+        'exclude'                 => true,
+        'inputType'               => 'select',
+        'eval'                    => array('mandatory'=>false),
+        'options_callback'        => array('tl_metamodels_openimmo', 'getAutoSyncOptions')
+    ),
 	)
 );
 
