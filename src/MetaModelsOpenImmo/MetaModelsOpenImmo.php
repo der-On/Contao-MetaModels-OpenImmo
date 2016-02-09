@@ -242,7 +242,7 @@ class MetaModelsOpenImmo extends \BackendModule
                     if ($syncedMtime > 0) {
                       $mtime = $syncedMtime;
                     }
-                    
+
                     $user = $synced[$file]['user'];
                     $status = intval($synced[$file]['status']);
                     $synctime = intval($synced[$file]['synctime']);
@@ -360,7 +360,7 @@ class MetaModelsOpenImmo extends \BackendModule
      */
     public function addFileToHistory($exportPath, $file, $status, $user = null)
     {
-        $filetime = FilesHelper::fileModTime($exportPath . '/' . $file);
+        $filetime = FilesHelper::fileModTime($file);
         $item = array(
             "file" => $file,
             "filetime" => $filetime,
