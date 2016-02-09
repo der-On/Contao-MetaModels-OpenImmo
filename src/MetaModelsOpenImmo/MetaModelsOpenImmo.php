@@ -237,7 +237,12 @@ class MetaModelsOpenImmo extends \BackendModule
                 $size = FilesHelper::fileSize($file);
 
                 if (array_key_exists($file, $synced)) {
-                    $mtime = intval($synced[$file]['filetime']);
+                    $syncedMtime = intval($synced[$file]['filetime']);
+
+                    if ($syncedMtime > 0) {
+                      $mtime = $syncedMtime;
+                    }
+                    
                     $user = $synced[$file]['user'];
                     $status = intval($synced[$file]['status']);
                     $synctime = intval($synced[$file]['synctime']);
