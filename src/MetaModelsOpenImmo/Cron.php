@@ -12,6 +12,10 @@
 
 namespace MetaModelsOpenImmo;
 
+use MetaModelsOpenImmo\OpenImmo;
+use MetaModelsOpenImmo\Api;
+use MetaModelsOpenImmo\Models\MetaModelObject;
+
 class Cron extends \Frontend {
 
     protected $mmoi = null;
@@ -20,8 +24,8 @@ class Cron extends \Frontend {
     public function __construct()
     {
         parent::__construct();
-        $this->mmoi = new MetaModelsOpenImmo();
-        $this->api = new MetaModelsOpenImmoApi();
+        $this->mmoi = new OpenImmo();
+        $this->api = new Api();
     }
 
     protected function compile()
@@ -74,7 +78,7 @@ class Cron extends \Frontend {
      * Automaticly deletes files older then limit
      * @param Models\MetaModelObject $mmobj
      */
-    public function deleteFiles(Models\MetaModelObject $mmobj)
+    public function deleteFiles(MetaModelObject $mmobj)
     {
         $exportPath = $mmobj->exportPath;
         $files = $this->mmoi->getSyncFiles($exportPath);
@@ -94,7 +98,7 @@ class Cron extends \Frontend {
         }
     }
 
-    public function sync(Models\MetaModelObject $mmobj)
+    public function sync(MetaModelObject $mmobj)
     {
         $files = $this->api->getSyncFilesFor($mmobj);
 
