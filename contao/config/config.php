@@ -53,6 +53,6 @@ $GLOBALS['BE_MOD']['metamodels_openimmo'] = array(
 
 $GLOBALS['TL_CSS'][] = 'system/modules/metamodels_openimmo/assets/metamodels_openimmo.css';
 
-$GLOBALS['TL_CRON']['hourly'][] = array('MetaModelsOpenImmo\\MetaModelsOpenImmoCron', 'run');
+$GLOBALS['TL_CRON']['hourly'][] = array('MetaModelsOpenImmo\\Cron', 'run');
 
 ?>
