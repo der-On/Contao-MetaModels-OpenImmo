@@ -12,7 +12,7 @@
 
 namespace MetaModelsOpenImmo;
 
-use MetaModelsOpenImmo\OpenImmo;
+use MetaModelsOpenImmo\MetaModelsOpenImmo;
 use MetaModelsOpenImmo\Api;
 use MetaModelsOpenImmo\Models\MetaModelObject;
 
@@ -24,7 +24,7 @@ class Cron extends \Frontend {
     public function __construct()
     {
         parent::__construct();
-        $this->mmoi = new OpenImmo();
+        $this->mmoi = new MetaModelsOpenImmo();
         $this->api = new Api();
     }
 
