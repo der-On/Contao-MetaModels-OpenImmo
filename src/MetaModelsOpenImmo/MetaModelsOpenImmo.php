@@ -638,14 +638,16 @@ class MetaModelsOpenImmo extends \BackendModule
             // Contao 3 has FileModels
             if (VERSION >= '3') {
                 if (isset($this->fieldsFlat[$fieldPath]) && $this->fieldsFlat[$fieldPath] == 'path') {
-                    $files = \FilesModel::findMultipleByPaths($results);
+                  // TODO: when syncing files UUIDs for same files sometimes change
+                  // so we cannot rely on UUIDs to work and rather store paths
+                    /*$files = \FilesModel::findMultipleByPaths($results);
                     $results = array();
 
                     if ($files) {
                         foreach($files->getModels() as $i => $file) {
                             $results[] = $file->uuid;
                         }
-                    }
+                    }*/
 
                     return ($serialize) ? serialize($results) : $results;
                 }
