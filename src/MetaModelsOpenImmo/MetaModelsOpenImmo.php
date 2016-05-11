@@ -789,9 +789,15 @@ class MetaModelsOpenImmo extends \BackendModule
 
         // Since Contao 3 files must be synced with database
         if (VERSION >= '3') {
-            // FIXME: in Contao 3.5.3 this re-indexes folders
-            // selected as export and attachment folders in a metamodel-openimmo link
             \Dbafs::syncFiles();
+
+            // we now have to update the file uuids for export and attachment paths
+            $files = \FilesModel::findMultipleByPaths(array(
+              $metamodelObj['exportPath'],
+              $metamodelObj['filesPath']
+            ));
+
+            $this->Database->execute('UPDATE tl_metamodels_openimmo SET exportPath=UNHEX(\'' . bin2hex($files[0]->uuid) . '\'), filesPath=UNHEX(\'' . bin2hex($files[1]->uuid) . '\') WHERE id=' . $metamodelObj['id']);
         }
 
         return true;
