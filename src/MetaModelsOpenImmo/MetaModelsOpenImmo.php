@@ -77,6 +77,7 @@ class MetaModelsOpenImmo extends \BackendModule
         $send = false;
         $obj = $this->getMetaModelObject($dc->id);
         $exportPath = $obj['exportPath'];
+        $sortFilesBy = $obj['sortFilesBy'];
         $metamodel = $obj['metamodel'];
 
         if ($this->Input->post('FORM_SUBMIT') == 'tl_metamodels_openimmo_sync') {
@@ -126,7 +127,7 @@ class MetaModelsOpenImmo extends \BackendModule
         $this->Template->setData(array(
             'send' => $send,
             'messages' => $this->getMessages(),
-            'files' => (!$send) ? $this->getSyncFiles($exportPath) : null,
+            'files' => (!$send) ? $this->getSyncFiles($exportPath, $sortFilesBy) : null,
             'zip_unpacked' => $this->zip_unpacked,
             'success' => $success,
             'error' => $error,
@@ -134,34 +135,6 @@ class MetaModelsOpenImmo extends \BackendModule
         ));
 
         return $this->Template->parse();
-    }
-
-    /**
-     * Returns the <select> input for the files available for syncing
-     * @deprecated
-     * @param string $exportPath
-     * @return string
-     */
-    private function getSyncFileSelect($exportPath)
-    {
-        $files = $this->getSyncFiles($exportPath);
-        if ($files) {
-            $output = "<label for='tl_metamodels_openimmo_sync_files'>" . $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['sync_file_select'] . "</label><br/>";
-            $output .= "<select id='tl_metamodels_openimmo_sync_files' name='tl_metamodels_openimmo_sync_file'>";
-            $output .= "<option value=''>" . $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['sync_file_auto'] . "</option>";
-            foreach ($files as &$file) {
-                if ($file['size'] < 1024) {
-                    $size = $file['size'] . ' Bytes';
-                } elseif ($file['size'] > 1024 && $file['size'] < (1048576)) {
-                    $size = (round(($file['size'] / 1024) * 10) / 10) . " KB";
-                } elseif ($file['size'] > (1048576)) {
-                    $size = (round(($file['size'] / 1048576) * 10) / 10) . " MB";
-                }
-                $output .= "<option value='$file[file]'>$file[file] - " . date('H:i:s d.m.Y', $file['modtime']) . " (" . $size . ")</option>";
-            }
-            $output .= "</select>";
-            return $output;
-        } else return "<p class='tl_error'>" . $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['no_sync_files_found'] . "</p>";
     }
 
     /**
@@ -209,7 +182,7 @@ class MetaModelsOpenImmo extends \BackendModule
      * @param bool $canBeZip
      * @return array|bool - false of no files have been found
      */
-    public function getSyncFiles($exportPath, $canBeZip = true)
+    public function getSyncFiles($exportPath, $sortFilesBy = 'time', $canBeZip = true)
     {
         $folder = new \Folder($exportPath);
 
@@ -269,13 +242,40 @@ class MetaModelsOpenImmo extends \BackendModule
 
             if ($checked != -1) $files[$checked]['checked'] = true;
 
-            usort($files, create_function('$a,$b', '
-				if ($a == $b) return 0;
-				return ($a["time"]>$b["time"])?-1:1;')
-            );
+            switch($sortFilesBy) {
+                case 'time':
+                  usort($files, array('\MetaModelsOpenImmo\MetaModelsOpenImmo', 'sortFilesByTime'));
+                  break;
+                case 'name_asc':
+                  usort($files, array('\MetaModelsOpenImmo\MetaModelsOpenImmo', 'sortFilesByNameAsc'));
+                  break;
+                case 'name_desc':
+                  usort($files, array('\MetaModelsOpenImmo\MetaModelsOpenImmo', 'sortFilesByNameDesc'));
+                  break;
+                default:
+                  usort($files, array('\MetaModelsOpenImmo\MetaModelsOpenImmo', 'sortFilesByTime'));
+            }
 
             return $files;
         } else return false;
+    }
+
+    public static function sortFilesByTime($a, $b)
+    {
+        if ($a == $b) return 0;
+        return ($a["time"] > $b["time"]) ? -1 : 1;
+    }
+
+    public static function sortFilesByNameAsc($a, $b)
+    {
+        if ($a == $b) return 0;
+        return ($a["file"] < $b["file"]) ? -1 : 1;
+    }
+
+    public static function sortFilesByNameDesc($a, $b)
+    {
+        if ($a == $b) return 0;
+        return ($a["file"] > $b["file"]) ? -1 : 1;
     }
 
     /**

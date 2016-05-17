@@ -24,6 +24,7 @@ class MetaModelObject {
     public $deleteFilesOlderThen;
     public $autoSync;
     public $lastSync;
+    public $sortFilesBy;
 
     public static function fromArray(array $data = array())
     {
@@ -43,6 +44,7 @@ class MetaModelObject {
         $this->deleteFilesOlderThen = isset($data['deleteFilesOlderThen']) ? intval($data['deleteFilesOlderThen']) : 0;
         $this->autoSync = isset($data['autoSync']) ? $data['autoSync'] : 'never';
         $this->lastSync = isset($data['lastSync']) ? intval($data['lastSync']) : 0;
+        $this->sortFilesBy = isset($data['sortFilesBy']) ? $data['sortFilesBy'] : null;
     }
 
     public function toArray()
@@ -59,6 +61,7 @@ class MetaModelObject {
             'deleteFilesOlderThen' => $this->deleteFilesOlderThen,
             'autoSync' => $this->autoSync,
             'lastSync' => $this->lastSync,
+            'sortFilesBy' => $this->sortFilesBy,
         );
     }
 }

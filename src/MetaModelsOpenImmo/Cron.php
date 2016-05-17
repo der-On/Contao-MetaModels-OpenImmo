@@ -81,7 +81,8 @@ class Cron extends \Frontend {
     public function deleteFiles(MetaModelObject $mmobj)
     {
         $exportPath = $mmobj->exportPath;
-        $files = $this->mmoi->getSyncFiles($exportPath);
+        $sortFilesBy = $mmobj->sortFilesBy;
+        $files = $this->mmoi->getSyncFiles($exportPath, $sortFilesBy);
 
         $days = intval($mmobj->deleteFilesOlderThen);
 
@@ -101,7 +102,7 @@ class Cron extends \Frontend {
     public function sync(MetaModelObject $mmobj)
     {
         $files = $this->api->getSyncFilesFor($mmobj);
-        
+
         $file = null;
         $syncFiles = array();
 

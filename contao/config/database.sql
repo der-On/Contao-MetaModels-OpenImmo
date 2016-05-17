@@ -27,7 +27,8 @@ CREATE TABLE `tl_metamodels_openimmo` (
   `uniqueIDMetamodelAttribute` int(10) unsigned NOT NULL,
   `deleteFilesOlderThen` int(10) unsigned NOT NULL default '0',
   `autoSync` varchar(16) NOT NULL default 'never',
-  `lastSync` int(32) NOT NULL default '0'
+  `lastSync` int(32) NOT NULL default '0',
+  `sortFilesBy` varchar(32) NOT NULL default 'time'
 
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

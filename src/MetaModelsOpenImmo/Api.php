@@ -89,7 +89,7 @@ class Api extends \Controller {
      */
     public function getSyncFilesFor(Models\MetaModelObject $mmobj)
     {
-        $files = $this->mmoi->getSyncFiles($mmobj->exportPath);
+        $files = $this->mmoi->getSyncFiles($mmobj->exportPath, $mmobj->sortFilesBy);
 
         foreach($files as $i => $file) {
             $files[$i] = new Models\SyncFile($file);
@@ -160,7 +160,7 @@ class Api extends \Controller {
         $files = $this->getSyncFilesFor($mmobj);
 
         $syncFiles = array_reverse($files);
-        
+
         foreach($syncFiles as $syncFile) {
             $this->syncFileFor($mmobj, $syncFile, $user);
         }

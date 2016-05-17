@@ -99,7 +99,7 @@ $GLOBALS['TL_DCA']['tl_metamodels_openimmo'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array(''),
-		'default'                     => 'name,oiVersion,uniqueIDField;metamodel,uniqueIDMetamodelAttribute,exportPath,filesPath;deleteFilesOlderThen,autoSync'
+		'default'                     => 'name,oiVersion,uniqueIDField;metamodel,uniqueIDMetamodelAttribute,exportPath,filesPath;sortFilesBy,deleteFilesOlderThen,autoSync'
 	),
 
 	// Subpalettes
@@ -180,6 +180,14 @@ $GLOBALS['TL_DCA']['tl_metamodels_openimmo'] = array
         'eval'                    => array('mandatory'=>false),
         'options_callback'        => array('tl_metamodels_openimmo', 'getAutoSyncOptions')
     ),
+		'sortFilesBy'	=> array
+		(
+				'label'                 => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['sortFilesBy'],
+				'exclude'               => true,
+				'inputType'             => 'select',
+				'eval'                  => array('mandatroy' => true),
+				'options_callback'      => array('tl_metamodels_openimmo', 'getSortFilesByOptions')
+		),
 	)
 );
 
@@ -229,5 +237,14 @@ class tl_metamodels_openimmo extends \Backend
             'weekly' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['autoSync_weekly'],
         );
     }
+
+		public function getSortFilesByOptions(&$dc)
+		{
+				return array(
+						'time' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['sortFilesBy_time'],
+						'name_asc' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['sortFilesBy_name_asc'],
+						'name_desc' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['sortFilesBy_name_desc'],
+				);
+		}
 }
 ?>
