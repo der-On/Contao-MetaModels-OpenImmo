@@ -102,7 +102,7 @@ class Cron extends \Frontend {
     public function sync(MetaModelObject $mmobj)
     {
         $files = $this->api->getSyncFilesFor($mmobj);
-
+        
         $file = null;
         $syncFiles = array();
 
