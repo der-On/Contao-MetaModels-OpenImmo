@@ -386,13 +386,13 @@ class MetaModelsOpenImmo extends \BackendModule
         $data = file_get_contents(TL_ROOT . '/' . $file);
 
         // FlowFact 2014 uses 'imo:' namespace, so remove it to
-        $data = str_replace('<imo:', '<', $data);
+        /*$data = str_replace('<imo:', '<', $data);
         $data = str_replace('</imo:', '</', $data);
 
         //remove all namespace stuff as simplexml cannot handle it reliably
         $oi_open_pos = strpos($data, '<openimmo');
         $oi_close_pos = strpos(substr($data, $oi_open_pos), '>');
-        $data = substr($data, 0, $oi_open_pos) . '<openimmo>' . substr($data, $oi_close_pos + $oi_open_pos + 1);
+        $data = substr($data, 0, $oi_open_pos) . '<openimmo>' . substr($data, $oi_close_pos + $oi_open_pos + 1);*/
         return simplexml_load_string($data);
     }
 

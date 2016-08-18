@@ -37,17 +37,19 @@ ClassLoader::addNamespaces(array
 /**
  * Register the classes
  */
+$basePath = 'composer/vendor/anzui/metamodels_openimmo/src/MetaModelsOpenImmo';
 ClassLoader::addClasses(array
 (
 	// Classes
-	'MetaModelsOpenImmo\FilesHelper' => 'system/modules/metamodels_openimmo/FilesHelper.php',
-  'MetaModelsOpenImmo\OpenImmo' => 'system/modules/metamodels_openimmo/OpenImmo.php',
-  'MetaModelsOpenImmo\MetaModelsOpenImmo' => 'system/modules/metamodels_openimmo/MetaModelsOpenImmo.php',
-  'MetaModelsOpenImmo\MetaModelsOpenImmoField' => 'system/modules/metamodels_openimmo/MetaModelsOpenImmoField.php',
-  'MetaModelsOpenImmo\MetaModelsOpenImmoCron' => 'system/modules/metamodels_openimmo/MetaModelsOpenImmo/Cron.php',
-  'MetaModelsOpenImmo\MetaModelsOpenImmoApi' => 'system/modules/metamodels_openimmo/MetaModelsOpenImmoApi.php',
-  'MetaModelsOpenImmo\Models\MetaModelObject' => 'system/modules/metamodels_openimmo/models/MetaModelObject.php',
-  'MetaModelsOpenImmo\Models\SyncFile' => 'system/modules/metamodels_openimmo/models/SyncFile.php',
+	'MetaModelsOpenImmo\FilesHelper' => $basePath . '/FilesHelper.php',
+  'MetaModelsOpenImmo\OpenImmo' => $basePath . '/OpenImmo.php',
+  'MetaModelsOpenImmo\MetaModelsOpenImmo' => $basePath . '/MetaModelsOpenImmo.php',
+  'MetaModelsOpenImmo\Field' => $basePath . '/Field.php',
+  'MetaModelsOpenImmo\Cron' => $basePath . '/Cron.php',
+  'MetaModelsOpenImmo\Api' => $basePath . '/Api.php',
+  'MetaModelsOpenImmo\Settings' => $basePath . '/Settings.php',
+  'MetaModelsOpenImmo\Models\MetaModelObject' => $basePath . '/models/MetaModelObject.php',
+  'MetaModelsOpenImmo\Models\SyncFile' => $basePath . '/models/SyncFile.php',
 ));
 
 

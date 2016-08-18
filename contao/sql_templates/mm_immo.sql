@@ -1,26 +1,5 @@
--- phpMyAdmin SQL Dump
--- version 4.2.12deb2+deb8u1
--- http://www.phpmyadmin.net
---
--- Host: localhost
--- Erstellungszeit: 06. Nov 2015 um 16:30
--- Server Version: 5.5.46-0+deb8u1
--- PHP-Version: 5.6.14-0+deb8u1
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `mm_immo`
---
 
 DROP TABLE IF EXISTS `mm_immo`;
 CREATE TABLE IF NOT EXISTS `mm_immo` (
@@ -55,8 +34,6 @@ CREATE TABLE IF NOT EXISTS `mm_immo` (
   `lagebeschreibung` text,
   `sonstiges` text,
   `ausstattung` text,
-  `bilder` blob,
-  `grundrisse` blob,
   `verwalter_name` varchar(255) NOT NULL DEFAULT '',
   `verwalter_vorname` varchar(255) NOT NULL DEFAULT '',
   `verwalter_tel` varchar(255) NOT NULL DEFAULT '',
@@ -86,7 +63,6 @@ CREATE TABLE IF NOT EXISTS `mm_immo` (
   `senioren` char(1) NOT NULL DEFAULT '',
   `wohnungstyp` varchar(255) NOT NULL DEFAULT '',
   `wohnflaeche` double DEFAULT NULL,
-  `titelbild` blob,
   `kurzbeschreibung` text,
   `zustand` varchar(255) NOT NULL DEFAULT '',
   `keller` char(1) NOT NULL DEFAULT '',
@@ -116,28 +92,29 @@ CREATE TABLE IF NOT EXISTS `mm_immo` (
   `vermarktungsart` varchar(255) NOT NULL DEFAULT '',
   `nutzungsart` varchar(255) NOT NULL DEFAULT '',
   `investment` char(1) NOT NULL DEFAULT '',
-  `provision` varchar(255) NOT NULL DEFAULT ''
-) ENGINE=MyISAM AUTO_INCREMENT=5565 DEFAULT CHARSET=utf8;
+  `provision` varchar(255) NOT NULL DEFAULT '',
+  `panorama` text,
+  `stp_carport` double DEFAULT NULL,
+  `stp_duplex` double DEFAULT NULL,
+  `stp_freiplatz` double DEFAULT NULL,
+  `stp_garage` double DEFAULT NULL,
+  `stp_parkhaus` double DEFAULT NULL,
+  `stp_tiefgarage` double DEFAULT NULL,
+  `stp_sonstige` double DEFAULT NULL,
+  `wg_geeignet` char(1) NOT NULL DEFAULT '',
+  `gartennutzung` char(1) NOT NULL DEFAULT '',
+  `vermietet` char(1) NOT NULL DEFAULT '',
+  `hausgeld` varchar(255) NOT NULL DEFAULT '',
+  `boden` varchar(255) NOT NULL DEFAULT '',
+  `titelbild` blob,
+  `bilder` blob,
+  `grundrisse` blob
+) ENGINE=MyISAM AUTO_INCREMENT=6087 DEFAULT CHARSET=utf8;
 
---
--- Indizes der exportierten Tabellen
---
 
---
--- Indizes für die Tabelle `mm_immo`
---
 ALTER TABLE `mm_immo`
  ADD PRIMARY KEY (`id`);
 
---
--- AUTO_INCREMENT für exportierte Tabellen
---
 
---
--- AUTO_INCREMENT für Tabelle `mm_immo`
---
 ALTER TABLE `mm_immo`
-MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5565;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6087;
