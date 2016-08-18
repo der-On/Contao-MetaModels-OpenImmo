@@ -160,7 +160,7 @@ class MetaModelsOpenImmo extends \BackendModule
      */
     public function getMetaModelObject($id)
     {
-        $obj = $this->Database->execute("SELECT mmo.id AS id,mmo.metamodel AS metamodel, mmo.exportPath AS exportPath, mmo.filesPath AS filesPath, mmt.tableName AS tableName, mmo.oiVersion AS oiVersion, mmo.uniqueIDField AS uniqueIDField, mmo.uniqueIDMetamodelAttribute AS uniqueIDMetamodelAttribute, mmo.deleteFilesOlderThen AS deleteFilesOlderThen, mmo.autoSync AS autoSync, mmo.lastSync AS lastSync " .
+        $obj = $this->Database->execute("SELECT mmo.id AS id,mmo.metamodel AS metamodel, mmo.exportPath AS exportPath, mmo.filesPath AS filesPath, mmt.tableName AS tableName, mmo.oiVersion AS oiVersion, mmo.uniqueIDField AS uniqueIDField, mmo.uniqueIDMetamodelAttribute AS uniqueIDMetamodelAttribute, mmo.deleteFilesOlderThen AS deleteFilesOlderThen, mmo.autoSync AS autoSync, mmo.lastSync AS lastSync, mmo.language AS language " .
             "FROM tl_metamodels_openimmo mmo " .
             "LEFT JOIN tl_metamodel mmt ON mmt.id=mmo.metamodel " .
             "WHERE mmo.id='$id'")->fetchAssoc();
@@ -622,43 +622,56 @@ class MetaModelsOpenImmo extends \BackendModule
 
         $xpath_part = str_replace($xpath . '/', '', $fieldPath);
 
-        $results = $xml->xpath($xpath_part);
+        $xmlNodes = $xml->xpath($xpath_part);
+        $filePaths = array();
+        $results = array();
 
-        $count = count($results);
-
-        if ($count) {
-            for ($i = 0; $i < $count; $i++) {
-                if ($attr) {
-                    $attributes = $results[$i]->attributes();
-                    $results[$i] = $attributes[$attr];
-                }
-                $results[$i] = $this->parseFieldType($fieldPath, $results[$i] . '', $metamodelObj);
+        foreach($xmlNodes as $i => $xmlNode) {
+            if ($attr) {
+                $attributes = $xmlNode->attributes();
+                $filePaths[$i] = $attributes[$attr];
             }
+            $filePaths[$i] = $this->parseFieldType($fieldPath, $xmlNode . '', $metamodelObj);
+        }
 
-            // Contao 3 has FileModels
-            if (VERSION >= '3') {
-                if (isset($this->fieldsFlat[$fieldPath]) && $this->fieldsFlat[$fieldPath] == 'path') {
-                    $files = \FilesModel::findMultipleByPaths($results);
-                    $results = array();
+        // Contao 3 has FileModels
+        if (VERSION >= '3') {
+            if (isset($this->fieldsFlat[$fieldPath]) && $this->fieldsFlat[$fieldPath] == 'path') {
+                $files = \FilesModel::findMultipleByPaths($filePaths);
 
-                    if ($files) {
-                        foreach($files->getModels() as $i => $file) {
-                            $results[] = $file->uuid;
-                        }
+                if ($files) {
+                    foreach($files->getModels() as $i => $file) {
+                        $this->attachMetaToFile($file, $xmlNodes[$i], $metamodelObj);
+                        $results[] = $file->uuid;
                     }
-
-                    return ($serialize) ? serialize($results) : $results;
                 }
-            }
 
-            if ($count == 1) {
-                return trim($results[0]);
-            } elseif ($count > 1) {
                 return ($serialize) ? serialize($results) : $results;
             }
         }
 
+        if (count($results) == 1) {
+            return trim($results[0]);
+        } elseif (count($results) > 1) {
+            return ($serialize) ? serialize($results) : $results;
+        }
+
         return null;
+    }
+
+    private function attachMetaToFile(\FilesModel $file, &$xmlNode, &$metamodelObj)
+    {
+        $titleNodes = $xmlNode->xpath('../../anhangtitel');
+        $meta = is_array($file->meta) ? $meta : unserialize($file->meta);
+        $lang = $metamodelObj['language'];
+
+        if (!isset($meta[$metamodelObj->language])) {
+            $meta[$lang] = array();
+        }
+
+        $meta[$lang]['title'] = count($titleNodes) ? (string) $titleNodes[0] : '';
+        $file->meta = serialize($meta);
+        $file->save();
     }
 
     /**

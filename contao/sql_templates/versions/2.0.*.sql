@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `tl_metamodels_openimmo` (
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 INSERT INTO `tl_metamodels_openimmo` (`name`, `oiVersion`, `uniqueIDField`, `metamodel`, `exportPath`, `filesPath`, `id`, `sorting`, `tstamp`, `deleteFilesOlderThen`, `autoSync`, `lastSync`, `uniqueIDMetamodelAttribute`, `sortFilesBy`) VALUES
-('Immobilien', '1.2.6', 'anbieter/immobilie/verwaltung_techn/objektnr_extern', 1, 0x847d96e2652811e699c400266c4ef190, 0x8caa773c652811e699c400266c4ef190, 1, 128, 1471513555, 365, 'hourly', 1463996770, 2, 'name_desc');
+('Immobilien', '1.2.6', 'anbieter/immobilie/verwaltung_techn/objektnr_extern', 1, 0x847d96e2652811e699c400266c4ef190, 0x8caa773c652811e699c400266c4ef190, 1, 128, 1471513555, 365, 'hourly', 1471514204, 2, 'name_desc');
 
 DROP TABLE IF EXISTS `tl_metamodels_openimmo_fields`;
 CREATE TABLE IF NOT EXISTS `tl_metamodels_openimmo_fields` (
@@ -521,8 +521,7 @@ CREATE TABLE IF NOT EXISTS `tl_metamodel_dca_combine` (
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 INSERT INTO `tl_metamodel_dca_combine` (`id`, `pid`, `tstamp`, `sorting`, `fe_group`, `be_group`, `dca_id`, `view_id`) VALUES
-(1, 1, 1453811500, 0, 0, -1, 1, 1),
-(2, 1, 1453811500, 128, 0, 1, 1, 1);
+(1, 1, 1471519319, 0, 0, -1, 1, 1);
 
 DROP TABLE IF EXISTS `tl_metamodel_dca_sortgroup`;
 CREATE TABLE IF NOT EXISTS `tl_metamodel_dca_sortgroup` (
@@ -542,6 +541,52 @@ CREATE TABLE IF NOT EXISTS `tl_metamodel_dca_sortgroup` (
 
 INSERT INTO `tl_metamodel_dca_sortgroup` (`id`, `pid`, `sorting`, `tstamp`, `name`, `isdefault`, `ismanualsort`, `rendergrouptype`, `rendergrouplen`, `rendergroupattr`, `rendersort`, `rendersortattr`) VALUES
 (1, 1, 128, 1425895235, NULL, '1', '1', 'digit', 0, 0, 'asc', 0);
+
+DROP TABLE IF EXISTS `tl_metamodel_rendersetting`;
+CREATE TABLE IF NOT EXISTS `tl_metamodel_rendersetting` (
+  `attr_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `template` varchar(64) NOT NULL DEFAULT '',
+  `sorting` int(10) unsigned NOT NULL DEFAULT '0',
+  `additional_class` varchar(64) NOT NULL DEFAULT '',
+  `file_sortBy` varchar(32) NOT NULL DEFAULT '',
+  `file_showLink` char(1) NOT NULL DEFAULT '',
+  `file_showImage` char(1) NOT NULL DEFAULT '',
+  `file_imageSize` varchar(255) NOT NULL DEFAULT '',
+  `timeformat` varchar(64) NOT NULL DEFAULT '',
+  `no_external_link` char(1) NOT NULL DEFAULT '',
+`id` int(10) unsigned NOT NULL,
+  `pid` int(10) unsigned NOT NULL DEFAULT '0',
+  `tstamp` int(10) unsigned NOT NULL DEFAULT '0',
+  `enabled` char(1) NOT NULL DEFAULT ''
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+
+INSERT INTO `tl_metamodel_rendersetting` (`attr_id`, `template`, `sorting`, `additional_class`, `file_sortBy`, `file_showLink`, `file_showImage`, `file_imageSize`, `timeformat`, `no_external_link`, `id`, `pid`, `tstamp`, `enabled`) VALUES
+(1, 'mm_attr_text', 128, '', '', '', '', '', '', '', 1, 1, 1471519374, '1'),
+(2, 'mm_attr_text', 256, '', '', '', '', '', '', '', 2, 1, 1471519374, '1'),
+(11, 'mm_attr_text', 384, '', '', '', '', '', '', '', 3, 1, 1471519375, '1'),
+(12, 'mm_attr_text', 512, '', '', '', '', '', '', '', 4, 1, 1471519375, '1'),
+(13, 'mm_attr_text', 640, '', '', '', '', '', '', '', 5, 1, 1471519376, '1'),
+(14, 'mm_attr_text', 768, '', '', '', '', '', '', '', 6, 1, 1471519376, '1'),
+(21, 'mm_attr_text', 896, '', '', '', '', '', '', '', 7, 1, 1471519378, '1');
+
+DROP TABLE IF EXISTS `tl_metamodel_rendersettings`;
+CREATE TABLE IF NOT EXISTS `tl_metamodel_rendersettings` (
+  `name` varchar(64) NOT NULL DEFAULT '',
+  `isdefault` char(1) NOT NULL DEFAULT '',
+  `hideEmptyValues` char(1) NOT NULL DEFAULT '',
+  `hideLabels` char(1) NOT NULL DEFAULT '',
+  `template` varchar(64) NOT NULL DEFAULT '',
+  `format` varchar(255) NOT NULL DEFAULT '',
+  `jumpTo` blob,
+  `additionalCss` blob,
+  `additionalJs` blob,
+`id` int(10) unsigned NOT NULL,
+  `pid` int(10) unsigned NOT NULL DEFAULT '0',
+  `tstamp` int(10) unsigned NOT NULL DEFAULT '0'
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+INSERT INTO `tl_metamodel_rendersettings` (`name`, `isdefault`, `hideEmptyValues`, `hideLabels`, `template`, `format`, `jumpTo`, `additionalCss`, `additionalJs`, `id`, `pid`, `tstamp`) VALUES
+('Backend', '', '', '', 'metamodel_prerendered', 'html5', 0x613a313a7b693a303b613a333a7b733a353a2276616c7565223b733a303a22223b733a363a2266696c746572223b733a303a22223b733a383a226c616e67636f6465223b733a303a22223b7d7d, 0x613a313a7b693a303b613a323a7b733a343a2266696c65223b733a303a22223b733a393a227075626c6973686564223b733a303a22223b7d7d, 0x613a313a7b693a303b613a323a7b733a343a2266696c65223b733a303a22223b733a393a227075626c6973686564223b733a303a22223b7d7d, 1, 1, 1471519270);
 
 
 ALTER TABLE `tl_metamodel`
@@ -571,6 +616,12 @@ ALTER TABLE `tl_metamodel_dca_combine`
 ALTER TABLE `tl_metamodel_dca_sortgroup`
  ADD PRIMARY KEY (`id`);
 
+ALTER TABLE `tl_metamodel_rendersetting`
+ ADD PRIMARY KEY (`id`), ADD KEY `pid` (`pid`);
+
+ALTER TABLE `tl_metamodel_rendersettings`
+ ADD PRIMARY KEY (`id`), ADD KEY `pid` (`pid`);
+
 
 ALTER TABLE `tl_metamodel`
 MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
@@ -589,4 +640,8 @@ MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
 ALTER TABLE `tl_metamodel_dca_combine`
 MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
 ALTER TABLE `tl_metamodel_dca_sortgroup`
+MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+ALTER TABLE `tl_metamodel_rendersetting`
+MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
+ALTER TABLE `tl_metamodel_rendersettings`
 MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;

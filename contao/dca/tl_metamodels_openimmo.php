@@ -99,7 +99,7 @@ $GLOBALS['TL_DCA']['tl_metamodels_openimmo'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array(''),
-		'default'                     => 'name,oiVersion,uniqueIDField;metamodel,uniqueIDMetamodelAttribute,exportPath,filesPath;sortFilesBy,deleteFilesOlderThen,autoSync'
+		'default'                     => 'name,oiVersion,uniqueIDField,language;metamodel,uniqueIDMetamodelAttribute,exportPath,filesPath;sortFilesBy,deleteFilesOlderThen,autoSync'
 	),
 
 	// Subpalettes
@@ -141,6 +141,13 @@ $GLOBALS['TL_DCA']['tl_metamodels_openimmo'] = array
 			'inputType'				  => 'select',
 			'eval'					  => array('mandatory'=>true),
 			'options_callback'		  => array('tl_metamodels_openimmo','getUniqueIDMetamodelAttributeOptions')
+		),
+		'language' => array
+		(
+			'label'						=> &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['language'],
+			'exclude'					=> true,
+			'inputType'				=> 'text',
+			'eval'						=> array('mandatory'=>true),
 		),
 		'metamodel' => array
 		(

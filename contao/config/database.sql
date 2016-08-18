@@ -28,7 +28,8 @@ CREATE TABLE `tl_metamodels_openimmo` (
   `deleteFilesOlderThen` int(10) unsigned NOT NULL default '0',
   `autoSync` varchar(16) NOT NULL default 'never',
   `lastSync` int(32) NOT NULL default '0',
-  `sortFilesBy` varchar(32) NOT NULL default 'time'
+  `sortFilesBy` varchar(32) NOT NULL default 'time',
+  `language` varchar(2) NOT NULL default 'de'
 
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

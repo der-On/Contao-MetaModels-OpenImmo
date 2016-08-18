@@ -54,6 +54,7 @@ $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['sortFilesBy'] = array('Dateien so
 $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['sortFilesBy_time'] = 'Dateidatum (absteigend)';
 $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['sortFilesBy_name_desc'] = 'Dateiname (absteigend)';
 $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['sortFilesBy_name_asc'] = 'Dateiname (aufsteigend)';
+$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['language'] = array('Sprache', 'Sprache in welcher die Inhalte verfasst wurden.');
 
 /**
  * Reference

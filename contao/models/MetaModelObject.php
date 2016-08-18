@@ -25,6 +25,7 @@ class MetaModelObject {
     public $autoSync;
     public $lastSync;
     public $sortFilesBy;
+    public $language;
 
     public static function fromArray(array $data = array())
     {
@@ -45,6 +46,7 @@ class MetaModelObject {
         $this->autoSync = isset($data['autoSync']) ? $data['autoSync'] : 'never';
         $this->lastSync = isset($data['lastSync']) ? intval($data['lastSync']) : 0;
         $this->sortFilesBy = isset($data['sortFilesBy']) ? $data['sortFilesBy'] : null;
+        $this->language = isset($data['language']) ? $data['language'] : 'de';
     }
 
     public function toArray()
@@ -62,6 +64,7 @@ class MetaModelObject {
             'autoSync' => $this->autoSync,
             'lastSync' => $this->lastSync,
             'sortFilesBy' => $this->sortFilesBy,
+            'language' => $this->language,
         );
     }
 }
