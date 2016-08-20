@@ -630,8 +630,9 @@ class MetaModelsOpenImmo extends \BackendModule
             if ($attr) {
                 $attributes = $xmlNode->attributes();
                 $results[$i] = $attributes[$attr];
+            } else {
+                $results[$i] = $this->parseFieldType($fieldPath, $xmlNode . '', $metamodelObj);
             }
-            $results[$i] = $this->parseFieldType($fieldPath, $xmlNode . '', $metamodelObj);
         }
 
         // Contao 3 has FileModels
