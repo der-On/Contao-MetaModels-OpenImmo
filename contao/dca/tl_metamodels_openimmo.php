@@ -155,7 +155,7 @@ $GLOBALS['TL_DCA']['tl_metamodels_openimmo'] = array
 			'exclude'                 => true,
 			'inputType'               => 'select',
 			'foreignKey'			  => 'tl_metamodel.name',
-			'eval'                    => array('mandatory'=>true, 'maxlength'=>64)
+			'eval'                    => array('mandatory'=>true, 'maxlength'=>64, 'submitOnChange' => true)
 		),
 		'exportPath' => array
 		(
