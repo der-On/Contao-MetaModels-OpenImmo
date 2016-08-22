@@ -623,30 +623,31 @@ class MetaModelsOpenImmo extends \BackendModule
         $xpath_part = str_replace($xpath . '/', '', $fieldPath);
 
         $xmlNodes = $xml->xpath($xpath_part);
-        $filePaths = array();
         $results = array();
+        $resultsFile = array();
 
         foreach($xmlNodes as $i => $xmlNode) {
             if ($attr) {
                 $attributes = $xmlNode->attributes();
-                $filePaths[$i] = $attributes[$attr];
+                $results[$i] = $attributes[$attr];
+            } else {
+                $results[$i] = $this->parseFieldType($fieldPath, $xmlNode . '', $metamodelObj);
             }
-            $filePaths[$i] = $this->parseFieldType($fieldPath, $xmlNode . '', $metamodelObj);
         }
 
         // Contao 3 has FileModels
         if (VERSION >= '3') {
             if (isset($this->fieldsFlat[$fieldPath]) && $this->fieldsFlat[$fieldPath] == 'path') {
-                $files = \FilesModel::findMultipleByPaths($filePaths);
+                $files = \FilesModel::findMultipleByPaths($results);
 
                 if ($files) {
                     foreach($files->getModels() as $i => $file) {
                         $this->attachMetaToFile($file, $xmlNodes[$i], $metamodelObj);
-                        $results[] = $file->uuid;
+                        $resultsFile[] = $file->uuid;
                     }
                 }
 
-                return ($serialize) ? serialize($results) : $results;
+                return ($serialize) ? serialize($resultsFile) : $resultsFile;
             }
         }
 
