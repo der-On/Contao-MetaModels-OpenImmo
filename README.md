@@ -6,7 +6,7 @@ This module makes it possible to import OpenImmo-Data into an existing MetaModel
 
 ## Installation
 
-The files need to be placed within the folder system/modules/metamodels_openimmo/
+The contents of the `contao` folder needs to be placed within the folder `system/modules/metamodels_openimmo/`, while the the  `src` folder needs to go to `composer/anzui/metamodels_openimmo/src`.
 
 ## Import the Template
 
