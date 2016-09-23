@@ -459,6 +459,15 @@ class MetaModelsOpenImmo extends \BackendModule
     {
         if ($this->dataIsValid($data)) {
 
+            // execute
+            if (isset($GLOBALS['TL_HOOKS']['metaModelsOpenImmoSyncStart'])) {
+                foreach ($GLOBALS['TL_HOOKS']['metaModelsOpenImmoSyncStart'] as $callback)
+                {
+                    $this->import($callback[0]);
+                    $this->$callback[0]->$callback[1]($this);
+                }
+            }
+
             //flatten fields array temporally
             $this->flattenFields($metamodelObj['oiVersion']);
 
