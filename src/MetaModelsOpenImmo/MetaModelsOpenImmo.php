@@ -638,7 +638,11 @@ class MetaModelsOpenImmo extends \BackendModule
         foreach($xmlNodes as $i => $xmlNode) {
             if ($attr) {
                 $attributes = $xmlNode->attributes();
-                $results[$i] = $attributes[$attr];
+                if ($attr == '*') {
+                    $results[$i] = serialize(current($attributes));
+                } else {
+                    $results[$i] = $attributes[$attr];
+                }
             } else {
                 $results[$i] = $this->parseFieldType($fieldPath, $xmlNode . '', $metamodelObj);
             }
