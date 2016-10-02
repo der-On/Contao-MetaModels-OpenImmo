@@ -148,6 +148,15 @@ class Api extends \Controller {
                 $this->mmoi->addFileToHistory($exportPath, $rel_path, 2, $user);
             } else $this->mmoi->addFileToHistory($exportPath, $rel_path, 1, $user);
         }
+        
+        // execute
+        if (isset($GLOBALS['TL_HOOKS']['metaModelsOpenImmoSyncEnd'])) {
+            foreach ($GLOBALS['TL_HOOKS']['metaModelsOpenImmoSyncEnd'] as $callback)
+            {
+                $this->import($callback[0]);
+                $this->$callback[0]->$callback[1]($this, $exportPath, $rel_path, $success, $error);
+            }
+        }        
     }
 
     /**
