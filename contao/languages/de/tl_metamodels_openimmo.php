@@ -50,6 +50,7 @@ $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['autoSync_never'] = 'niemals';
 $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['autoSync_hourly'] = 'stündlich';
 $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['autoSync_daily'] = 'täglich';
 $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['autoSync_weekly'] = 'wöchentlich';
+$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['autoSync_now'] = 'sofort';
 $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['sortFilesBy'] = array('Dateien sortieren nach', 'Dateien werden hiernach sortiert und in dieser Reihenfolge synchronisiert.');
 $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['sortFilesBy_time'] = 'Dateidatum (absteigend)';
 $GLOBALS['TL_LANG']['tl_metamodels_openimmo']['sortFilesBy_name_desc'] = 'Dateiname (absteigend)';

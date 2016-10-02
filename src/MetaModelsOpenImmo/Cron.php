@@ -65,6 +65,10 @@ class Cron extends \Frontend {
                     case 'weekly':
                         if ($daysDiff >= 7) $needsSync = true;
                         break;
+
+                    case 'now':
+                        $needsSync = true;
+                        break;
                 }
 
                 if ($needsSync) {
@@ -108,7 +112,7 @@ class Cron extends \Frontend {
 
         foreach($files as $file)
         {
-            if ($file->syncTime === 0) {
+            if ($file->syncTime === 0 || $mmobj->autoSync == 'now') {
                 $syncFiles[] = $file;
             }
         }

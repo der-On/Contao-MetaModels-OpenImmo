@@ -225,11 +225,11 @@ class tl_metamodels_openimmo extends \Backend
     public function getDeleteFilesOlderThenOptions(&$dc)
     {
         return array(
-            '0' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['deleteFilesOlderThen_none'],
-            '7' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['deleteFilesOlderThen_week'],
-            '14' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['deleteFilesOlderThen_two_weeks'],
-            '30' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['deleteFilesOlderThen_month'],
-            '90' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['deleteFilesOlderThen_three_months'],
+            '0'   => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['deleteFilesOlderThen_none'],
+            '7'   => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['deleteFilesOlderThen_week'],
+            '14'  => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['deleteFilesOlderThen_two_weeks'],
+            '30'  => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['deleteFilesOlderThen_month'],
+            '90'  => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['deleteFilesOlderThen_three_months'],
             '183' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['deleteFilesOlderThen_half_year'],
             '365' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['deleteFilesOlderThen_year'],
         );
@@ -238,20 +238,21 @@ class tl_metamodels_openimmo extends \Backend
     public function getAutoSyncOptions(&$dc)
     {
         return array(
-            'never' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['autoSync_never'],
+            'never'  => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['autoSync_never'],
             'hourly' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['autoSync_hourly'],
-            'daily' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['autoSync_daily'],
+            'daily'  => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['autoSync_daily'],
             'weekly' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['autoSync_weekly'],
+            'now'    => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['autoSync_now'],
         );
     }
 
-		public function getSortFilesByOptions(&$dc)
-		{
-				return array(
-						'time' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['sortFilesBy_time'],
-						'name_asc' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['sortFilesBy_name_asc'],
-						'name_desc' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['sortFilesBy_name_desc'],
-				);
-		}
+	public function getSortFilesByOptions(&$dc)
+	{
+			return array(
+    			'time'      => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['sortFilesBy_time'],
+    			'name_asc'  => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['sortFilesBy_name_asc'],
+    			'name_desc' => &$GLOBALS['TL_LANG']['tl_metamodels_openimmo']['sortFilesBy_name_desc'],
+			);
+	}
 }
 ?>
