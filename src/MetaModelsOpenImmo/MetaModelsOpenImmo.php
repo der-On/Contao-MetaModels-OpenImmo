@@ -122,6 +122,15 @@ class MetaModelsOpenImmo extends \BackendModule
             } else $this->addMessage($GLOBALS['TL_LANG']['tl_metamodels_openimmo']['noSyncFile']);
         }
 
+        // execute
+        if (isset($GLOBALS['TL_HOOKS']['metaModelsOpenImmoSyncEnd'])) {
+            foreach ($GLOBALS['TL_HOOKS']['metaModelsOpenImmoSyncEnd'] as $callback)
+            {
+                $this->import($callback[0]);
+                $this->$callback[0]->$callback[1]($this, $exportPath, $sync_file, $success, $error);
+            }
+        }
+
         $this->Template = new \BackendTemplate($this->strTemplate);
 
         $this->Template->setData(array(
