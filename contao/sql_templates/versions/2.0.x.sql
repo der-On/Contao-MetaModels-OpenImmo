@@ -1,7 +1,5 @@
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
-CREATE DATABASE IF NOT EXISTS `contao_dev` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `contao_dev`;
 
 DROP TABLE IF EXISTS `tl_metamodel`;
 CREATE TABLE IF NOT EXISTS `tl_metamodel` (
